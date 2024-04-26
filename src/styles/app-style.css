@@ -7,6 +7,7 @@ html {
   justify-content: center;
   background-color: #f0f0f0; /* 배경색 설정 */
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .page {
