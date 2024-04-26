@@ -25,7 +25,7 @@ function Navigatorbar() {
       <FontAwesomeIcon
         className="font-icon"
         icon={faPencil}
-        onClick={() => navigate('/reviewwrite')}
+        onClick={() => navigate('/review-write')}
       />
     </div>
   );
