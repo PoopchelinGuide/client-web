@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
+import { Tag } from 'antd';
+
 function ReviewPage() {
   const [reviewContent, setReviewContent] = useState([]);
 
@@ -57,14 +59,16 @@ function ReviewPage() {
               {item.tag &&
                 item.tag.map((tag, idx) => {
                   return (
-                    <div
-                      key={idx}
+                    <Tag
                       className="list-box-tag-button"
+                      color="blue"
+                      style={{
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold',
+                      }}
                     >
-                      <p className="list-box-tag-button-text">
-                        {tag} {/* 여기서 tag 변수를 사용 */}
-                      </p>
-                    </div>
+                      {tag}
+                    </Tag>
                   );
                 })}
             </div>
