@@ -39,6 +39,11 @@ function ReviewPage() {
 
   return (
     <div className="review-page">
+      <div className="review-page-header">
+        <p className="review-page-header-text">
+          세민 화장실
+        </p>
+      </div>
       {sortedReviews.map((item, index) => (
         <div key={index} className="list-box">
           <div className="list-box-title">
