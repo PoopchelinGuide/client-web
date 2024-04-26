@@ -1,5 +1,5 @@
 #map_div{
-    max-width: 390px;
-    /* top: 6vh; */
-    height: 88vh; /* 높이를 100%로 설정 */
+    width: 100%;
+    height: 100vh; /* 높이를 100%로 설정 */
+    margin-bottom: 8vh;
 }
