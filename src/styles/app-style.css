@@ -20,7 +20,8 @@ html {
 /* 중앙 컨텐츠 영역 */
 .main_box {
   min-width: 30rem;
-  height: 90vh; /* 높이 비율 */
+  max-width: 380px;
+  height: 100vh; /* 높이 비율 */
   background-color: #ffffff; /* 중앙 영역의 배경색 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   display: flex;
