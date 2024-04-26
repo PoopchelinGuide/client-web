@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faList,
   faMap,
   faMapLocationDot,
   faPencil,
@@ -14,7 +15,7 @@ function Navigatorbar() {
     <div className="navigatorbar">
       <FontAwesomeIcon
         className="font-icon"
-        icon={faMap}
+        icon={faList}
         onClick={() => navigate('/review')}
       />
       <FontAwesomeIcon
