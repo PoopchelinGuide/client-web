@@ -5,7 +5,7 @@ import Navigatorbar from '../components/navigatorbar';
 
 const { Tmapv2 } = window;
 
-const { kakao } = window;
+// const { kakao } = window;
 
 function MapPage() {
   var map;
@@ -41,29 +41,29 @@ function MapPage() {
   function ininTMap() {
 
 
-    var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
+    // var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
 
-    mapOption = { 
-        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };
+    // mapOption = { 
+    //     center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+    //     level: 3 // 지도의 확대 레벨
+    // };
 
     // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
     var map = new kakao.maps.Map(mapContainer, mapOption); 
 
 
-    // const mapDiv = document.getElementById('map_div');
+    const mapDiv = document.getElementById('map_div');
 
-    // // map_div가 이미 존재하면 초기화하지 않음
-    // if (!mapDiv.firstChild) {
-    //   map = new Tmapv2.Map('map_div', {
-    //     center: new window.Tmapv2.LatLng(
-    //       37.566481622437934,
-    //       126.98502302169841
-    //     ),
-    //     zoom: 17,
-    //   });
-    // }
+    // map_div가 이미 존재하면 초기화하지 않음
+    if (!mapDiv.firstChild) {
+      map = new Tmapv2.Map('map_div', {
+        center: new window.Tmapv2.LatLng(
+          37.566481622437934,
+          126.98502302169841
+        ),
+        zoom: 17,
+      });
+    }
 
     // // 2. 시작, 도착 심볼찍기
 		// // 시작
