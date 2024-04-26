@@ -5,6 +5,8 @@ import Navigatorbar from '../components/navigatorbar';
 
 const { Tmapv2 } = window;
 
+const { kakao } = window;
+
 function MapPage() {
   var map;
   var marker_s, marker_e, marker_p1, marker_p2;
@@ -40,7 +42,7 @@ function MapPage() {
 
 
     var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
-    
+
     mapOption = { 
         center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
         level: 3 // 지도의 확대 레벨
