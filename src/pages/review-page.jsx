@@ -1,19 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import Navigatorbar from '../components/navigatorbar';
 
 function ReviewPage() {
-  const navigate = useNavigate();
-  return (
-    <div>
-      <h1>Review Page</h1>
-      <button onClick={() => navigate('/')}>
-        지도 페이지
-      </button>
-      <button onClick={() => navigate('/review-write')}>
-        리뷰 작성 페이지
-      </button>
-    </div>
-  );
+  return <>{Navigatorbar()}</>;
 }
 
 export default ReviewPage;

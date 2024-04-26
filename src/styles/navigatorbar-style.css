@@ -1,0 +1,23 @@
+.navigatorbar {
+  min-width: 30rem;
+  max-width: 380px;
+  background-color: rgb(49, 126, 234);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8vh;
+  padding: 1px 0px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+  margin-left: auto;
+  margin-right: auto;
+  display: flex; /* Flexbox를 활성화 */
+  justify-content: center; /* 모든 아이템을 가로선 상에서 중앙으로 정렬 */
+  align-items: center; /* 모든 아이템을 세로선 상에서 중앙으로 정렬 */
+  gap: 5.5rem; /* 아이템 간에 20px의 간격을 추가 */
+}
+
+.font-icon {
+  font-size: 3.5rem;
+  color: white;
+}
