@@ -61,8 +61,8 @@
   background-color: white;
   height: 30vh;
   margin-top: 3rem;
-  padding-top: 1.5rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
-  width: 29.5rem;
+  padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
+  width: 27rem;
   display: grid;
   grid-template-columns: repeat(
     3,
@@ -76,9 +76,9 @@
 .tagbtn {
   flex: none; /* Flexbox 속성 비활성화 */
   border: none;
-  width: 9rem;
+  width: 8rem;
   height: 3rem;
-  margin: 0.1rem; /* 버튼 사이의 간격 */
+  margin: 0.4rem; /* 버튼 사이의 간격 */
   border-color: rgb(49, 126, 234);
   border-width: 0.1rem;
   color: rgb(49, 126, 234);
