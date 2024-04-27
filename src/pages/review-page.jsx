@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
-import { Avatar, List, Card, Tag, Rate } from 'antd';
+import { Avatar, List, Card, Tag, Rate, message } from 'antd';
 import Header from '../components/header';
 import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 
+
+
 function ReviewPage() {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const handleScroll = (event) => {
+    setScrollPosition(event.currentTarget.scrollTop);
+
+    if (event.currentTarget.scrollHeight - event.currentTarget.scrollTop === event.currentTarget.clientHeight) {
+      message.info('리뷰의 끝입니다.!');
+    }
+  };
   const [reviewContent, setReviewContent] = useState([]);
   const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
   const array = [
@@ -38,6 +50,8 @@ function ReviewPage() {
     { title: '휴지가 없어요 ㅠㅜ', date: '2024-04-05', nickname : '보땡이', tag: ['깨끗해요', '좋아요'],rate : 4.5,},
     { title: '왔다감!!!!!!', date: '2024-04-15', nickname : '보땡이', tag: ['깨끗해요', '좋아요'],rate : 4.5,},
   ];
+
+
   var sum = 0.0;
   var length = array.length;
   array.forEach(function(item, index){
@@ -45,18 +59,22 @@ function ReviewPage() {
   });
   sum = sum / length;
   useEffect(() => {
+    console.log("asdasdasd"); // 스크롤 이벤트가 발생할 때마다 출력되어야 합니다.
     setReviewContent(array);
   }, []);
 
-  
+
 
   const sortedReviews = reviewContent.sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   });
 
 
+  
+
   return (
-    <div className='list-box' id='box'>
+    
+    <div className='list-box' id='box' onScroll={handleScroll}>
     {Header(name, sum, [])}
     <List
       itemLayout="verticalrizontal"
@@ -85,48 +103,6 @@ function ReviewPage() {
     {Navigatorbar()}
     </div> 
    );
-}
-  
-//   (
-//     <div className="review-page">
-//       {Header(name)}
-//       {sortedReviews.map((item, index) => (
-//         <div key={index} className="list-box">
-//           <div className="list-box-title">
-//             <p className="list-box-title-text">
-//               {item.title}
-//             </p>
-//           </div>
-//           {/* 태그 정보를 표시 */}
-//           <div className="list-box-tag-date">
-//             <div className="list-box-tag">
-//               {item.tag &&
-//                 item.tag.map((tag, idx) => {
-//                   return (
-//                     <Tag
-//                       className="list-box-tag-button"
-//                       color="blue"
-//                       style={{
-//                         fontSize: '0.9rem',
-//                         fontWeight: 'bold',
-//                       }}
-//                     >
-//                       {tag}
-//                     </Tag>
-//                   );
-//                 })}
-//             </div>
-//             <div className="list-box-date">
-//               <p className="list-box-date-text">
-//                 {item.date}
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       ))}
-//       {Navigatorbar()}
-//     </div>
-//   );
-// }
+}   
 
 export default ReviewPage;
