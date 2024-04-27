@@ -47,28 +47,25 @@ function MapPage() {
   }
 
 	// fetch 통신 method
-	const fetchData = async (BodyJson, latlng, initMarkers) => {
+	const fetchData = async (circleXY, latlng, initMarkers) => {
 	try {
 		const response = await fetch(
-		`${process.env.NODE_ENV === "development" ? "http://" : ""}${
-			process.env.REACT_APP_API_URL
-		}store/read/map/coordinate`,
+		`http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
 		{
-			method: "POST",
+			method: "GET",
 			headers: {
 			"Content-type": "application/json",
 			},
-			body: BodyJson,
 		}
 		);
 		if (response.status === 200) {
-		const { data } = await response.json();
-		// 서버에서 받은 데이터를 markerList에 저장
-		markerList = data;
-		console.log("데이터 전송 완료");
-		console.log(markerList);
-		// message.success(`주변에 상점이 ${markerList.length}개 존재합니다.`, 2);
-		initMarkers();
+			const { data } = await response.json();
+			// 서버에서 받은 데이터를 markerList에 저장
+			markerList = data;
+			console.log("데이터 전송 완료");
+			console.log(markerList);
+			// message.success(`주변에 상점이 ${markerList.length}개 존재합니다.`, 2);
+			initMarkers();
 		} else if (response.status === 400) {
 		// message.error("발견된 상점이 존재하지 않습니다.", 2);
 		console.log("데이터 전송 실패");
@@ -179,7 +176,8 @@ function drawLine(arrPoint) {
     var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
 
     mapOption = { 
-        center: locPosition, // 지도의 중심좌표
+        // center: locPosition, // 지도의 중심좌표
+		center: new kakao.maps.LatLng(37.65223738314796, 127.02448847037635),
         level: 3 // 지도의 확대 레벨
     };
 
@@ -189,7 +187,7 @@ function drawLine(arrPoint) {
 	
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
-        center: locPosition,
+        center: mapOption.center,
         radius: 10000,
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: "#75B8FA", // 선의 색깔입니다
@@ -213,7 +211,7 @@ function drawLine(arrPoint) {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-	  // fetchData(JSON.stringify(circleXY), options.center, initMarkers);
+	  fetchData(circleXY, mapOption.center, initMarkers);
 	  var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
 		// 도착
@@ -258,7 +256,7 @@ function drawLine(arrPoint) {
 			var latlng = map.getCenter();
 	
 			circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
-			circle.setRadius(level * 1000); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
+			circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
 			circle.setMap(map); // 원을 지도에 표시합니다
 	
 			// 이전 중심 좌표가 있고, 새로운 중심 좌표와의 차이가 0.1 미만이면 AJAX 요청을 보내지 않습니다
@@ -322,8 +320,10 @@ function routeNavigation(locPosition, lat, lon){
 			method : "POST",
 			headers : headers,
 		  	body: JSON.stringify({
-				"startX": lon.toString(),
-				"startY": lat.toString(), // 
+				// "startX": lon.toString(),
+				// "startY": lat.toString(), //
+				"startX": "127.02448847037635",
+				"startY": "37.65223738314796", //
 				"endX": "128.5967954",
 				"endY": "35.8678658",
 				"reqCoordType": "WGS84GEO",
@@ -497,7 +497,9 @@ function asd(){
 
 
   useEffect(() => {
-	asd();
+	// asd();
+	initKakaoMap();
+	routeNavigation();
   }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
   return (
