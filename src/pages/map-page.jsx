@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
 import Navigatorbar from '../components/navigatorbar';
 
-// import Card from "../components/Card"; // Card 컴포넌트 임포트
-import "../components/Card.css"; // Card 컴포넌트의 CSS 파일 임포트
+import imageSrc from "../markerImage/iconBlue.png";
+import imageSrc2 from "../markerImage/iconRed.png";
+
 import { Card } from "antd";
 
 
@@ -32,11 +32,19 @@ function MapPage() {
   var imageSize = new kakao.maps.Size(42, 56); // 마커의 크기 기존 33, 36
   var choiceImageSize = new kakao.maps.Size(44, 58); // 선택한 마커의 크기 기존 38, 40
   
+  var clickImage = createMarkerImage(imageSrc2, choiceImageSize),
+  	normalImage = createMarkerImage(imageSrc, imageSize);
 
 
   var totalMarkerArr = [];
 	var drawInfoArr = [];
 	var resultdrawArr = [];
+
+  // MakrerImage 객체를 생성하여 반환하는 함수입니다
+  function createMarkerImage(markerScr, markerSize) {
+    var markerImage = new kakao.maps.MarkerImage(markerScr, markerSize);
+    return markerImage;
+  }
 
 	// fetch 통신 method
 	const fetchData = async (BodyJson, latlng, initMarkers) => {
@@ -208,6 +216,40 @@ function drawLine(arrPoint) {
 	  // fetchData(JSON.stringify(circleXY), options.center, initMarkers);
 	  var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
+		// 도착
+		marker_e = new kakao.maps.Marker(
+			{
+				position : new kakao.maps.LatLng(35.8678658,128.5967954),
+				iconSize : new kakao.maps.Size(24, 38),
+				image: normalImage, // 마커 이미지
+				map : map
+			});
+			marker_e.normalImage = normalImage;
+			marker_e.clickImage = clickImage;
+	
+			// 마커에 click 이벤트를 등록합니다
+			kakao.maps.event.addListener(marker_e, "click", function () {
+			// 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
+			// 마커의 이미지를 클릭 이미지로 변경합니다
+	
+			if (!selectedMarker || selectedMarker !== marker_e) {
+				// 클릭된 마커 객체가 null이 아니면
+					// 클릭된 마커의 이미지를 기본 이미지로 변경하고
+					!!selectedMarker &&
+					selectedMarker.setImage(selectedMarker.normalImage);
+	
+					// 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
+					marker_e.setImage(marker_e.clickImage);				
+					
+				// 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
+				selectedMarker = marker_e;
+			} else if (selectedMarker === marker_e) {
+				selectedMarker.setImage(selectedMarker.normalImage);
+				selectedMarker = null;
+			}
+			showPopup("b");
+			});
+
 		// 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 		kakao.maps.event.addListener(map, "dragend", function () {
 			// 지도의  레벨을 얻어옵니다
@@ -270,33 +312,7 @@ function routeNavigation(locPosition, lat, lon){
 	// 	  iconSize : new kakao.maps.Size(24, 38),
 	// 	  map : map
 	// 	});
-
 		console.log("현재 위치 "+ lat + " " + lon);
-  
-	  // 도착
-	  marker_e = new kakao.maps.Marker(
-		{
-		  position : new kakao.maps.LatLng(35.8678658,128.5967954),
-		  // icon : "/upload/tmap/marker/pin_r_m_e.png",
-		  iconSize : new kakao.maps.Size(24, 38),
-		  map : map
-		});
-
-		// 마커에 click 이벤트를 등록합니다
-		kakao.maps.event.addListener(marker_e, "click", function () {
-		// 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
-		// 마커의 이미지를 클릭 이미지로 변경합니다
-
-		if (!selectedMarker || selectedMarker !== marker_s) {
-			// 클릭된 마커 객체가 null이 아니면
-
-			// 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
-			selectedMarker = marker_e;
-		} else if (selectedMarker === marker_e) {
-			selectedMarker = null;
-		}
-		showPopup("b");
-		});
 
 		var headers = {}; 
 		  headers["appKey"]="WGYNvwAqWq4x558TZehlb6jhhx1uwVaA71adQni8";
@@ -397,17 +413,6 @@ function routeNavigation(locPosition, lat, lon){
 								  lat : convertPoint._lat,
 								  pointType : pType
 							  };
-  
-							  // // Marker 추가
-							  // marker_p = new Tmapv2.Marker(
-							  // 		{
-							  // 			position : new Tmapv2.LatLng(
-							  // 					routeInfoObj.lat,
-							  // 					routeInfoObj.lng),
-							  // 			icon : routeInfoObj.markerImage,
-							  // 			iconSize : size,
-							  // 			map : map
-							  // 		});
 						  }
 					  }//for문 [E]
 					  drawLine(drawInfoArr);
@@ -449,6 +454,8 @@ function asd(){
 			initKakaoMap(locPosition);
 			console.log("가져온 위치 정보로 지도를 초기화합니다.");
 		  });
+
+		  
 
 		      // 사용자 위치를 지속적으로 추적
 			  let watchId = navigator.geolocation.watchPosition(
