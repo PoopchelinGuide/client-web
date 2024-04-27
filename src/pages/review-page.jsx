@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
 import { Tag } from 'antd';
+import Header from '../components/header';
 
 function ReviewPage() {
   const [reviewContent, setReviewContent] = useState([]);
-
+  const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
   const array = [
     {
       title: '이 집 화장실 잘하네..',
@@ -41,11 +42,7 @@ function ReviewPage() {
 
   return (
     <div className="review-page">
-      <div className="review-page-header">
-        <p className="review-page-header-text">
-          세민 화장실
-        </p>
-      </div>
+      {Header(name)}
       {sortedReviews.map((item, index) => (
         <div key={index} className="list-box">
           <div className="list-box-title">

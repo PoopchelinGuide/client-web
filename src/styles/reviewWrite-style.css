@@ -1,0 +1,56 @@
+.input-info {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* 세로 방향 가운데 정렬 */
+  justify-content: center; /* 가로 방향 가운데 정렬 */
+  gap: 1rem;
+}
+
+.input-info-id {
+  flex: 2;
+}
+.input-info-pw {
+  flex: 2;
+}
+.input-info-btn {
+  flex: 1;
+}
+
+.input-content {
+  margin-top: 1rem;
+  min-width: 28.5rem;
+  max-width: 390px;
+  height: 18vh;
+}
+
+.tagbtn-box {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.tagbtn {
+  flex: 0 1 9.3rem; /* 각 버튼이 컨테이너의 33% 너비를 차지하도록 설정 */
+  margin: 5px; /* 버튼 사이의 간격 */
+  background-color: rgb(
+    49,
+    126,
+    234
+  ); /* 기본 배경색을 하늘색으로 설정 */
+  border: none;
+  color: white;
+  border-radius: 1rem;
+  padding: 10px;
+  transition: background-color 0.3s transform 0.3s ease; /* 부드러운 색상 전환 효과 */
+}
+
+.tagbtn-box button:hover {
+  background-color: lightblue; /* 호버 시 밝은 하늘색으로 변경 */
+  transform: translateY(-5px);
+}
+
+.tagbtn-box button:active {
+  background-color: deepskyblue; /* 클릭 시 진한 하늘색으로 변경 */
+}

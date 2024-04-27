@@ -1,0 +1,20 @@
+.header {
+  min-width: 30rem;
+  max-width: 380px;
+  background-color: rgb(49, 126, 234);
+  height: 8vh;
+  padding: 1px 0px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+  margin-left: auto;
+  margin-right: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.header-text {
+  color: white;
+  font-size: 1.3rem;
+}
