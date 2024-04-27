@@ -12,7 +12,7 @@
 }
 
 .input-box {
-  height: 20vh;
+  height: 23vh;
   min-width: 24rem;
   max-width: 300px;
   padding: 1rem;
@@ -65,7 +65,7 @@
 
 .tagbtn-box {
   background-color: white;
-  height: 30vh;
+  height: 32vh;
   margin-top: 3rem;
   padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
   min-width: 24rem;
