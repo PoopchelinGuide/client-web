@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import Modal_a from '../components/modal';
 import { Modal } from 'antd';
+import {
+  FaToiletPaper,
+  FaToilet,
+  FaThermometerThreeQuarters,
+  FaTrash,
+} from 'react-icons/fa';
 
 function ReviewWritePage() {
   const [id, setId] = useState('');
@@ -13,16 +18,16 @@ function ReviewWritePage() {
   const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
 
   const tagButtons = [
-    '깨끗해요',
-    '친절해요',
-    '맛있어요',
-    '가격이 착해요',
-    '분위기 좋아요',
-    '다시 가고 싶어요',
-    '추천해요',
-    '좋아요',
-    '별로에요',
-    '비추에요',
+    { text: '깨끗해요', icon: <FaToiletPaper /> },
+    { text: '더러워요', icon: null },
+    { text: '휴지', icon: <FaToiletPaper /> },
+    { text: '휴지 X', icon: null },
+    { text: '좌변기', icon: <FaToilet /> },
+    { text: '푸세식', icon: <FaToilet /> }, // 이 아이콘은 좌변기와 같습니다, 적절한 것을 찾기 어렵습니다.
+    { text: '온수', icon: <FaThermometerThreeQuarters /> },
+    { text: '온수 X', icon: null },
+    { text: '휴지통', icon: <FaTrash /> },
+    { text: '휴지통 X', icon: null },
   ];
 
   const [clicked, setClicked] = useState({});
@@ -83,7 +88,7 @@ function ReviewWritePage() {
         />
       </div>
       <div className="tagbtn-box">
-        {tagButtons.map((tag, index) => (
+        {tagButtons.map((item, index) => (
           <button
             key={index}
             className="tagbtn"
@@ -98,7 +103,8 @@ function ReviewWritePage() {
                 : 'rgb(49, 126, 234)',
             }}
           >
-            {tag}
+            {item.icon}
+            {item.text}
           </button>
         ))}
       </div>

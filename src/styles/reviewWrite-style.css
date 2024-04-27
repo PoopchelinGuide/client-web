@@ -59,16 +59,16 @@
 
 .tagbtn-box {
   background-color: white;
-  height: 30vh;
+  height: 38vh;
   margin-top: 3rem;
   padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
   width: 27rem;
   display: grid;
   grid-template-columns: repeat(
-    3,
+    2,
     1fr
   ); /* 3개의 열을 각각 동일한 크기로 설정 */
-  grid-gap: 0.3rem; /* 그리드 간격 설정 */
+  grid-gap: 1rem; /* 그리드 간격 설정 */
   border-radius: 1.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -76,9 +76,10 @@
 .tagbtn {
   flex: none; /* Flexbox 속성 비활성화 */
   border: none;
-  width: 8rem;
-  height: 3rem;
+  width: 12rem;
+  height: 2.8rem;
   margin: 0.4rem; /* 버튼 사이의 간격 */
+  font-size: 1.1rem;
   border-color: rgb(49, 126, 234);
   border-width: 0.1rem;
   color: rgb(49, 126, 234);
