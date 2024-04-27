@@ -125,7 +125,7 @@ function ReviewWritePage() {
                 className="tagbtn"
                 onClick={() => handleClick(index)}
                 style={
-                  index % 2 === 0
+                  index % 2 === 1
                     ? {
                         backgroundColor: clicked[index]
                           ? 'red'
