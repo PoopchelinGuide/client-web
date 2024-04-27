@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 8vh;
 }
 
 .input-box {
@@ -79,7 +80,7 @@
   width: 12rem;
   height: 2.8rem;
   margin: 0.4rem; /* 버튼 사이의 간격 */
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   border-color: rgb(49, 126, 234);
   border-width: 0.1rem;
   color: rgb(49, 126, 234);

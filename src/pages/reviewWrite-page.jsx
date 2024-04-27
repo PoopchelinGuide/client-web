@@ -48,68 +48,71 @@ function ReviewWritePage() {
     }
   };
   return (
-    <div className="review-box">
-      <Modal
-        title="알림"
-        visible={modalOpen}
-        onOk={() => setModalOpen(false)}
-        onCancel={() => setModalOpen(false)}
-        okText="확인"
-        cancelText="취소"
-      >
-        최대 3개까지만 선택할 수 있습니다.
-      </Modal>
-      {Header(name)}
-      <div className="input-box">
-        <div className="input-info">
-          <input
-            className="input-info-id"
-            type="text"
-            placeholder="아이디"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          />
-          <input
-            className="input-info-pw"
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="input-info-btn">
-            리뷰 등록
-          </button>
-        </div>
-        <input
-          className="input-content"
-          placeholder="리뷰를 작성해주세요"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </div>
-      <div className="tagbtn-box">
-        {tagButtons.map((item, index) => (
-          <button
-            key={index}
-            className="tagbtn"
-            onClick={() => handleClick(index)}
-            style={{
-              backgroundColor: clicked[index]
-                ? 'rgb(49, 126, 234)'
-                : 'white',
+    <>
+      {Header(name, 0.0, [])}
+      <div className="review-box">
+        <Modal
+          title="알림"
+          visible={modalOpen}
+          onOk={() => setModalOpen(false)}
+          onCancel={() => setModalOpen(false)}
+          okText="확인"
+          cancelText="취소"
+        >
+          최대 3개까지만 선택할 수 있습니다.
+        </Modal>
 
-              color: clicked[index]
-                ? 'white'
-                : 'rgb(49, 126, 234)',
-            }}
-          >
-            {item.icon}
-            {item.text}
-          </button>
-        ))}
+        <div className="input-box">
+          <div className="input-info">
+            <input
+              className="input-info-id"
+              type="text"
+              placeholder="아이디"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+            />
+            <input
+              className="input-info-pw"
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className="input-info-btn">
+              리뷰 등록
+            </button>
+          </div>
+          <input
+            className="input-content"
+            placeholder="리뷰를 작성해주세요"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </div>
+        <div className="tagbtn-box">
+          {tagButtons.map((item, index) => (
+            <button
+              key={index}
+              className="tagbtn"
+              onClick={() => handleClick(index)}
+              style={{
+                backgroundColor: clicked[index]
+                  ? 'rgb(49, 126, 234)'
+                  : 'white',
+
+                color: clicked[index]
+                  ? 'white'
+                  : 'rgb(49, 126, 234)',
+              }}
+            >
+              {item.icon}
+              {item.text}
+            </button>
+          ))}
+        </div>
+        {Navigatorbar()}
       </div>
-      {Navigatorbar()}
-    </div>
+    </>
   );
 }
 
