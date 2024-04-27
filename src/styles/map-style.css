@@ -3,3 +3,15 @@
     height: 100vh; /* 높이를 100%로 설정 */
     margin-bottom: 8vh;
 }
+
+.map-store-data{
+  position: fixed;
+  bottom: 1rem;
+  max-width: 450px;
+  /* overflow: hidden;
+  text-align: center; */
+}
+
+.antCard{
+  width: 28rem;
+}
