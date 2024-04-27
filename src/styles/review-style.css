@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'KCC-Hanbit';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .review-page {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -5,7 +12,28 @@
   margin-bottom: 8vh;
 }
 
+#box {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+#box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+
+
+.data-box{
+   font-family: 'KCC-Hanbit';
+  box-shadow:  0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 28.7rem;
+}
+
 .list-box {
+  font-family: 'KCC-Hanbit';
+  margin-top: 0vh;
+  margin-bottom: 8vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
   height: 13vh;
   border-bottom: 2px solid #ccc; /* 하단에 회색 밑줄 추가 */
   min-width: 28.7rem;

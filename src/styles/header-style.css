@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'KCC-Hanbit';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .header {
   min-width: 30rem;
   max-width: 380px;
@@ -15,6 +22,28 @@
 }
 
 .header-text {
+  font-family: 'KCC-Hanbit';
   color: white;
   font-size: 1.3rem;
+}
+
+.header_rate{
+  display: flex;
+  justify-content: left; /* 가로 중앙 정렬 */
+  margin-bottom: 0;
+}
+
+.header-rate-font{
+  font-family: 'KCC-Hanbit';
+}
+
+.header-tag{
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+}
+
+.header_text {
+  margin-top : 1rem;
+  margin-bottom: 0.7rem;
+  font-size: 35px;
 }
