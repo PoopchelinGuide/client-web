@@ -1,6 +1,6 @@
 .navigatorbar {
-  min-width: 30rem;
-  max-width: 380px;
+  min-width: 26rem;
+  max-width: 340px;
   background-color: rgb(49, 126, 234);
   position: fixed;
   bottom: 0;

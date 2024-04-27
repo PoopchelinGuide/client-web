@@ -5,7 +5,10 @@ import { Rate, Tag } from 'antd';
 
 function Header(name, rate, tag) {
   return (
-    <div style={{ fontFamily: 'KCC-Hanbit' }}>
+    <div
+      className="header"
+      style={{ fontFamily: 'KCC-Hanbit' }}
+    >
       <p className="header_text">{name} 화장실</p>
       <div className="header_rate">
         <Rate disabled allowHalf defaultValue={rate} />
@@ -28,12 +31,6 @@ function Header(name, rate, tag) {
         ))}
       </div>
     </div>
-
-    // <div className="header">
-    //   <div className="header">
-    //     <p className="header-text">{name} 화장실</p>
-    //   </div>
-    // </div>
   );
 }
 export default Header;

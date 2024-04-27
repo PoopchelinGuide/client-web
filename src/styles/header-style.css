@@ -1,15 +1,17 @@
 @font-face {
   font-family: 'KCC-Hanbit';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2')
+    format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
 .header {
-  min-width: 30rem;
-  max-width: 380px;
-  background-color: rgb(49, 126, 234);
-  height: 8vh;
+  min-width: 26rem;
+  max-width: 340px;
+  z-index: 10;
+  height: 10vh;
+  background-color: aliceblue;
   padding: 1px 0px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
   margin-left: auto;
@@ -18,7 +20,6 @@
   top: 0;
   left: 0;
   right: 0;
-  text-align: center;
 }
 
 .header-text {
@@ -27,23 +28,23 @@
   font-size: 1.3rem;
 }
 
-.header_rate{
+.header_rate {
   display: flex;
   justify-content: left; /* 가로 중앙 정렬 */
   margin-bottom: 0;
 }
 
-.header-rate-font{
+.header-rate-font {
   font-family: 'KCC-Hanbit';
 }
 
-.header-tag{
-    margin-left: 0.1rem;
-    margin-right: 0.1rem;
+.header-tag {
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
 }
 
 .header_text {
-  margin-top : 1rem;
+  margin-top: 1rem;
   margin-bottom: 0.7rem;
   font-size: 35px;
 }

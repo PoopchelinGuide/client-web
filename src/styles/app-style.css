@@ -21,8 +21,8 @@ html {
 
 /* 중앙 컨텐츠 영역 */
 .main_box {
-  min-width: 30rem;
-  max-width: 380px;
+  min-width: 26rem;
+  max-width: 340px;
   height: 100vh; /* 높이 비율 */
   background-color: #ececec; /* 중앙 영역의 배경색 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */

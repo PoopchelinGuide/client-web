@@ -1,10 +1,14 @@
 @font-face {
   font-family: 'KCC-Hanbit';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2403-2@1.0/KCC-Hanbit.woff2')
+    format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
+.list-box-margin {
+  margin-top: 10vh;
+}
 .review-page {
   overflow-y: scroll;
   overflow-x: hidden;
@@ -20,24 +24,22 @@
   display: none; /* Chrome, Safari, Opera*/
 }
 
-
-
-.data-box{
-   font-family: 'KCC-Hanbit';
-  box-shadow:  0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 28.7rem;
+.data-box {
+  font-family: 'KCC-Hanbit';
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 26rem;
+  max-width: 340px;
 }
 
 .list-box {
   font-family: 'KCC-Hanbit';
-  margin-top: 0vh;
   margin-bottom: 8vh;
   overflow-y: scroll;
   overflow-x: hidden;
   height: 13vh;
   border-bottom: 2px solid #ccc; /* 하단에 회색 밑줄 추가 */
-  min-width: 28.7rem;
-  max-width: 370px;
+  min-width: 26rem;
+  max-width: 340px;
   flex: 1;
   flex-direction: column;
 }
@@ -45,8 +47,8 @@
 .list-box-title {
   margin-top: 0.5vh;
   margin-left: 0.5vh;
-  min-width: 28.5rem;
-  max-width: 370px;
+  min-width: 26rem;
+  max-width: 340px;
   height: 8vh;
 }
 
@@ -56,8 +58,8 @@
 }
 
 .list-box-tag-date {
-  min-width: 28.5rem;
-  max-width: 370px;
+  min-width: 26rem;
+  max-width: 340px;
   height: 5vh;
   display: flex;
   flex-direction: row;
