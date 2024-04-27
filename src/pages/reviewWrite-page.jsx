@@ -48,7 +48,7 @@ function ReviewWritePage() {
     }
   };
   return (
-    <>
+    <div>
       {Header(name, 0.0, [])}
       <div className="review-box">
         <Modal
@@ -112,7 +112,7 @@ function ReviewWritePage() {
         </div>
         {Navigatorbar()}
       </div>
-    </>
+    </div>
   );
 }
 
