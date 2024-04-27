@@ -24,7 +24,7 @@ html {
   min-width: 30rem;
   max-width: 380px;
   height: 100vh; /* 높이 비율 */
-  background-color: #ffffff; /* 중앙 영역의 배경색 */
+  background-color: #ececec; /* 중앙 영역의 배경색 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   display: flex;
   align-items: center; /* 내부 내용 가운데 정렬 */

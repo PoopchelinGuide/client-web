@@ -1,3 +1,21 @@
+.review-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-box {
+  height: 25vh;
+  min-width: 27.5rem;
+  max-width: 30rem;
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 1.5rem;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .input-info {
   flex: 1;
   display: flex;
@@ -15,42 +33,67 @@
 }
 .input-info-btn {
   flex: 1;
+  border-color: rgb(49, 126, 234);
+  border-width: 0.1rem;
+  background-color: white;
+  color: rgb(49, 126, 234);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  border-style: solid;
+}
+.input-info-id,
+.input-info-pw {
+  height: 3vh;
+  min-width: 8rem;
+  max-width: 10rem;
+  border-radius: 1rem;
+  padding-left: 1rem; /* 모든 입력 필드에 텍스트 시작 위치 조정 */
 }
 
 .input-content {
   margin-top: 1rem;
-  min-width: 28.5rem;
-  max-width: 390px;
+  min-width: 25.5rem;
+  max-width: 26.5rem;
   height: 18vh;
 }
 
 .tagbtn-box {
+  background-color: white;
+  height: 38vh;
   margin-top: 3rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
+  width: 27rem;
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    1fr
+  ); /* 3개의 열을 각각 동일한 크기로 설정 */
+  grid-gap: 1rem; /* 그리드 간격 설정 */
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .tagbtn {
-  flex: 0 1 9.3rem; /* 각 버튼이 컨테이너의 33% 너비를 차지하도록 설정 */
-  margin: 5px; /* 버튼 사이의 간격 */
-  background-color: rgb(
-    49,
-    126,
-    234
-  ); /* 기본 배경색을 하늘색으로 설정 */
+  flex: none; /* Flexbox 속성 비활성화 */
   border: none;
-  color: white;
+  width: 12rem;
+  height: 2.8rem;
+  margin: 0.4rem; /* 버튼 사이의 간격 */
+  font-size: 1.1rem;
+  border-color: rgb(49, 126, 234);
+  border-width: 0.1rem;
+  color: rgb(49, 126, 234);
   border-radius: 1rem;
-  padding: 10px;
+  padding: 0.5rem;
+  border-style: solid;
   transition: background-color 0.3s transform 0.3s ease; /* 부드러운 색상 전환 효과 */
 }
 
 .tagbtn-box button:hover {
-  background-color: lightblue; /* 호버 시 밝은 하늘색으로 변경 */
   transform: translateY(-5px);
 }
 
-.tagbtn-box button:active {
-  background-color: deepskyblue; /* 클릭 시 진한 하늘색으로 변경 */
+.input-info-btn:active {
+  background-color: rgb(49, 126, 234);
+  color: white;
 }
