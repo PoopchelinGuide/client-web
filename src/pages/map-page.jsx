@@ -4,6 +4,7 @@ import '../styles/map-style.css';
 import Navigatorbar from '../components/navigatorbar';
 
 const { Tmapv2 } = window;
+const { kakao } = window;
 
 function MapPage() {
   var map;
@@ -17,57 +18,71 @@ function MapPage() {
 
 	
 	function drawLine(arrPoint) {
+    var points = [];
+    arrPoint.forEach((element) => {
+      points.push(new kakao.maps.LatLng(element._lat, element._lng));
+    })
+
 		var polyline_;
 
-		polyline_ = new Tmapv2.Polyline({
-      strokeStyle: "solid",
-			path : arrPoint,
-			strokeColor : "yellow",
-			strokeWeight : 10,
-      outline : true,
-      outlineColor: "pink",
+    // 지도에 표시할 선을 생성합니다
+    polyline_ = new kakao.maps.Polyline({
+      path: points, // 선을 구성하는 좌표배열 입니다
+      strokeWeight: 5, // 선의 두께 입니다
+      strokeColor: '#FFAE00', // 선의 색깔입니다
+      strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: 'solid' // 선의 스타일입니다
+});
 
-			map : map,
-		});
-		resultdrawArr.push(polyline_);
+  // 지도에 선을 표시합니다 
+  polyline_.setMap(map); 
+  // resultdrawArr.push(polyline_);
 	}
-
-
 
   function ininTMap() {
 
+    var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
 
-    const mapDiv = document.getElementById('map_div');
+    mapOption = { 
+        center: new kakao.maps.LatLng(37.566481622437934,126.98502302169841), // 지도의 중심좌표
+        level: 3 // 지도의 확대 레벨
+    };
 
-    // map_div가 이미 존재하면 초기화하지 않음
-    if (!mapDiv.firstChild) {
-      map = new Tmapv2.Map('map_div', {
-        center: new window.Tmapv2.LatLng(
-          37.566481622437934,
-          126.98502302169841
-        ),
-        zoom: 17,
-      });
-    }
+    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+    map = new kakao.maps.Map(mapContainer, mapOption); 
+
+
+    // const mapDiv = document.getElementById('map');
+
+    // // map_div가 이미 존재하면 초기화하지 않음
+    // if (!mapDiv.firstChild) {
+    //   map2 = new Tmapv2.Map('map_div', {
+    //     center: new window.Tmapv2.LatLng(
+    //       37.566481622437934,
+    //       126.98502302169841
+    //     ),
+    //     zoom: 17,
+    //   });
+    // }
 
     // 2. 시작, 도착 심볼찍기
 		// 시작
-    marker_s = new Tmapv2.Marker(
-      {
-        position : new Tmapv2.LatLng(37.566481622437934,126.98502302169841),
-        // icon : "/upload/tmap/marker/pin_r_m_s.png",
-        iconSize : new Tmapv2.Size(24, 38),
-        map : map
-      });
+    // marker_s = new Tmapv2.Marker(
+    //   {
+    //     position : new Tmapv2.LatLng(37.566481622437934,126.98502302169841),
+    //     // icon : "/upload/tmap/marker/pin_r_m_s.png",
+    //     iconSize : new Tmapv2.Size(24, 38),
+    //     map : map
+    //   });
 
-    // 도착
-    marker_e = new Tmapv2.Marker(
-      {
-        position : new Tmapv2.LatLng(37.567158,126.989940),
-        // icon : "/upload/tmap/marker/pin_r_m_e.png",
-        iconSize : new Tmapv2.Size(24, 38),
-        map : map
-      });
+    // // 도착
+    // marker_e = new Tmapv2.Marker(
+    //   {
+    //     position : new Tmapv2.LatLng(37.567158,126.989940),
+    //     // icon : "/upload/tmap/marker/pin_r_m_e.png",
+    //     iconSize : new Tmapv2.Size(24, 38),
+    //     map : map
+    //   });
 
       var headers = {}; 
 	    headers["appKey"]="WGYNvwAqWq4x558TZehlb6jhhx1uwVaA71adQni8";
@@ -187,11 +202,6 @@ function MapPage() {
           console.error("Error:", error);
           // 에러 처리 로직은 여기에 작성합니다.
 				});
-
-
-
-      
-
 
   }
   useEffect(() => {
