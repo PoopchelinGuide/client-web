@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import { height } from '@fortawesome/free-solid-svg-icons/fa0';
+import Modal_a from '../components/modal';
+import { Modal } from 'antd';
+
 function ReviewWritePage() {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
-
+  const [modalOpen, setModalOpen] = useState(false); // 모달 상태
   const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
 
   const tagButtons = [
@@ -26,16 +28,34 @@ function ReviewWritePage() {
   const [clicked, setClicked] = useState({});
 
   const handleClick = (index) => {
-    setClicked((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
+    const clickedCount = Object.keys(clicked).filter(
+      (key) => clicked[key]
+    ).length;
+    const isAlreadyClicked = clicked[index];
 
+    if (!isAlreadyClicked && clickedCount >= 3) {
+      setModalOpen(true); // 모달 열기
+    } else {
+      setClicked((prev) => ({
+        ...prev,
+        [index]: !prev[index],
+      }));
+    }
+  };
   return (
-    <>
-      <div>
-        {Header(name)}
+    <div className="review-box">
+      <Modal
+        title="알림"
+        visible={modalOpen}
+        onOk={() => setModalOpen(false)}
+        onCancel={() => setModalOpen(false)}
+        okText="확인"
+        cancelText="취소"
+      >
+        최대 3개까지만 선택할 수 있습니다.
+      </Modal>
+      {Header(name)}
+      <div className="input-box">
         <div className="input-info">
           <input
             className="input-info-id"
@@ -70,8 +90,12 @@ function ReviewWritePage() {
             onClick={() => handleClick(index)}
             style={{
               backgroundColor: clicked[index]
-                ? 'deepskyblue'
-                : 'skyblue',
+                ? 'rgb(49, 126, 234)'
+                : 'white',
+
+              color: clicked[index]
+                ? 'white'
+                : 'rgb(49, 126, 234)',
             }}
           >
             {tag}
@@ -79,7 +103,7 @@ function ReviewWritePage() {
         ))}
       </div>
       {Navigatorbar()}
-    </>
+    </div>
   );
 }
 
