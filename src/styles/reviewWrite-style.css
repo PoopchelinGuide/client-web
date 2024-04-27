@@ -13,8 +13,8 @@
 
 .input-box {
   height: 23vh;
-  min-width: 24rem;
-  max-width: 300px;
+  min-width: 23rem;
+  max-width: 290px;
   padding: 1rem;
   margin-top: 3vh;
   border-radius: 1.5rem;
@@ -24,6 +24,7 @@
 
 .input-info {
   flex: 1;
+  margin-top: 1rem;
   display: flex;
   flex-direction: row;
   align-items: center; /* 세로 방향 가운데 정렬 */
@@ -50,26 +51,26 @@
 .input-info-id,
 .input-info-pw {
   height: 3vh;
-  min-width: 8rem;
-  max-width: 10rem;
+  min-width: 5rem;
+  max-width: 6rem;
   border-radius: 1rem;
   padding-left: 1rem; /* 모든 입력 필드에 텍스트 시작 위치 조정 */
 }
 
 .input-content {
-  margin-top: 1rem;
-  min-width: 23.5rem;
-  max-width: 290px;
+  margin-top: 2rem;
+  min-width: 22.5rem;
+  max-width: 270px;
   height: 10vh;
 }
 
 .tagbtn-box {
   background-color: white;
-  height: 32vh;
+  height: 34vh;
   margin-top: 3rem;
   padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
-  min-width: 24rem;
-  max-width: 300px;
+  min-width: 23rem;
+  max-width: 290px;
   display: grid;
   grid-template-columns: repeat(
     2,
@@ -85,7 +86,7 @@
   border: none;
   width: 10rem;
   height: 2.2rem;
-  margin: 0.1rem; /* 버튼 사이의 간격 */
+  margin: 0.4rem; /* 버튼 사이의 간격 */
   font-size: 1.2rem;
   border-color: rgb(49, 126, 234);
   border-width: 0.1rem;

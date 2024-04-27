@@ -8,6 +8,9 @@
 
 .list-box-margin {
   margin-top: 11vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .review-page {
   overflow-y: scroll;
@@ -27,8 +30,8 @@
 .data-box {
   font-family: 'KCC-Hanbit';
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 26rem;
-  max-width: 340px;
+  min-width: 25rem;
+  max-width: 300px;
 }
 
 .list-box {
