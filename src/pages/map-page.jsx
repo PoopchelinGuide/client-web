@@ -12,15 +12,6 @@ import '../styles/app-style.css';
 import { CloseOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { Card, Rate, Tag, message , Button, Divider , FloatButton, Empty } from "antd";
 
-import {
-  Card,
-  Rate,
-  Tag,
-  message,
-  Button,
-  Divider,
-} from 'antd';
-
 const { Tmapv2 } = window;
 const { kakao } = window;
 
