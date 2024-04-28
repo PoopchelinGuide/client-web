@@ -508,85 +508,159 @@ function MapPage() {
   }
 
   function asd() {
-    // 위치 정보를 가져오는 함수
-    const getLocation = new Promise((resolve) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            var lat = position.coords.latitude,
-              lon = position.coords.longitude;
-            var locPosition = new kakao.maps.LatLng(
-              lat,
-              lon
-            );
-            resolve(locPosition);
-            console.log('현재위치를 가져옵니다.');
-          },
-          function () {
-            var locPosition = new kakao.maps.LatLng(
-              35.8678658,
-              128.5967954
-            );
-            resolve(locPosition);
-            console.log('현재위치를 가져올 수 없습니다.');
-          }
-        );
-      } else {
-        var locPosition = new kakao.maps.LatLng(
-          35.8678658,
-          128.5967954
-        );
-        resolve(locPosition);
-        console.log('현재위치를 가져올 수 없습니다.');
-      }
-    });
-    // 위치 정보를 가져온 후에 지도를 초기화하는 함수
-    getLocation.then((locPosition) => {
-      initKakaoMap(locPosition);
-      console.log(
-        '가져온 위치 정보로 지도를 초기화합니다.'
-      );
-    });
+    // // 위치 정보를 가져오는 함수
+    // const getLocation = new Promise((resolve) => {
+    //   if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition(
+    //       function (position) {
+    //         var lat = position.coords.latitude,
+    //           lon = position.coords.longitude;
+    //         var locPosition = new kakao.maps.LatLng(
+    //           lat,
+    //           lon
+    //         );
+    //         resolve(locPosition);
+    //         console.log('현재위치를 가져옵니다.');
+    //       },
+    //       function () {
+    //         var locPosition = new kakao.maps.LatLng(
+    //           35.8678658,
+    //           128.5967954
+    //         );
+    //         resolve(locPosition);
+    //         console.log('현재위치를 가져올 수 없습니다.');
+    //       }
+    //     );
+    //   } else {
+    //     var locPosition = new kakao.maps.LatLng(
+    //       35.8678658,
+    //       128.5967954
+    //     );
+    //     resolve(locPosition);
+    //     console.log('현재위치를 가져올 수 없습니다.');
+    //   }
+    // });
+    // // 위치 정보를 가져온 후에 지도를 초기화하는 함수
+    // getLocation.then((locPosition) => {
+    //   initKakaoMap(locPosition);
+    //   console.log(
+    //     '가져온 위치 정보로 지도를 초기화합니다.'
+    //   );
+    // });
 
-    // 사용자 위치를 지속적으로 추적
-    let watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        var lat = position.coords.latitude,
-          lon = position.coords.longitude;
-        var locPosition = new kakao.maps.LatLng(lat, lon);
+    // // 사용자 위치를 지속적으로 추적
+    // let watchId = navigator.geolocation.watchPosition(
+    //   (position) => {
+    //     var lat = position.coords.latitude,
+    //       lon = position.coords.longitude;
+    //     var locPosition = new kakao.maps.LatLng(lat, lon);
 
-        // 이전 위치 마커가 있으면 지도에서 제거
-        if (marker_s) {
-          marker_s.setMap(null);
-        }
+    //     // 이전 위치 마커가 있으면 지도에서 제거
+    //     if (marker_s) {
+    //       marker_s.setMap(null);
+    //     }
 
-        // 사용자의 위치에 마커 표시
-        marker_s = new kakao.maps.Marker({
-          map: map,
-          position: locPosition,
-          iconSize: new kakao.maps.Size(24, 38),
-        });
+    //     // 사용자의 위치에 마커 표시
+    //     marker_s = new kakao.maps.Marker({
+    //       map: map,
+    //       position: locPosition,
+    //       iconSize: new kakao.maps.Size(24, 38),
+    //     });
 
-        console.log(
-          '사용자의 위치를 지속적으로 추적합니다.'
-        );
-      },
-      (error) => {
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: Infinity,
-      }
-    );
+    //     console.log(
+    //       '사용자의 위치를 지속적으로 추적합니다.'
+    //     );
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   },
+    //   {
+    //     enableHighAccuracy: true,
+    //     maximumAge: 0,
+    //     timeout: Infinity,
+    //   }
+    // );
 
-    // 컴포넌트가 unmount될 때 위치 추적을 중지
-    return () => navigator.geolocation.clearWatch(watchId);
+    // // 컴포넌트가 unmount될 때 위치 추적을 중지
+    // return () => navigator.geolocation.clearWatch(watchId);
   }
 
   useEffect(() => {
-    asd();
+       // 위치 정보를 가져오는 함수
+       const getLocation = new Promise((resolve) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (position) {
+              var lat = position.coords.latitude,
+                lon = position.coords.longitude;
+              var locPosition = new kakao.maps.LatLng(
+                lat,
+                lon
+              );
+              resolve(locPosition);
+              console.log('현재위치를 가져옵니다.');
+            },
+            function () {
+              var locPosition = new kakao.maps.LatLng(
+                35.8678658,
+                128.5967954
+              );
+              resolve(locPosition);
+              console.log('현재위치를 가져올 수 없습니다.');
+            }
+          );
+        } else {
+          var locPosition = new kakao.maps.LatLng(
+            35.8678658,
+            128.5967954
+          );
+          resolve(locPosition);
+          console.log('현재위치를 가져올 수 없습니다.');
+        }
+      });
+      // 위치 정보를 가져온 후에 지도를 초기화하는 함수
+      getLocation.then((locPosition) => {
+        initKakaoMap(locPosition);
+        console.log(
+          '가져온 위치 정보로 지도를 초기화합니다.'
+        );
+      });
+  
+      // 사용자 위치를 지속적으로 추적
+      let watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          var lat = position.coords.latitude,
+            lon = position.coords.longitude;
+          var locPosition = new kakao.maps.LatLng(lat, lon);
+  
+          // 이전 위치 마커가 있으면 지도에서 제거
+          if (marker_s) {
+            marker_s.setMap(null);
+          }
+  
+          // 사용자의 위치에 마커 표시
+          marker_s = new kakao.maps.Marker({
+            map: map,
+            position: locPosition,
+            iconSize: new kakao.maps.Size(24, 38),
+          });
+  
+          console.log(
+            '사용자의 위치를 지속적으로 추적합니다.'
+          );
+        },
+        (error) => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: Infinity,
+        }
+      );
+  
+      // 컴포넌트가 unmount될 때 위치 추적을 중지
+      return () => navigator.geolocation.clearWatch(watchId);
   }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
   return (
