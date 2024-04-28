@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import { Modal } from 'antd';
+import { Modal, Rate } from 'antd';
 import {
+  FaStar,
   FaBan,
   FaHandSparkles,
   FaToiletPaper,
@@ -18,6 +19,14 @@ function ReviewWritePage() {
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
   const [modalOpen, setModalOpen] = useState(false); // 모달 상태
+  // useState를 사용해 사용자가 선택한 별점을 저장합니다.
+  const [userRate, setUserRate] = useState(0.0);
+
+  // 별점이 변경될 때 호출될 함수입니다.
+  const handleRateChange = (value) => {
+    setUserRate(value);
+    // 여기에서 userRate를 다른 곳에 저장하거나 처리할 수 있습니다.
+  };
   const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
 
   const tagButtons = [
@@ -109,6 +118,21 @@ function ReviewWritePage() {
             <button className="input-info-btn">
               리뷰 등록
             </button>
+          </div>
+          <div className="input-info-rate">
+            <Rate
+              allowHalf
+              defaultValue={userRate}
+              onChange={handleRateChange}
+            />
+            <span
+              style={{
+                marginLeft: '0.7rem',
+                marginRight: '9rem',
+              }}
+            >
+              {userRate.toFixed(2)}
+            </span>
           </div>
           <textarea
             className="input-content"
