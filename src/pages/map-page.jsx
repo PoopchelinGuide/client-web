@@ -6,8 +6,11 @@ import Navigatorbar from '../components/navigatorbar';
 
 import imageSrc from "../markerImage/Toilet.png";
 import imageSrc2 from "../markerImage/ToiletChoice.png";
+import imageSrc3 from "../markerImage/iconBlue.png";
+import imageSrc4 from "../markerImage/iconRed.png";
 
-import { Card, Rate, Tag, message , Button, Divider } from "antd";
+
+import { Card, Rate, Tag, message , Button, Divider , Result, Empty } from "antd";
 
 
 const { Tmapv2 } = window;
@@ -17,20 +20,20 @@ function MapPage() {
   const navigate = useNavigate();
 
   const array = [
-    {
-      title: '화장실이 깨끗해요',
-      tag: ['깨끗해요', '좋아요'],
-      date: '2024-04-29',
-      nickname : '보땡이',
-      rate : 4.5,
-    },
-    {
-      title: '휴지가 가끔 없어요',
-      tag: ['휴지 없음'],
-      date: '2024-04-27',
-      nickname : '보땡이',
-      rate : 4.5,
-    },
+    // {
+    //   title: '화장실이 깨끗해요',
+    //   tag: ['깨끗해요', '좋아요'],
+    //   date: '2024-04-29',
+    //   nickname : '보땡이',
+    //   rate : 4.5,
+    // },
+    // {
+    //   title: '휴지가 가끔 없어요',
+    //   tag: ['휴지 없음'],
+    //   date: '2024-04-27',
+    //   nickname : '보땡이',
+    //   rate : 4.5,
+    // },
 ];
 
   var map;
@@ -50,7 +53,9 @@ function MapPage() {
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
   
   var clickImage = createMarkerImage(imageSrc2, choiceImageSize),
-  	normalImage = createMarkerImage(imageSrc, imageSize);
+  	normalImage = createMarkerImage(imageSrc, imageSize),
+	garbegeImage = createMarkerImage(imageSrc3, imageSize),
+	garbegeClickImage = createMarkerImage(imageSrc4, choiceImageSize);
 
 
   var totalMarkerArr = [];
@@ -554,7 +559,9 @@ function asd(){
 
       		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
 			>	
-	{array.map((review, reviewIndex) => (
+	{
+	array.length > 0 ?(
+	array.map((review, reviewIndex) => (
 		<>
 		<Card.Meta
 		key={reviewIndex}
@@ -577,7 +584,21 @@ function asd(){
 		/>
 			<Divider style={{ marginTop: 7, marginBottom: 15}} />
 		</>
-	))}
+	))
+
+	):(
+		<>
+		<Empty 
+		description={
+			<span style={{fontSize: "15px", color: "black"}}>
+			리뷰가 존재하지 않습니다.
+			</span>
+		}
+		/>
+		<Divider style={{ marginTop: 7, marginBottom: 15}} />
+		</>
+	)
+	}
   <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
 <Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
     </Card>
