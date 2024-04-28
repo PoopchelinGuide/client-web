@@ -3,8 +3,14 @@ import { useEffect, useState } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
 
-import imageSrc from '../markerImage/Toilet.png';
-import imageSrc2 from '../markerImage/ToiletChoice.png';
+import imageSrc from "../markerImage/Toilet.png";
+import imageSrc2 from "../markerImage/ToiletChoice.png";
+import imageSrc3 from "../markerImage/iconBlue.png";
+import imageSrc4 from "../markerImage/iconRed.png";
+import '../styles/app-style.css';
+
+import { CloseOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { Card, Rate, Tag, message , Button, Divider , FloatButton, Empty } from "antd";
 
 import {
   Card,
@@ -22,21 +28,21 @@ function MapPage() {
   const navigate = useNavigate();
 
   const array = [
-    {
-      title: '화장실이 깨끗해요',
-      tag: ['깨끗해요', '좋아요'],
-      date: '2024-04-29',
-      nickname: '보땡이',
-      rate: 4.5,
-    },
-    {
-      title: '휴지가 가끔 없어요',
-      tag: ['휴지 없음'],
-      date: '2024-04-27',
-      nickname: '보땡이',
-      rate: 4.5,
-    },
-  ];
+    // {
+    //   title: '화장실이 깨끗해요',
+    //   tag: ['깨끗해요', '좋아요'],
+    //   date: '2024-04-29',
+    //   nickname : '보땡이',
+    //   rate : 4.5,
+    // },
+    // {
+    //   title: '휴지가 가끔 없어요',
+    //   tag: ['휴지 없음'],
+    //   date: '2024-04-27',
+    //   nickname : '보땡이',
+    //   rate : 4.5,
+    // },
+];
 
   var map;
   var marker_s, marker_e, marker_p1, marker_p2;
@@ -51,6 +57,11 @@ function MapPage() {
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
+  
+  var clickImage = createMarkerImage(imageSrc2, choiceImageSize),
+  	normalImage = createMarkerImage(imageSrc, imageSize),
+	garbegeImage = createMarkerImage(imageSrc3, imageSize),
+	garbegeClickImage = createMarkerImage(imageSrc4, choiceImageSize);
 
   var clickImage = createMarkerImage(
       imageSrc2,
@@ -582,8 +593,11 @@ function MapPage() {
 
   return (
     <>
-      <div id="map_div"></div>
-      {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
+
+      <div
+        id="map_div">
+	  </div>
+	        {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
       {popupInfo && (
         <div
@@ -631,92 +645,64 @@ function MapPage() {
               </>
             ))}
 
-            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
-          >
-            {array.map((review, reviewIndex) => (
-              <>
-                <Card.Meta
-                  key={reviewIndex}
-                  description={
-                    <div>
-                      <span style={{ color: 'black' }}>
-                        <span style={{ fontSize: '15px' }}>
-                          {review.title}
-                        </span>
-                        <Rate
-                          style={{
-                            float: 'right',
-                            marginTop: '0.35rem',
-                          }}
-                          disabled
-                          allowHalf
-                          defaultValue={review.rate}
-                        />
-                      </span>
-                      <div
-                        style={{
-                          marginTop: '0.7rem',
-                          marginBottom: '3rem',
-                        }}
-                      >
-                        {review.tag.map((item, index) => (
-                          <Tag
-                            key={index}
-                            style={{
-                              float: 'left',
-                              marginRight: '1rem',
-                              fontSize: '10px',
-                            }}
-                            bordered={false}
-                            color="cyan"
-                          >
-                            {item}
-                          </Tag>
-                        ))}
-                        <span
-                          style={{
-                            fontSize: '14px',
-                            float: 'right',
-                          }}
-                        >
-                          {review.date}
-                        </span>
-                      </div>
-                    </div>
-                  }
-                />
-                <Divider
-                  style={{ marginTop: 7, marginBottom: 15 }}
-                />
-              </>
-            ))}
-            <a
-              href="#"
-              style={{
-                fontSize: '15px',
-                float: 'left',
-                color: '#3BB26F',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/review');
-              }}
-            >
-              전체 리뷰
-            </a>
-            <Button
-              type="primary"
-              defaultColor="cyan"
-              style={{
-                float: 'right',
-                backgroundColor: '#3BB26F',
-              }}
-            >
-              길찾기
-            </Button>
-          </Card>
+      		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+			>	
+	{
+	array.length > 0 ?(
+	array.map((review, reviewIndex) => (
+		<>
+		<Card.Meta
+		key={reviewIndex}
+		description={
+			<div>
+			<span style={{ color: "black"}}>
+				<span style={{fontSize: "15px"}}>{review.title}</span>
+				<Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
+			</span>
+			<div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
+				{review.tag.map((item, index) => (
+				<Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
+					{item}
+				</Tag>
+				))}
+				<span style={{ fontSize: "14px", float: "right" }}>{review.date}</span>
+			</div>
+			</div>
+		}
+		/>
+			<Divider style={{ marginTop: 7, marginBottom: 15}} />
+		</>
+	))
+
+	):(
+		<>
+		<Empty 
+		description={
+			<span style={{fontSize: "15px", color: "black"}}>
+			리뷰가 존재하지 않습니다.
+			</span>
+		}
+		/>
+		<Divider style={{ marginTop: 7, marginBottom: 15}} />
+		</>
+	)
+	}
+  	<a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
+	<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+    </Card>
         </div>
       )}
+
+	<FloatButton.Group
+      shape="circle"
+	  style={{
+		right:"15",
+	  }}
+    >
+      <FloatButton type="primary" icon={<PlayCircleOutlined />} />
+      <FloatButton icon= {<CloseOutlined />} />
+
+    </FloatButton.Group>
     </>
   );
 }
