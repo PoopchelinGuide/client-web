@@ -6,12 +6,12 @@
 
 .map-store-data{
   position: fixed;
-  bottom: 1rem;
+  bottom: 0.5rem;
   max-width: 450px;
   /* overflow: hidden;
   text-align: center; */
 }
 
 .antCard{
-  width: 28rem;
+  width: 25rem;
 }
