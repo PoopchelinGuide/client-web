@@ -17,7 +17,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10vh;
 }
 
 .input-box {
@@ -47,31 +46,15 @@
 .input-info-pw {
   flex: 2;
 }
-.input-info-btn {
-  font-family: 'SUITE-Regular';
-  height: 3.5vh;
-  flex: 1;
-  border-color: #3bb26f;
-  border-width: 0.1rem;
-  background-color: white;
-  color: #3bb26f;
-  border-radius: 0.5rem;
-  border-width: 0.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border-style: solid;
-  font-family: 'SUITE-Regular';
-}
+
 .input-info-id,
 .input-info-pw {
   border-width: 0.2rem;
   border-color: #bcbcbc;
   font-family: 'SUITE-Regular';
   height: 3.5vh;
-  min-width: 5rem;
-  max-width: 6rem;
+  min-width: 10.5rem;
+  max-width: 10.5rem;
   border-radius: 0.6rem;
   padding-left: 1rem; /* 모든 입력 필드에 텍스트 시작 위치 조정 */
 }
@@ -84,6 +67,7 @@
 }
 .input-info-rate {
   margin-top: 0.2rem;
+  margin-left: 0.3rem;
 }
 .input-content {
   padding: 0.5rem;
@@ -140,7 +124,32 @@
   transform: translateY(-5px);
 }
 
-.input-info-btn:active {
+.button-box {
+  margin-top: 2rem;
+  display: flex;
+  align-self: end;
+  align-items: right;
+}
+
+.input-info-btn {
+  font-family: 'SUITE-Regular';
+  width: 7rem;
+  height: 5.5vh;
+  border-color: #3bb26f;
+  border-width: 0.1rem;
   background-color: #3bb26f;
+  color: white;
+  border-radius: 0.5rem;
+  border-width: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-style: solid;
+  font-family: 'SUITE-Regular';
+}
+
+.input-info-btn:active {
+  background-color: #43ca7d;
   color: white;
 }

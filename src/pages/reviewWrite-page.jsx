@@ -168,10 +168,12 @@ function ReviewWritePage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="input-info-btn">
-              리뷰 등록
-            </button>
           </div>
+        </div>
+        <div className="button-box">
+          <button className="input-info-btn">
+            리뷰 등록
+          </button>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@
   min-width: 26rem;
   max-width: 340px;
   z-index: 10;
-  height: 11vh;
+  height: 12vh;
   background-color: aliceblue;
   padding: 1px 0px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
@@ -37,7 +37,6 @@
 .header_rate {
   display: flex;
   justify-content: left; /* 가로 중앙 정렬 */
-  margin-bottom: 0;
   margin-left: 1rem;
 }
 
