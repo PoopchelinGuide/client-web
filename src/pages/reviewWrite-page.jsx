@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import { Modal, Rate, Input } from 'antd';
+import { Modal, Rate, Input, message } from 'antd';
 import {
   FaBan,
   FaHandSparkles,
@@ -60,8 +60,7 @@ function ReviewWritePage() {
           return newClicked;
         });
       } else {
-        // 3개 선택된 상태에서 바로 옆의 버튼이 클릭되지 않은 경우, 모달 열기
-        setModalOpen(true);
+        message.info('최대 3개까지만 선택할 수 있습니다.');
       }
     } else {
       // 기본 클릭 처리
@@ -77,7 +76,6 @@ function ReviewWritePage() {
           // 관련된 버튼 해제
           newClicked[relatedIndex] = false;
         }
-
         return newClicked;
       });
     }
@@ -86,18 +84,6 @@ function ReviewWritePage() {
     <div className="review-wirte-page">
       {Header(name, 0.0, [])}
       <div className="review-box">
-        <Modal
-          title="알림"
-          visible={modalOpen}
-          onOk={() => setModalOpen(false)}
-          onCancel={() => setModalOpen(false)}
-          okText="확인"
-          cancelText="취소"
-          style={{ marginTop: '15rem' }}
-        >
-          최대 3개까지만 선택할 수 있습니다.
-        </Modal>
-
         <div className="tagbtn-box">
           {tagButtons &&
             tagButtons.length > 0 &&
