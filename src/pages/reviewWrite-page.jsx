@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import { Modal, Rate } from 'antd';
+import { Modal, Rate, Input } from 'antd';
 import {
   FaBan,
   FaHandSparkles,
@@ -98,26 +98,40 @@ function ReviewWritePage() {
           최대 3개까지만 선택할 수 있습니다.
         </Modal>
 
+        <div className="tagbtn-box">
+          {tagButtons &&
+            tagButtons.length > 0 &&
+            tagButtons.map((item, index) => (
+              <button
+                key={index}
+                className="tagbtn"
+                onClick={() => handleClick(index)}
+                style={
+                  index % 2 === 1
+                    ? {
+                        backgroundColor: clicked[index]
+                          ? 'red'
+                          : 'white',
+                        color: clicked[index]
+                          ? 'white'
+                          : 'red',
+                        border: '0.2rem solid red',
+                      }
+                    : {
+                        backgroundColor: clicked[index]
+                          ? '#3BB26F'
+                          : 'white',
+                        color: clicked[index]
+                          ? 'white'
+                          : '#3BB26F',
+                      }
+                }
+              >
+                {item.text} {item.icon}
+              </button>
+            ))}
+        </div>
         <div className="input-box">
-          <div className="input-info">
-            <input
-              className="input-info-id"
-              type="text"
-              placeholder="닉네임"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-            />
-            <input
-              className="input-info-pw"
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className="input-info-btn">
-              리뷰 등록
-            </button>
-          </div>
           <div className="input-info-rate">
             <Rate
               allowHalf
@@ -139,39 +153,25 @@ function ReviewWritePage() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-        </div>
-        <div className="tagbtn-box">
-          {tagButtons &&
-            tagButtons.length > 0 &&
-            tagButtons.map((item, index) => (
-              <button
-                key={index}
-                className="tagbtn"
-                onClick={() => handleClick(index)}
-                style={
-                  index % 2 === 1
-                    ? {
-                        backgroundColor: clicked[index]
-                          ? 'red'
-                          : 'white',
-                        color: clicked[index]
-                          ? 'white'
-                          : 'red',
-                        border: '1px solid red',
-                      }
-                    : {
-                        backgroundColor: clicked[index]
-                          ? '#3BB26F'
-                          : 'white',
-                        color: clicked[index]
-                          ? 'white'
-                          : '#3BB26F',
-                      }
-                }
-              >
-                {item.text} {item.icon}
-              </button>
-            ))}
+          <div className="input-info">
+            <Input
+              className="input-info-id"
+              type="text"
+              placeholder="닉네임"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
+            <Input
+              className="input-info-pw"
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className="input-info-btn">
+              리뷰 등록
+            </button>
+          </div>
         </div>
       </div>
     </div>
