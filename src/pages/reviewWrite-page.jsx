@@ -4,7 +4,7 @@ import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
 import { Modal } from 'antd';
 import {
-  FaXmark,
+  FaBan,
   FaHandSparkles,
   FaToiletPaper,
   FaToilet,
@@ -24,13 +24,13 @@ function ReviewWritePage() {
     { text: '깨끗해요', icon: <FaHandSparkles /> },
     { text: '더러워요', icon: <FaDisease /> },
     { text: '휴지', icon: <FaToiletPaper /> },
-    { text: '휴지', icon: <FaXmark /> },
+    { text: '휴지', icon: <FaBan /> },
     { text: '좌변기', icon: <FaToilet /> },
-    { text: '푸세식', icon: <FaToiletPaper /> }, // 이 아이콘은 좌변기와 같습니다, 적절한 것을 찾기 어렵습니다.
+    { text: '푸세식', icon: null }, // 이 아이콘은 좌변기와 같습니다, 적절한 것을 찾기 어렵습니다.
     { text: '온수', icon: <FaThermometerThreeQuarters /> },
-    { text: '온수', icon: <FaXmark /> },
+    { text: '온수', icon: <FaBan /> },
     { text: '휴지통', icon: <FaTrash /> },
-    { text: '휴지통', icon: <FaXmark /> },
+    { text: '휴지통', icon: <FaBan /> },
   ];
 
   const [clicked, setClicked] = useState({});
@@ -138,11 +138,11 @@ function ReviewWritePage() {
                       }
                     : {
                         backgroundColor: clicked[index]
-                          ? 'rgb(49, 126, 234)'
+                          ? '#3BB26F'
                           : 'white',
                         color: clicked[index]
                           ? 'white'
-                          : 'rgb(49, 126, 234)',
+                          : '#3BB26F',
                       }
                 }
               >
