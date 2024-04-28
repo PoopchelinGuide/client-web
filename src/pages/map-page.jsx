@@ -2,15 +2,15 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
-import Navigatorbar from '../components/navigatorbar';
 
 import imageSrc from "../markerImage/Toilet.png";
 import imageSrc2 from "../markerImage/ToiletChoice.png";
 import imageSrc3 from "../markerImage/iconBlue.png";
 import imageSrc4 from "../markerImage/iconRed.png";
+import '../styles/app-style.css';
 
-
-import { Card, Rate, Tag, message , Button, Divider , Result, Empty } from "antd";
+import { CloseOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { Card, Rate, Tag, message , Button, Divider , FloatButton, Empty } from "antd";
 
 
 const { Tmapv2 } = window;
@@ -527,9 +527,10 @@ function asd(){
 
   return (
     <>
+
       <div
-        id="map_div"
-      ></div>
+        id="map_div">
+	  </div>
 	        {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
 			{popupInfo && (
@@ -599,12 +600,22 @@ function asd(){
 		</>
 	)
 	}
-  <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
-<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+  	<a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
+	<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
     </Card>
         </div>
       )}
-      {Navigatorbar()}
+
+	<FloatButton.Group
+      shape="circle"
+	  style={{
+		right:"15",
+	  }}
+    >
+      <FloatButton type="primary" icon={<PlayCircleOutlined />} />
+      <FloatButton icon= {<CloseOutlined />} />
+
+    </FloatButton.Group>
     </>
   );
 }
