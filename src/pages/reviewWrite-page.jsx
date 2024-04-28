@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 
 function ReviewWritePage() {
-  const [id, setId] = useState('');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
   const [modalOpen, setModalOpen] = useState(false); // 모달 상태
@@ -94,9 +94,9 @@ function ReviewWritePage() {
             <input
               className="input-info-id"
               type="text"
-              placeholder="아이디"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              placeholder="닉네임"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
             />
             <input
               className="input-info-pw"
@@ -109,7 +109,7 @@ function ReviewWritePage() {
               리뷰 등록
             </button>
           </div>
-          <input
+          <textarea
             className="input-content"
             placeholder="리뷰를 작성해주세요"
             value={content}

@@ -32,6 +32,7 @@
   display: flex;
   justify-content: left; /* 가로 중앙 정렬 */
   margin-bottom: 0;
+  margin-left: 1rem;
 }
 
 .header-rate-font {
@@ -44,6 +45,7 @@
 }
 
 .header_text {
+  margin-left: 1rem;
   margin-top: 1rem;
   margin-bottom: 0.7rem;
   font-size: 35px;

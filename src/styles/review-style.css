@@ -30,8 +30,8 @@
 .data-box {
   font-family: 'KCC-Hanbit';
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 25rem;
-  max-width: 300px;
+  min-width: 24rem;
+  max-width: 280px;
 }
 
 .list-box {
@@ -41,8 +41,8 @@
   overflow-x: hidden;
   height: 13vh;
   border-bottom: 2px solid #ccc; /* 하단에 회색 밑줄 추가 */
-  min-width: 26rem;
-  max-width: 340px;
+  min-width: 25rem;
+  max-width: 320px;
   flex: 1;
   flex-direction: column;
 }
@@ -50,8 +50,8 @@
 .list-box-title {
   margin-top: 0.5vh;
   margin-left: 0.5vh;
-  min-width: 26rem;
-  max-width: 340px;
+  min-width: 25rem;
+  max-width: 320px;
   height: 8vh;
 }
 
@@ -61,8 +61,8 @@
 }
 
 .list-box-tag-date {
-  min-width: 26rem;
-  max-width: 340px;
+  min-width: 25rem;
+  max-width: 320px;
   height: 5vh;
   display: flex;
   flex-direction: row;

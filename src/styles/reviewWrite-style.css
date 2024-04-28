@@ -13,8 +13,8 @@
 
 .input-box {
   height: 23vh;
-  min-width: 23rem;
-  max-width: 290px;
+  min-width: 22rem;
+  max-width: 270px;
   padding: 1rem;
   margin-top: 3vh;
   border-radius: 1.5rem;
@@ -58,10 +58,11 @@
 }
 
 .input-content {
-  margin-top: 2rem;
-  min-width: 22.5rem;
-  max-width: 270px;
+  margin-top: 1.5rem;
+  min-width: 21.5rem;
+  max-width: 250px;
   height: 10vh;
+  resize: none;
 }
 
 .tagbtn-box {
@@ -69,8 +70,8 @@
   height: 34vh;
   margin-top: 3rem;
   padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
-  min-width: 23rem;
-  max-width: 290px;
+  min-width: 22rem;
+  max-width: 270px;
   display: grid;
   grid-template-columns: repeat(
     2,
@@ -84,16 +85,20 @@
 .tagbtn {
   flex: none; /* Flexbox 속성 비활성화 */
   border: none;
-  width: 10rem;
-  height: 2.2rem;
+  width: 9.6rem;
+  height: 2rem;
   margin: 0.4rem; /* 버튼 사이의 간격 */
-  font-size: 1.2rem;
+  font-size: 1rem;
   border-color: rgb(49, 126, 234);
   border-width: 0.1rem;
   color: rgb(49, 126, 234);
   border-radius: 1rem;
   padding: 0.5rem;
   border-style: solid;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
   transition: background-color 0.3s transform 0.3s ease; /* 부드러운 색상 전환 효과 */
 }
 
