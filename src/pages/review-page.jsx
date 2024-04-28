@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/review-style.css';
 import ReviewResult from '../components/review-result';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -15,8 +15,11 @@ import {
 import Header from '../components/header';
 import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
+
+
 function ReviewPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
 

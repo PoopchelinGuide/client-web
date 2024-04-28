@@ -90,7 +90,11 @@ function MapPage() {
       if (response.status === 200) {
         markerList = await response.json();
         console.log('데이터 전송 완료');
-        console.log(markerList);
+
+        var garbageBin = markerList.garbageBin;
+        var toilet = markerList.toilet;
+        console.log(garbageBin);
+        console.log(toilet);
         initMarkers();
       } else if (response.status === 400) {
         message.error("화장실이 존재하지 않습니다.", 2);
@@ -705,7 +709,15 @@ function MapPage() {
 		</>
 	)
 	}
-  	<a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
+  	<a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
+     onClick={(e) => { 
+      e.preventDefault(); 
+      navigate('/review', 
+      {state: {
+        isToilet : true,
+        toiletId : 1,
+        garbageBinId : 1,
+     }});  }}>전체 리뷰</a>	
 	<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
     </Card>
         </div>
