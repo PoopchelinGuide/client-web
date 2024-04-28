@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
-import { Modal, Rate, Input, message } from 'antd';
+import { Rate, Input, message } from 'antd';
 import {
+  FaPoo,
   FaBan,
   FaHandSparkles,
   FaToiletPaper,
@@ -31,7 +32,7 @@ function ReviewWritePage() {
     { text: '휴지', icon: <FaToiletPaper /> },
     { text: '휴지', icon: <FaBan /> },
     { text: '좌변기', icon: <FaToilet /> },
-    { text: '푸세식', icon: null }, // 이 아이콘은 좌변기와 같습니다, 적절한 것을 찾기 어렵습니다.
+    { text: '푸세식', icon: <FaPoo /> },
     { text: '온수', icon: <FaThermometerThreeQuarters /> },
     { text: '온수', icon: <FaBan /> },
     { text: '휴지통', icon: <FaTrash /> },
@@ -94,24 +95,29 @@ function ReviewWritePage() {
                   index % 2 === 1
                     ? {
                         backgroundColor: clicked[index]
-                          ? 'red'
+                          ? '#FFEBEE'
                           : 'white',
                         color: clicked[index]
-                          ? 'white'
+                          ? 'red'
                           : 'red',
-                        border: '0.1rem solid red',
+                        border: clicked[index]
+                          ? 'none'
+                          : '0.1rem solid rgb(254, 160, 160)',
                       }
                     : {
                         backgroundColor: clicked[index]
-                          ? '#3BB26F'
+                          ? '#E6FFFB'
                           : 'white',
                         color: clicked[index]
-                          ? 'white'
+                          ? '#3BB26F'
                           : '#3BB26F',
+                        border: clicked[index]
+                          ? 'none'
+                          : '0.1rem solid #90e4b5',
                       }
                 }
               >
-                {item.text} {item.icon}
+                {item.text}　{item.icon}
               </button>
             ))}
         </div>

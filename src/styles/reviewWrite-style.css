@@ -9,7 +9,7 @@
 .review-wirte-page {
   font-family: 'SUITE-Regular';
   padding: 2rem;
-  margin-top: 8vh;
+  margin-top: 6vh;
 }
 
 .review-box {
@@ -20,7 +20,7 @@
 }
 
 .input-box {
-  height: 23vh;
+  height: 34vh;
   min-width: 22rem;
   max-width: 270px;
   padding: 1rem;
@@ -78,13 +78,13 @@
   margin-top: 1rem;
   min-width: 20.6rem;
   max-width: 300px;
-  height: 10vh;
+  height: 21vh;
   resize: none;
 }
 
 .tagbtn-box {
   background-color: white;
-  height: 34vh;
+  height: 30vh;
   margin-top: 3rem;
   padding: 1rem; /* 상단 패딩을 늘려서 버튼들을 아래로 이동 */
   min-width: 22rem;
@@ -94,7 +94,7 @@
     2,
     1fr
   ); /* 3개의 열을 각각 동일한 크기로 설정 */
-  grid-gap: 1rem; /* 그리드 간격 설정 */
+  gap: 0.2rem;
   border-radius: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -103,13 +103,11 @@
   font-family: 'SUITE-Regular';
   flex: none; /* Flexbox 속성 비활성화 */
   border: none;
-  width: 9.6rem;
-  height: 2rem;
-  margin: 0.4rem; /* 버튼 사이의 간격 */
-  font-size: 0.9rem;
-  background-color: #3bb26f;
+  width: 10rem;
+  height: 2.3rem;
+  margin: 0.5rem; /* 버튼 사이의 간격 */
+  font-size: 1.1rem;
   border-color: #3bb26f;
-  border-width: 0.1rem;
   color: #3bb26f;
   border-radius: 0.6rem;
   padding: 0.5rem;
@@ -118,7 +116,7 @@
   align-items: center;
   text-align: center;
   justify-content: center;
-  transition: background-color 0.3s transform 0.3s ease; /* 부드러운 색상 전환 효과 */
+  transition: background-color 0.5s transform 0.5s ease; /* 부드러운 색상 전환 효과 */
 }
 
 .tagbtn-box button:hover {
@@ -126,7 +124,7 @@
 }
 
 .button-box {
-  margin-top: 2rem;
+  margin-top: 0.8rem;
   display: flex;
   align-self: end;
   align-items: right;
@@ -136,6 +134,7 @@
   font-family: 'SUITE-Regular';
   width: 7rem;
   height: 5.5vh;
+  font-size: 1.05rem;
   border-color: #3bb26f;
   border-width: 0.1rem;
   background-color: #3bb26f;
