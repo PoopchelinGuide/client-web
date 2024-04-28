@@ -178,7 +178,8 @@ function drawLine(arrPoint) {
     polyline_ = new kakao.maps.Polyline({
       path: points, // 선을 구성하는 좌표배열 입니다
       strokeWeight: 10, // 선의 두께 입니다
-      strokeColor: '#FFAE00', // 선의 색깔입니다
+    //   strokeColor: '#FFAE00', // 선의 색깔입니다
+	strokeColor: '#3BB26F', // 선의 색깔입니다
       strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
       strokeStyle: 'solid' // 선의 스타일입니다
 });
@@ -209,7 +210,7 @@ function drawLine(arrPoint) {
         radius: 10000,
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: "#75B8FA", // 선의 색깔입니다
-        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: "dashed", // 선의 스타일 입니다
         fillOpacity: 0, // 채우기 불투명도 입니다
       });
@@ -366,7 +367,7 @@ function routeNavigation(locPosition){
 									  .toFixed(0) + "분";
   
 					  console.log(tDistance + tTime);
-					  message.info(tDistance + tTime, 5);
+					  message.info(tDistance + tTime, 10);
 					  
 					  //기존 그려진 라인 & 마커가 있다면 초기화
 					  if (resultdrawArr.length > 0) {
@@ -533,51 +534,52 @@ function asd(){
 			title=
 			{
 			<div style={{ marginTop:"1rem",marginBottom:"1rem", display: "flex", flexDirection: "column"}}>
-			<span style={{ fontSize :"20px "}}>이마트 화장실</span>
+			<span style={{ fontSize :"16px "}}>이마트 화장실</span>
 			<Rate style={{ float: "right" }} disabled allowHalf defaultValue={5} />
 			</div>
 			}
 			extra=
-			{array.map((review, reviewIndex) => (
+			{
+				array.map((review, reviewIndex) => (
 				<>
 				{review.tag.map((item, index) => (
-					<Tag key={index} style={{ marginLeft: "0.2rem", fontSize:"14px", marginRight:"0.1rem" }} bordered={false} color="cyan">
+					<Tag key={index} style={{ marginLeft: "0.2rem", fontSize:"10px", marginRight:"0.1rem" }} bordered={false} color="cyan">
 					{item}
 					</Tag>
 				))}
 				</>
-			  ))}
+			  ))
+			
+			}
 
       		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
 			>	
-{array.map((review, reviewIndex) => (
-	<>
-    <Card.Meta
-      key={reviewIndex}
-      description={
-        <div>
-          <span style={{ color: "black"}}>
-            <span style={{fontSize: "18px"}}>{review.title}</span>
-            <Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
-          </span>
-          <div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
-            {review.tag.map((item, index) => (
-              <Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"14px" }} bordered={false} color="cyan">
-                {item}
-              </Tag>
-            ))}
-            <span style={{ fontSize: "16px", float: "right" }}>{review.date}</span>
-          </div>
-        </div>
-      }
-    />
-	<Divider />
-	</>
-  ))}
-  <a href="#" style={{fontSize:"18px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
+	{array.map((review, reviewIndex) => (
+		<>
+		<Card.Meta
+		key={reviewIndex}
+		description={
+			<div>
+			<span style={{ color: "black"}}>
+				<span style={{fontSize: "15px"}}>{review.title}</span>
+				<Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
+			</span>
+			<div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
+				{review.tag.map((item, index) => (
+				<Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
+					{item}
+				</Tag>
+				))}
+				<span style={{ fontSize: "14px", float: "right" }}>{review.date}</span>
+			</div>
+			</div>
+		}
+		/>
+			<Divider style={{ marginTop: 7, marginBottom: 15}} />
+		</>
+	))}
+  <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
 <Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
-
-
     </Card>
         </div>
       )}
