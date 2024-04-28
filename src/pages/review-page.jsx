@@ -28,111 +28,83 @@ function ReviewPage() {
     }
   };
   const [reviewContent, setReviewContent] = useState([]);
-  const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
+  const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
   const array = [
     {
       title: '이 집 화장실 잘하네..',
-      tag: ['깨끗해요', '좋아요'],
+      tag: ['깨끗해요', '휴지'],
       date: '2024-04-29',
-      nickname: '보땡이',
+      nickname: '유저1',
       rate: 4.5,
     },
     {
       title: '깨끗해요~',
-      tag: ['별로'],
+      tag: ['깨끗해요'],
       date: '2024-04-27',
-      nickname: '보땡이',
-      rate: 4.5,
+      nickname: '유저2',
+      rate: 4.0,
     },
     {
-      title: '류세민 왔다감',
+      title: '나 왔다감~~',
       date: '2024-04-30',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
-      rate: 4.5,
+      nickname: '유저3',
+      tag: ['좌변기'],
+      rate: 3.5,
     },
     {
       title: '잘 쓰고 가요~',
       date: '2024-04-21',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저4',
+      tag: ['깨끗해요', '온수'],
       rate: 4.5,
     },
     {
       title: '오늘은 좀 더럽네요',
       date: '2024-04-23',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저5',
+      tag: ['휴지통 X', '온수'],
       rate: 4.5,
     },
     {
       title: '한동근동근 왔다감',
       date: '2024-03-18',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저6',
+      tag: ['깨끗해요', '휴지통 X'],
       rate: 4.5,
     },
     {
       title: '이 앱 있어서 바로',
       date: '2024-04-17',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저7',
+      tag: ['깨끗해요', '휴지통 X'],
       rate: 4.5,
     },
     {
       title: '~~~~~',
       date: '2024-04-20',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저8',
+      tag: ['깨끗해요', '휴지통 X'],
       rate: 4.5,
     },
     {
       title: '휴지가휴지가..ㅠㅜ',
       date: '2024-04-13',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저9',
+      tag: ['깨끗해요', '좌변기'],
       rate: 4.5,
     },
     {
       title: '이!!',
       date: '2024-04-02',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저10',
+      tag: ['깨끗해요', '좌변기'],
       rate: 4.5,
     },
     {
       title: '제발 맨유 결승가자!',
       date: '2024-04-07',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
-      rate: 4.5,
-    },
-    {
-      title: '정말 아쉬워요 ㅠ',
-      date: '2024-04-03',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
-      rate: 4.0,
-    },
-    {
-      title: '아이고!',
-      date: '2024-04-19',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
-      rate: 3.5,
-    },
-    {
-      title: '휴지가 없어요 ㅠㅜ',
-      date: '2024-04-05',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
-      rate: 4.5,
-    },
-    {
-      title: '왔다감!!!!!!',
-      date: '2024-04-15',
-      nickname: '보땡이',
-      tag: ['깨끗해요', '좋아요'],
+      nickname: '유저11',
+      tag: ['깨끗해요', '휴지'],
       rate: 4.5,
     },
   ];
@@ -144,7 +116,6 @@ function ReviewPage() {
   });
   sum = sum / length;
   useEffect(() => {
-    console.log('asdasdasd'); // 스크롤 이벤트가 발생할 때마다 출력되어야 합니다.
     setReviewContent(array);
   }, []);
 
@@ -177,6 +148,7 @@ function ReviewPage() {
                       {' '}
                       <span
                         style={{
+                          fontFamily: 'SUITE-Regular',
                           float: 'left',
                           fontSize: '0.8rem',
                         }}
@@ -208,6 +180,7 @@ function ReviewPage() {
                   {item.tag.map((item, index) => (
                     <Tag
                       style={{
+                        fontFamily: 'SUITE-Regular',
                         float: 'left',
                         marginLeft: '0.2rem',
                       }}

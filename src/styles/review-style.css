@@ -6,6 +6,14 @@
   font-style: normal;
 }
 
+
+@font-face {
+  font-family: 'SUITE-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .list-box-margin {
   margin-top: 11vh;
   display: flex;
@@ -28,14 +36,14 @@
 }
 
 .data-box {
-  font-family: 'KCC-Hanbit';
+  font-family: 'SUITE-Regular';
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 24rem;
   max-width: 280px;
 }
 
 .list-box {
-  font-family: 'KCC-Hanbit';
+  font-family: 'SUITE-Regular';
   margin-bottom: 8vh;
   overflow-y: scroll;
   overflow-x: hidden;

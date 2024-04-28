@@ -7,7 +7,7 @@ function Header(name, rate, tag) {
   return (
     <div
       className="header"
-      style={{ fontFamily: 'KCC-Hanbit' }}
+      style={{ fontFamily: 'SUITE-Regular' }}
     >
       <p className="header_text">{name} 화장실</p>
       <div className="header_rate">
@@ -18,7 +18,7 @@ function Header(name, rate, tag) {
             marginRight: '9rem',
           }}
         >
-          {rate}
+          {rate.toFixed(2)}
         </span>
 
         {tag.map((item, index) => (
