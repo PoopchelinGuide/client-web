@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import imageSrc from "../markerImage/Toilet.png";
 import imageSrc2 from "../markerImage/ToiletChoice.png";
-import imageSrc3 from "../markerImage/iconBlue.png";
-import imageSrc4 from "../markerImage/iconRed.png";
+import imageSrc3 from "../markerImage/garbege.png";
+import imageSrc4 from "../markerImage/garbageChoice.png";
 import '../styles/app-style.css';
 
 import { CloseOutlined, PlayCircleOutlined } from '@ant-design/icons';
@@ -39,8 +39,8 @@ function MapPage() {
   var marker_s, marker_e, marker_p1, marker_p2;
 
   var markers = []; // 마커를 담을 배열
-  var markerList = [], // 마커 정보를 담은 배열
-    selectedMarker = null; // 클릭한 마커를 담을 변수
+//   var markerList = [], // 마커 정보를 담은 배열
+  var selectedMarker = null; // 클릭한 마커를 담을 변수
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
@@ -53,12 +53,6 @@ function MapPage() {
   	normalImage = createMarkerImage(imageSrc, imageSize),
 	garbegeImage = createMarkerImage(imageSrc3, imageSize),
 	garbegeClickImage = createMarkerImage(imageSrc4, choiceImageSize);
-
-  var clickImage = createMarkerImage(
-      imageSrc2,
-      choiceImageSize
-    ),
-    normalImage = createMarkerImage(imageSrc, imageSize);
 
   var totalMarkerArr = [];
   var drawInfoArr = [];
@@ -88,46 +82,15 @@ function MapPage() {
         }
       );
       if (response.status === 200) {
-        markerList = await response.json();
+        const markerList = await response.json();
         console.log('데이터 전송 완료');
 
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
         console.log(garbageBin);
         console.log(toilet);
-        initMarkers();
-      } else if (response.status === 400) {
-        message.error("화장실이 존재하지 않습니다.", 2);
-      }
-    } catch (error) {
-      message.error("잘못된 요청입니다.");
-      console.error('오류 발생:', error);
-    }
-  };
-
-   // fetch 통신 method
-   const fetchData2 = async (
-    circleXY,
-    latlng,
-    initMarkers
-  ) => {
-    try {
-      const response = await fetch(
-        `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        }
-      );
-      if (response.status === 200) {
-        const { data } = await response.json();
-        // 서버에서 받은 데이터를 markerList에 저장
-        markerList = data;
-        console.log('데이터 전송 완료');
-        console.log(markerList);
-        initMarkers();
+        initMarkers(garbageBin, false);
+		initMarkers(toilet, true);
       } else if (response.status === 400) {
         message.error("화장실이 존재하지 않습니다.", 2);
       }
@@ -153,7 +116,16 @@ function MapPage() {
     setPopupInfo(prevInfo);
   }
 
-  function initMarkers() {
+  function initMarkers(markerList, isToilet) {
+	var markerImage;
+
+	if(isToilet){
+		markerImage = normalImage;
+	}
+	else{
+		markerImage = garbegeImage;
+	}
+
     if (markerList === null) {
       console.log('데이터가 없습니다.');
       return;
@@ -162,15 +134,21 @@ function MapPage() {
       // 마커를 생성합니다
       var marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(
-          markerInfo.storeLocationY,
-          markerInfo.storeLocationX
+          markerInfo.coordinateY,
+          markerInfo.coordinateX
         ),
         map: map,
-        image: normalImage, // 마커 이미지
+        image: markerImage, // 마커 이미지
       });
-      marker.normalImage = normalImage;
-      marker.clickImage = clickImage;
 
+	  if(isToilet){
+      	marker.normalImage = normalImage;
+      	marker.clickImage = clickImage;
+	  }
+	  else{
+		marker.normalImage = garbegeImage;
+		marker.clickImage = garbegeClickImage;
+	 }
       markers.push(marker);
 
       // 마커에 click 이벤트를 등록합니다
@@ -191,7 +169,6 @@ function MapPage() {
               selectedMarker.setImage(
                 selectedMarker.normalImage
               );
-
             // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
             marker.setImage(marker.clickImage);
             // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
@@ -202,7 +179,7 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          showPopup('a');
+          showPopup(markerInfo);
         }
       );
     });
@@ -276,7 +253,6 @@ function MapPage() {
       };
 
       fetchData(circleXY, mapOption.center, initMarkers);
-	//   fetchData2();
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
