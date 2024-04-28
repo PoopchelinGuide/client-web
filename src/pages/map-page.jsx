@@ -85,19 +85,10 @@ function MapPage() {
 		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
         {
           method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-          },
         }
       );
       if (response.status === 200) {
-        // const { data } = await response.json();
-		    // 또는 모든 항목을 순회하고 싶다면,
-			// response.forEach(item => {
-			// 	console.log(item); // 여기서 item은 리스트의 각 항목을 나타냅니다.
-			//   });
-        // 서버에서 받은 데이터를 markerList에 저장
-        markerList = Array.from(response.json());
+        markerList = await response.json();
         console.log('데이터 전송 완료');
         console.log(markerList);
         initMarkers();
@@ -247,7 +238,7 @@ function MapPage() {
       mapOption = {
         // center: locPosition, // 지도의 중심좌표
         center: locPosition,
-        level: 3, // 지도의 확대 레벨
+        level: 10, // 지도의 확대 레벨
       };
 
     if (!mapContainer.firstChild) {
