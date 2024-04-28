@@ -4,10 +4,10 @@ import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
 import Navigatorbar from '../components/navigatorbar';
 
-import imageSrc from "../markerImage/iconBlue.png";
-import imageSrc2 from "../markerImage/iconRed.png";
+import imageSrc from "../markerImage/Toilet.png";
+import imageSrc2 from "../markerImage/ToiletChoice.png";
 
-import { Card } from "antd";
+import { Card, Rate, Tag, message , Button, Divider } from "antd";
 
 
 const { Tmapv2 } = window;
@@ -15,6 +15,23 @@ const { kakao } = window;
 
 function MapPage() {
   const navigate = useNavigate();
+
+  const array = [
+    {
+      title: '화장실이 깨끗해요',
+      tag: ['깨끗해요', '좋아요'],
+      date: '2024-04-29',
+      nickname : '보땡이',
+      rate : 4.5,
+    },
+    {
+      title: '휴지가 가끔 없어요',
+      tag: ['휴지 없음'],
+      date: '2024-04-27',
+      nickname : '보땡이',
+      rate : 4.5,
+    },
+];
 
   var map;
   var marker_s, marker_e, marker_p1, marker_p2;
@@ -29,8 +46,8 @@ function MapPage() {
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
 
 
-  var imageSize = new kakao.maps.Size(42, 56); // 마커의 크기 기존 33, 36
-  var choiceImageSize = new kakao.maps.Size(44, 58); // 선택한 마커의 크기 기존 38, 40
+  var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
+  var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
   
   var clickImage = createMarkerImage(imageSrc2, choiceImageSize),
   	normalImage = createMarkerImage(imageSrc, imageSize);
@@ -47,28 +64,25 @@ function MapPage() {
   }
 
 	// fetch 통신 method
-	const fetchData = async (BodyJson, latlng, initMarkers) => {
+	const fetchData = async (circleXY, latlng, initMarkers) => {
 	try {
 		const response = await fetch(
-		`${process.env.NODE_ENV === "development" ? "http://" : ""}${
-			process.env.REACT_APP_API_URL
-		}store/read/map/coordinate`,
+		`http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
 		{
-			method: "POST",
+			method: "GET",
 			headers: {
 			"Content-type": "application/json",
 			},
-			body: BodyJson,
 		}
 		);
 		if (response.status === 200) {
-		const { data } = await response.json();
-		// 서버에서 받은 데이터를 markerList에 저장
-		markerList = data;
-		console.log("데이터 전송 완료");
-		console.log(markerList);
-		// message.success(`주변에 상점이 ${markerList.length}개 존재합니다.`, 2);
-		initMarkers();
+			const { data } = await response.json();
+			// 서버에서 받은 데이터를 markerList에 저장
+			markerList = data;
+			console.log("데이터 전송 완료");
+			console.log(markerList);
+			// message.success(`주변에 상점이 ${markerList.length}개 존재합니다.`, 2);
+			initMarkers();
 		} else if (response.status === 400) {
 		// message.error("발견된 상점이 존재하지 않습니다.", 2);
 		console.log("데이터 전송 실패");
@@ -176,20 +190,22 @@ function drawLine(arrPoint) {
 
   function initKakaoMap(locPosition) {
 
-    var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
+	var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div 
 
-    mapOption = { 
-        center: locPosition, // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };
+	mapOption = { 
+		// center: locPosition, // 지도의 중심좌표
+		center: locPosition,
+		level: 3 // 지도의 확대 레벨
+	};
 
 	if (!mapContainer.firstChild) {
+
     // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
     map = new kakao.maps.Map(mapContainer, mapOption); 
 	
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
-        center: locPosition,
+        center: mapOption.center,
         radius: 10000,
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: "#75B8FA", // 선의 색깔입니다
@@ -213,13 +229,15 @@ function drawLine(arrPoint) {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-	  // fetchData(JSON.stringify(circleXY), options.center, initMarkers);
+	//   fetchData(circleXY, mapOption.center, initMarkers);
 	  var prevLatlng; // 이전 중심 좌표를 저장할 변수
+
+	  routeNavigation(locPosition);
 
 		// 도착
 		marker_e = new kakao.maps.Marker(
 			{
-				position : new kakao.maps.LatLng(35.8678658,128.5967954),
+				position : new kakao.maps.LatLng(35.85354, 128.5102),
 				iconSize : new kakao.maps.Size(24, 38),
 				image: normalImage, // 마커 이미지
 				map : map
@@ -258,7 +276,7 @@ function drawLine(arrPoint) {
 			var latlng = map.getCenter();
 	
 			circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
-			circle.setRadius(level * 1000); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
+			circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
 			circle.setMap(map); // 원을 지도에 표시합니다
 	
 			// 이전 중심 좌표가 있고, 새로운 중심 좌표와의 차이가 0.1 미만이면 AJAX 요청을 보내지 않습니다
@@ -302,7 +320,7 @@ function drawLine(arrPoint) {
 }
   }
 
-function routeNavigation(locPosition, lat, lon){
+function routeNavigation(locPosition){
     // 2. 시작, 도착 심볼찍기
 
     // marker_s = new kakao.maps.Marker(
@@ -312,20 +330,22 @@ function routeNavigation(locPosition, lat, lon){
 	// 	  iconSize : new kakao.maps.Size(24, 38),
 	// 	  map : map
 	// 	});
-		console.log("현재 위치 "+ lat + " " + lon);
+		console.log("현재 위치 "+ locPosition.getLat() + " " + locPosition.getLng());
 
 		var headers = {}; 
-		  headers["appKey"]="WGYNvwAqWq4x558TZehlb6jhhx1uwVaA71adQni8";
+		  headers["appKey"]="xJwFWDNBH24cPMQWAZVGA4AOusEnnPG620CxWT4z";
   
 		fetch("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result",
 		{
 			method : "POST",
 			headers : headers,
 		  	body: JSON.stringify({
-				"startX": lon.toString(),
-				"startY": lat.toString(), // 
-				"endX": "128.5967954",
-				"endY": "35.8678658",
+				"startX": locPosition.getLng().toString(),
+				"startY": locPosition.getLat().toString(), //
+				// "startX": "127.02448847037635",
+				// "startY": "37.65223738314796", //
+				"endX": "128.5102",
+				"endY": "35.85354",
 				"reqCoordType": "WGS84GEO",
 				"resCoordType": "EPSG3857",
 				"startName": "출발지",
@@ -337,15 +357,16 @@ function routeNavigation(locPosition, lat, lon){
 					  var resultData = response.features;
   
 					  //결과 출력
-					  var tDistance = "총 거리 : "
+					  var tDistance = "가장 가까운 화장실까지의 거리 : "
 							  + ((resultData[0].properties.totalDistance) / 1000)
 									  .toFixed(1) + "km,";
   
-					  var tTime = " 총 시간 : "
+					  var tTime = " 소요 시간 : "
 							  + ((resultData[0].properties.totalTime) / 60)
 									  .toFixed(0) + "분";
   
 					  console.log(tDistance + tTime);
+					  message.info(tDistance + tTime, 5);
 					  
 					  //기존 그려진 라인 & 마커가 있다면 초기화
 					  if (resultdrawArr.length > 0) {
@@ -476,8 +497,6 @@ function asd(){
 					iconSize : new kakao.maps.Size(24, 38),
 				  });
 
-				  routeNavigation(locPosition, lat, lon);
-
 				  console.log("사용자의 위치를 지속적으로 추적합니다.");
 				},
 				(error) => {
@@ -505,17 +524,60 @@ function asd(){
       <div
         id="map_div"
       ></div>
-
 	        {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
 			{popupInfo && (
         <div className="map-store-data" style={{ zIndex: 100 }}>
 		<Card
 			className='antCard'
-      		title="보성 화장실"
-      		extra={<a href="#" onClick={(e) => { e.preventDefault(); navigate('/review') }}>상세 리뷰</a>}>
-      <p>휴지가 없어요 태그</p>
-      <p>깨끗하다 </p>
+			title=
+			{
+			<div style={{ marginTop:"1rem",marginBottom:"1rem", display: "flex", flexDirection: "column"}}>
+			<span style={{ fontSize :"20px "}}>이마트 화장실</span>
+			<Rate style={{ float: "right" }} disabled allowHalf defaultValue={5} />
+			</div>
+			}
+			extra=
+			{array.map((review, reviewIndex) => (
+				<>
+				{review.tag.map((item, index) => (
+					<Tag key={index} style={{ marginLeft: "0.2rem", fontSize:"14px", marginRight:"0.1rem" }} bordered={false} color="cyan">
+					{item}
+					</Tag>
+				))}
+				</>
+			  ))}
+
+      		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+			>	
+{array.map((review, reviewIndex) => (
+	<>
+    <Card.Meta
+      key={reviewIndex}
+      description={
+        <div>
+          <span style={{ color: "black"}}>
+            <span style={{fontSize: "18px"}}>{review.title}</span>
+            <Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
+          </span>
+          <div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
+            {review.tag.map((item, index) => (
+              <Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"14px" }} bordered={false} color="cyan">
+                {item}
+              </Tag>
+            ))}
+            <span style={{ fontSize: "16px", float: "right" }}>{review.date}</span>
+          </div>
+        </div>
+      }
+    />
+	<Divider />
+	</>
+  ))}
+  <a href="#" style={{fontSize:"18px", float:"left", color:"#3BB26F"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>	
+<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+
+
     </Card>
         </div>
       )}
