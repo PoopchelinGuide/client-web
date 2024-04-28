@@ -93,6 +93,7 @@ function ReviewWritePage() {
           onCancel={() => setModalOpen(false)}
           okText="확인"
           cancelText="취소"
+          style={{ marginTop: '15rem' }}
         >
           최대 3개까지만 선택할 수 있습니다.
         </Modal>
