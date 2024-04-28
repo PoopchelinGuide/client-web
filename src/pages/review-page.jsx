@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
+import ReviewResult from '../components/review-result';
 import {
   Avatar,
   List,
@@ -131,6 +132,7 @@ function ReviewPage() {
     >
       {Header(name, sum, [])}
       <div className="list-box-margin">
+        {/* ReviewResult() */}
         <List
           itemLayout="verticalrizontal"
           dataSource={array}
@@ -155,7 +157,8 @@ function ReviewPage() {
                       >
                         {item.nickname}
                       </span>
-                      {/* <span style={{float:"left"}}>{item.title}</span> */}
+                      {// <span style={{float:"left"}}>{item.title}</span> 
+                      }
                     </span>
                   }
                   description={
