@@ -49,7 +49,7 @@
 
 .input-info-id,
 .input-info-pw {
-  border-width: 0.2rem;
+  border-width: 0.1rem;
   border-color: #bcbcbc;
   font-family: 'SUITE-Regular';
   height: 3.5vh;
@@ -73,7 +73,7 @@
   padding: 0.5rem;
   font-family: 'SUITE-Regular';
   font-size: 1.03rem;
-  border-width: 0.2rem;
+  border-width: 0.1rem;
   border-radius: 0.4rem;
   margin-top: 1rem;
   min-width: 20.6rem;
@@ -107,8 +107,9 @@
   height: 2rem;
   margin: 0.4rem; /* 버튼 사이의 간격 */
   font-size: 0.9rem;
+  background-color: #3bb26f;
   border-color: #3bb26f;
-  border-width: 0.2rem;
+  border-width: 0.1rem;
   color: #3bb26f;
   border-radius: 0.6rem;
   padding: 0.5rem;
@@ -140,7 +141,7 @@
   background-color: #3bb26f;
   color: white;
   border-radius: 0.5rem;
-  border-width: 0.2rem;
+  border-width: 0.1rem;
   display: flex;
   align-items: center;
   justify-content: center;

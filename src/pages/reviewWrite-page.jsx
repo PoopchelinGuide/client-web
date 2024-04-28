@@ -16,8 +16,6 @@ function ReviewWritePage() {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
-  const [modalOpen, setModalOpen] = useState(false); // 모달 상태
-  // useState를 사용해 사용자가 선택한 별점을 저장합니다.
   const [userRate, setUserRate] = useState(0.0);
 
   // 별점이 변경될 때 호출될 함수입니다.
@@ -25,7 +23,7 @@ function ReviewWritePage() {
     setUserRate(value);
     // 여기에서 userRate를 다른 곳에 저장하거나 처리할 수 있습니다.
   };
-  const name = '세민'; // 나중에 서버에서 화장실 정보 받을거임
+  const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
 
   const tagButtons = [
     { text: '깨끗해요', icon: <FaHandSparkles /> },
@@ -101,7 +99,7 @@ function ReviewWritePage() {
                         color: clicked[index]
                           ? 'white'
                           : 'red',
-                        border: '0.2rem solid red',
+                        border: '0.1rem solid red',
                       }
                     : {
                         backgroundColor: clicked[index]
