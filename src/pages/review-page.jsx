@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
 import ReviewResult from '../components/review-result';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import {
   Avatar,
   List,
@@ -9,6 +10,7 @@ import {
   Tag,
   Rate,
   message,
+  FloatButton,
 } from 'antd';
 import Header from '../components/header';
 import { width } from '@fortawesome/free-solid-svg-icons/fa0';
@@ -199,10 +201,14 @@ function ReviewPage() {
                   </span>
                 </div>
               </Card>
+              
             </List.Item>
-          )}
+          )
+        }
         />
+      
       </div>
+      {<FloatButton style={{float: 'right', position: 'sticky', zIndex: '13'}} type='primary' icon={<PlusCircleOutlined />}/>}
       {Navigatorbar()}
     </div>
   );
