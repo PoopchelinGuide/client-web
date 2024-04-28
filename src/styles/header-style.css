@@ -7,7 +7,8 @@
 }
 @font-face {
   font-family: 'SUITE-Regular';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+    format('woff2');
   font-weight: 400;
   font-style: normal;
 }
@@ -54,4 +55,17 @@
   margin-top: 1rem;
   margin-bottom: 0.7rem;
   font-size: 35px;
+}
+
+.header-btn {
+  border-radius: 1.5rem;
+  border: none;
+  background-color: #ff6b6b;
+  color: white;
+  position: fixed;
+  top: 1rem;
+  margin-left: 1rem;
+  right: inherit;
+  width: 2.5rem;
+  height: 2.5rem;
 }

@@ -128,30 +128,3 @@
   background-color: #3bb26f;
   color: white;
 }
-
-.star-half {
-  display: inline-block;
-  position: relative;
-  clip-path: polygon(50% 0, 0 0, 0 100%, 50% 100%);
-}
-
-.star-full {
-  display: inline-block;
-  position: relative;
-  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
-}
-
-.star-half,
-.star-full {
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Prevents extra space for inline-block */
-}
-
-/* To ensure the stars are aligned nicely and no extra space is taken */
-span {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}

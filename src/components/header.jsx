@@ -2,8 +2,11 @@ import React from 'react';
 import '../styles/header-style.css';
 import '../styles/font-style.css';
 import { Rate, Tag } from 'antd';
-
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 function Header(name, rate, tag) {
+  const navigate = useNavigate();
   return (
     <div
       className="header"
@@ -29,6 +32,14 @@ function Header(name, rate, tag) {
             </Tag>
           </span>
         ))}
+        <div>
+          <button
+            className="header-btn"
+            onClick={() => navigate('/')}
+          >
+            <FontAwesomeIcon icon={faRightToBracket} />
+          </button>
+        </div>
       </div>
     </div>
   );

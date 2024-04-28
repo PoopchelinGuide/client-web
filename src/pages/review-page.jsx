@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Navigatorbar from '../components/navigatorbar';
 import '../styles/review-style.css';
 import ReviewResult from '../components/review-result';
+import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -16,6 +16,7 @@ import Header from '../components/header';
 import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 function ReviewPage() {
+  const navigate = useNavigate();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -159,7 +160,8 @@ function ReviewPage() {
                       >
                         {item.nickname}
                       </span>
-                      {// <span style={{float:"left"}}>{item.title}</span> 
+                      {
+                        // <span style={{float:"left"}}>{item.title}</span>
                       }
                     </span>
                   }
@@ -201,15 +203,22 @@ function ReviewPage() {
                   </span>
                 </div>
               </Card>
-              
             </List.Item>
-          )
-        }
+          )}
         />
-      
       </div>
-      {<FloatButton style={{float: 'right', position: 'sticky', zIndex: '13'}} type='primary' icon={<PlusCircleOutlined />}/>}
-      {Navigatorbar()}
+      {
+        <FloatButton
+          style={{
+            float: 'right',
+            position: 'sticky',
+            zIndex: '13',
+          }}
+          type="primary"
+          onClick={() => navigate('/review-write')}
+          icon={<PlusCircleOutlined />}
+        />
+      }
     </div>
   );
 }

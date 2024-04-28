@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import Navigatorbar from '../components/navigatorbar';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
 import { Modal, Rate } from 'antd';
 import {
-  FaStar,
   FaBan,
   FaHandSparkles,
   FaToiletPaper,
@@ -174,7 +172,6 @@ function ReviewWritePage() {
               </button>
             ))}
         </div>
-        {Navigatorbar()}
       </div>
     </div>
   );
