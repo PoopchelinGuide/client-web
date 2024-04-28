@@ -81,6 +81,43 @@ function MapPage() {
   ) => {
     try {
       const response = await fetch(
+        // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+          },
+        }
+      );
+      if (response.status === 200) {
+        // const { data } = await response.json();
+		    // 또는 모든 항목을 순회하고 싶다면,
+			// response.forEach(item => {
+			// 	console.log(item); // 여기서 item은 리스트의 각 항목을 나타냅니다.
+			//   });
+        // 서버에서 받은 데이터를 markerList에 저장
+        markerList = Array.from(response.json());
+        console.log('데이터 전송 완료');
+        console.log(markerList);
+        initMarkers();
+      } else if (response.status === 400) {
+        message.error("화장실이 존재하지 않습니다.", 2);
+      }
+    } catch (error) {
+      message.error("잘못된 요청입니다.");
+      console.error('오류 발생:', error);
+    }
+  };
+
+   // fetch 통신 method
+   const fetchData2 = async (
+    circleXY,
+    latlng,
+    initMarkers
+  ) => {
+    try {
+      const response = await fetch(
         `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
         {
           method: 'GET',
@@ -95,14 +132,12 @@ function MapPage() {
         markerList = data;
         console.log('데이터 전송 완료');
         console.log(markerList);
-        // message.success(`주변에 상점이 ${markerList.length}개 존재합니다.`, 2);
         initMarkers();
       } else if (response.status === 400) {
-        // message.error("발견된 상점이 존재하지 않습니다.", 2);
-        console.log('데이터 전송 실패');
+        message.error("화장실이 존재하지 않습니다.", 2);
       }
     } catch (error) {
-      // message.error("잘못된 요청입니다.");
+      message.error("잘못된 요청입니다.");
       console.error('오류 발생:', error);
     }
   };
@@ -225,7 +260,7 @@ function MapPage() {
         radius: 10000,
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: '#75B8FA', // 선의 색깔입니다
-        strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: 'dashed', // 선의 스타일 입니다
         fillOpacity: 0, // 채우기 불투명도 입니다
       });
@@ -245,7 +280,8 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      //   fetchData(circleXY, mapOption.center, initMarkers);
+      fetchData(circleXY, mapOption.center, initMarkers);
+	//   fetchData2();
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
@@ -346,7 +382,7 @@ function MapPage() {
           markers = [];
 
           var BodyJson = JSON.stringify(circleXY);
-          // fetchData(BodyJson, latlng, initMarkers);
+          fetchData(circleXY, latlng, initMarkers);
         }
       );
     }
