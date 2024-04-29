@@ -15,12 +15,6 @@ function Header(name, rate, tag) {
   });
 
   const navigate = useNavigate();
-  console.log('Received in Header: ', {
-    name,
-    rate,
-    tag,
-  });
-
   if (name === undefined) {
     name = '　';
   }

@@ -23,7 +23,7 @@ function ReviewWritePage() {
     id: null,
     name: null,
     sum: '0.0',
-    type: null,
+    type: false,
   };
   const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
   const [nickname, setNickname] = useState('');
@@ -129,13 +129,14 @@ function ReviewWritePage() {
       .filter(([index, isSelected]) => isSelected)
       .map(([index]) => tagArrays[index]);
 
-    const toiletId = null;
-    const garbagebintId = null;
+    let toiletId = null;
+    let garbagebintId = null;
     if (type == false) {
       toiletId = id;
     } else {
       garbagebintId = id;
     }
+
     try {
       const response = await axios.post(
         'http://192.168.0.22/review',
