@@ -41,7 +41,6 @@ function ReviewWritePage() {
   // 별점이 변경될 때 호출될 함수입니다.
   const handleRateChange = (value) => {
     setUserRate(value);
-    // 여기에서 userRate를 다른 곳에 저장하거나 처리할 수 있습니다.
   };
   const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
 
@@ -123,14 +122,6 @@ function ReviewWritePage() {
     const selectedTags = Object.entries(clicked)
       .filter(([index, isSelected]) => isSelected)
       .map(([index]) => tagArrays[index]);
-
-    console.log(
-      nickname,
-      password,
-      content,
-      userRate,
-      selectedTags
-    );
 
     try {
       const response = await axios.post(

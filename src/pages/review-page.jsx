@@ -10,11 +10,14 @@ import {
   Rate,
   message,
   FloatButton,
+  Input,
+  Modal,
 } from 'antd';
 import Header from '../components/header';
 import axios from 'axios';
 import moment from 'moment';
 import { FaXmark } from 'react-icons/fa6';
+import Password from 'antd/es/input/Password';
 
 function ReviewPage() {
   const navigate = useNavigate();
@@ -23,6 +26,8 @@ function ReviewPage() {
   //const { toiletId } = location.state || {};
   const [scrollPosition, setScrollPosition] = useState(0);
   const [reviewList, setReviewList] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [delPassword, setDelPassword] = useState(''); // 삭제 비밀번호
   const handleScroll = (event) => {
     setScrollPosition(event.currentTarget.scrollTop);
 
@@ -42,6 +47,18 @@ function ReviewPage() {
     sum += item.rate;
   });
   sum = sum / length;
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const reviewData = async () => {
     console.log('toilet 번호' + toiletId);
@@ -98,6 +115,7 @@ function ReviewPage() {
       onScroll={handleScroll}
     >
       {Header(name, sum, [])}
+
       <div className="list-box-margin">
         {/* ReviewResult() */}
         <List
@@ -114,8 +132,29 @@ function ReviewPage() {
                 >
                   <FaXmark
                     className="delete-button"
-                    onClick={() => deleteReview(item.id)}
+                    onClick={showModal}
                   />
+                  <Modal
+                    title="삭제 하시겠습니까?"
+                    open={isModalOpen}
+                    onOk={() =>
+                      deleteReview(item.id, delPassword)
+                    }
+                    onCancel={handleCancel}
+                    className="custom-modal-mask" // 사용자 정의 클래스 적용
+                    style={{
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    }} // 배경색을 반투명하게 설정
+                  >
+                    <Input
+                      type="text"
+                      placeholder="비밀번호"
+                      value={delPassword}
+                      onChange={(e) =>
+                        setDelPassword(e.target.value)
+                      }
+                    ></Input>
+                  </Modal>
                 </div>
                 <Card.Meta
                   avatar={
