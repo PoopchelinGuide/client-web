@@ -30,26 +30,7 @@ const { kakao } = window;
 
 function MapPage() {
   const navigate = useNavigate();
-
-  const array = [
-    {
-      title: '화장실이 깨끗해요',
-      tag: ['깨끗해요', '좋아요'],
-      date: '2024-04-29',
-      nickname: '보땡이',
-      rate: 4.5,
-    },
-    {
-      title: '휴지가 가끔 없어요',
-      tag: ['휴지 없음'],
-      date: '2024-04-27',
-      nickname: '보땡이',
-      rate: 4.5,
-    },
-  ];
-
   var map;
-  // const [map, setMap] = useState(null);
 
   var marker_s, marker_e, marker_p1, marker_p2;
 
