@@ -28,9 +28,9 @@ function ReviewPage() {
     type,
     tag = [],
   } = location.state || {
-    id: null,
+    id: 1,
     name: '',
-    type: null,
+    type: false,
     tag: [],
   };
 
@@ -38,7 +38,8 @@ function ReviewPage() {
   const [reviewList, setReviewList] = useState([]);
   const [modalOpenId, setModalOpenId] = useState(null); // 수정된 상태
   const [delPassword, setDelPassword] = useState('');
-
+  const [idx, setIdx] = useState(0);
+  const [typex, setTypex] = useState(false); // false: 화장실, true: 휴게소
   const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
   const [headerName, setHeaderName] = useState(''); // 헤더로 보낼
 
@@ -53,11 +54,21 @@ function ReviewPage() {
     }
   };
 
+  // let sum = 0.0;
+  // reviewList.forEach((item) => {
+  //   sum += item.rate;
+  // });
+  // sum = reviewList.length > 0 ? sum / reviewList.length : 0;
+
   let sum = 0.0;
-  reviewList.forEach((item) => {
-    sum += item.rate;
-  });
-  sum = reviewList.length > 0 ? sum / reviewList.length : 0;
+  if (reviewList.length > 0) {
+    reviewList.forEach((item) => {
+      sum += item.rate; // Ensure item.rate is a number
+    });
+    sum = sum / reviewList.length;
+  } else {
+    sum = 0; // Ensure sum is zero if no reviews are available
+  }
 
   const showModal = (id) => {
     setModalOpenId(id);
@@ -110,6 +121,8 @@ function ReviewPage() {
   useEffect(() => {
     setHeaderName(name);
     setMostTag(tag);
+    setTypex(type);
+    setIdx(id);
     reviewData();
   }, []);
 
@@ -119,7 +132,7 @@ function ReviewPage() {
       id="box"
       onScroll={handleScroll}
     >
-      {Header(headerName, sum, mostTag)}
+      <Header name={headerName} rate={sum} tag={mostTag} />
       <div className="list-box-margin">
         {reviewList && reviewList.length > 0 ? (
           <List

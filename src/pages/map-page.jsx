@@ -821,9 +821,10 @@ function MapPage() {
                 e.preventDefault();
                 navigate('/review', {
                   state: {
-                    isToilet: true,
-                    toiletId: 1,
-                    garbageBinId: 1,
+                    type: false,
+                    id: 1,
+                    name: '　',
+                    tag: [],
                   },
                 });
               }}

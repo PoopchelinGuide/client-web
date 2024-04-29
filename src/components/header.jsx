@@ -6,18 +6,22 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 
-function Header(name, rate, tag) {
-  var num = parseFloat(rate.toFixed(1)); // 소수 첫째 자리로 반올림하고 숫자로 변환
-  const [starRating, setStarRating] = useState(num);
-
-  const starChange = useEffect(() => {
-    setStarRating(num);
-  });
-
+function Header({ name = '　', rate, tag = [] }) {
   const navigate = useNavigate();
-  if (name === undefined) {
-    name = '　';
-  }
+
+  // Ensure rate is always treated as a number and handle cases where it might be undefined or non-numeric
+  const safeRate = Number(rate) || 0; // Default to 0 if rate is undefined or not a number
+  const starRatingInitial = parseFloat(safeRate.toFixed(1));
+  const [starRating, setStarRating] = useState(
+    starRatingInitial
+  );
+
+  useEffect(() => {
+    // Update starRating if rate changes
+    const updatedRate = parseFloat(safeRate.toFixed(1));
+    setStarRating(updatedRate);
+  }, [safeRate]);
+
   return (
     <div
       className="header"
@@ -32,12 +36,10 @@ function Header(name, rate, tag) {
             marginRight: '9rem',
           }}
         >
-          {rate.toFixed(2)}
+          {safeRate.toFixed(2)}
         </span>
-
         {tag.map((item, index) => (
           <span className="header-tag" key={index}>
-            {' '}
             <Tag bordered={false} size="large" color="cyan">
               {item}
             </Tag>
@@ -55,4 +57,5 @@ function Header(name, rate, tag) {
     </div>
   );
 }
+
 export default Header;

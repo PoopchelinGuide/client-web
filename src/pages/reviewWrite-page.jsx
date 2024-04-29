@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
 import { Rate, Input, message } from 'antd';
@@ -19,12 +19,21 @@ function ReviewWritePage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { id, name, sum, type } = location.state || {
+  const {
+    id,
+    name,
+    sum,
+    type,
+    tag = [],
+  } = location.state || {
     id: null,
     name: null,
     sum: '0.0',
     type: false,
+    tag: [],
   };
+
+  const [headerName, setHeaderName] = useState(''); // 헤더로 보낼
   const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
@@ -163,9 +172,13 @@ function ReviewWritePage() {
     }
   };
 
+  useEffect(() => {
+    setHeaderName(name);
+    setMostTag(tag);
+  }, []);
   return (
     <div className="review-wirte-page">
-      {Header(name, sum, mostTag)}
+      <Header name={name} rate={sum} tag={mostTag} />
       <div className="review-box">
         <div className="tagbtn-box">
           {tagButtons &&
