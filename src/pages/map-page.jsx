@@ -66,7 +66,7 @@ function MapPage() {
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
-  var nearToilet;
+  var nearToilet = null;
 
   var circleCenter ; // 원의 중심 좌표를 저장할 변수
 
@@ -109,7 +109,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
+		`http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
           method: 'GET',  
         }
@@ -157,7 +157,6 @@ function MapPage() {
           const markerInfomation = await response.json();
           console.log(markerInfomation);
           showPopup(markerInfomation);
-
         } else if (response.status === 400) {
           message.error("팝업창 오류", 2);
         }
@@ -168,7 +167,7 @@ function MapPage() {
     };
 
   //Popup창 켜고 끄는 method
-  function showPopup(info) {
+  function showPopup(info) {    
     console.log('팝업창을 띄웁니다.');
     console.log("팝업창을 띄을때 map 확인"+ map);
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
@@ -328,56 +327,57 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
+      console.log("fetch보내기전");
       await fetchData(circleXY, mapOption.center, initMarkers);
+      console.log("fetch보낸 후");
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
       console.log(map);
 
-      // 도착
-      marker_e = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(35.85354, 128.5102),
-        iconSize: new kakao.maps.Size(24, 38),
-        image: normalImage, // 마커 이미지
-        map: map,
-      });
-      marker_e.normalImage = normalImage;
-      marker_e.clickImage = clickImage;
+      // // 도착
+      // marker_e = new kakao.maps.Marker({
+      //   position: new kakao.maps.LatLng(35.85354, 128.5102),
+      //   iconSize: new kakao.maps.Size(24, 38),
+      //   image: normalImage, // 마커 이미지
+      //   map: map,
+      // });
+      // marker_e.normalImage = normalImage;
+      // marker_e.clickImage = clickImage;
 
-      // 마커에 click 이벤트를 등록합니다
-      kakao.maps.event.addListener(
-        marker_e,
-        'click',
-        function () {
-          // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
-          // 마커의 이미지를 클릭 이미지로 변경합니다
+      // // 마커에 click 이벤트를 등록합니다
+      // kakao.maps.event.addListener(
+      //   marker_e,
+      //   'click',
+      //   function () {
+      //     // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
+      //     // 마커의 이미지를 클릭 이미지로 변경합니다
 
-          if (
-            !selectedMarker ||
-            selectedMarker !== marker_e
-          ) {
-            // 클릭된 마커 객체가 null이 아니면
-            // 클릭된 마커의 이미지를 기본 이미지로 변경하고
-            !!selectedMarker &&
-              selectedMarker.setImage(
-                selectedMarker.normalImage
-              );
+      //     if (
+      //       !selectedMarker ||
+      //       selectedMarker !== marker_e
+      //     ) {
+      //       // 클릭된 마커 객체가 null이 아니면
+      //       // 클릭된 마커의 이미지를 기본 이미지로 변경하고
+      //       !!selectedMarker &&
+      //         selectedMarker.setImage(
+      //           selectedMarker.normalImage
+      //         );
 
-            // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
-            marker_e.setImage(marker_e.clickImage);
+      //       // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
+      //       marker_e.setImage(marker_e.clickImage);
 
-            // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
-            selectedMarker = marker_e;
-          } else if (selectedMarker === marker_e) {
-            selectedMarker.setImage(
-              selectedMarker.normalImage
-            );
-            selectedMarker = null;
-          }
-
-          showPopup('b');
-        }
-      );
+      //       // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
+      //       selectedMarker = marker_e;
+      //     } else if (selectedMarker === marker_e) {
+      //       selectedMarker.setImage(
+      //         selectedMarker.normalImage
+      //       );
+      //       selectedMarker = null;
+      //     }
+      //     showPopup('b');
+      //   }
+      // );
 
       // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(
@@ -440,6 +440,8 @@ function MapPage() {
   }
 
   function routeNavigation(locPosition) {
+
+
     // 2. 시작, 도착 심볼찍기
     var endX = 126.9769,
       endY = 37.57260;
@@ -448,6 +450,8 @@ function MapPage() {
       endX = nearToilet.coordinateX;
       endY = nearToilet.coordinateY;
     }
+
+
 
     // marker_s = new kakao.maps.Marker(
     // 	{
