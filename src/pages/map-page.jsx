@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 import imageSrc from '../markerImage/Toilet.png';
 import imageSrc2 from '../markerImage/ToiletChoice.png';
@@ -58,10 +59,16 @@ function MapPage() {
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
   var currentLocation; // 현재 위치를 저장할 변수
 
+  var isGarbage = false; // 쓰레기통인지 화장실인지 구분하는 변수 boolean
+
   // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+  // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
+  var nearToilet = null;
+
+  var circleCenter ; // 원의 중심 좌표를 저장할 변수
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
@@ -90,6 +97,8 @@ function MapPage() {
     return markerImage;
   }
 
+
+
   // fetch 통신 method
   const fetchData = async (
     circleXY,
@@ -99,11 +108,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        `http://192.168.0.96/toilet/range?x1=${
-          circleXY.minX
-        }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
-          circleXY.maxY
-        }&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
+		`http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
           method: 'GET',
         }
@@ -115,11 +120,17 @@ function MapPage() {
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
         var nearestToilet = markerList.nearestToilet;
+
         console.log(garbageBin);
         console.log(toilet);
         console.log(nearestToilet);
-        initMarkers(garbageBin, false);
-        initMarkers(toilet, true);
+
+        initMarkers(garbageBin, false);   
+		    initMarkers(toilet, true);
+
+        nearToilet = nearestToilet;
+        console.log("가장 가까운 화장실"+ nearToilet);
+
       } else if (response.status === 400) {
         message.error('화장실이 존재하지 않습니다.', 2);
       }
@@ -133,7 +144,7 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://192.168.0.96//review/tg/${id}?type=true`,
+        `http://192.168.0.22/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }
@@ -153,7 +164,7 @@ function MapPage() {
   };
 
   //Popup창 켜고 끄는 method
-  function showPopup(info) {
+  function showPopup(info) {    
     console.log('팝업창을 띄웁니다.');
     console.log('팝업창을 띄을때 map 확인' + map);
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
@@ -213,9 +224,8 @@ function MapPage() {
           console.log('마커 클릭 시 지도 유무' + map);
           map = map;
 
-          var isGarbage = true;
-          if (markerInfo.type) {
-            isGarbage = false;
+          if(markerInfo.type){
+            isGarbage = true;
           }
 
           if (
@@ -238,8 +248,8 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          // popupInfoRequest(markerInfo.id, );
-          showPopup(markerInfo);
+          popupInfoRequest(markerInfo.id, isGarbage, markerInfo);
+          // showPopup(markerInfo);
         }
       );
     });
@@ -274,7 +284,7 @@ function MapPage() {
     // resultdrawArr.push(polyline_);
   }
 
-  function initKakaoMap(locPosition) {
+  async function initKakaoMap(locPosition) {
     var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div
       mapOption = {
         // center: locPosition, // 지도의 중심좌표
@@ -297,6 +307,8 @@ function MapPage() {
         fillOpacity: 0, // 채우기 불투명도 입니다
       });
 
+      circleCenter = circle.center;
+
       var centerAround = circle.getBounds();
       circle.setMap(map); // 원을 지도에 표시합니다
       console.log('원 생성' + centerAround);
@@ -312,55 +324,57 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      fetchData(circleXY, mapOption.center, initMarkers);
+      console.log("fetch보내기전");
+      await fetchData(circleXY, mapOption.center, initMarkers);
+      console.log("fetch보낸 후");
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
       console.log(map);
 
-      // 도착
-      marker_e = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(35.85354, 128.5102),
-        iconSize: new kakao.maps.Size(24, 38),
-        image: normalImage, // 마커 이미지
-        map: map,
-      });
-      marker_e.normalImage = normalImage;
-      marker_e.clickImage = clickImage;
+      // // 도착
+      // marker_e = new kakao.maps.Marker({
+      //   position: new kakao.maps.LatLng(35.85354, 128.5102),
+      //   iconSize: new kakao.maps.Size(24, 38),
+      //   image: normalImage, // 마커 이미지
+      //   map: map,
+      // });
+      // marker_e.normalImage = normalImage;
+      // marker_e.clickImage = clickImage;
 
-      // 마커에 click 이벤트를 등록합니다
-      kakao.maps.event.addListener(
-        marker_e,
-        'click',
-        function () {
-          // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
-          // 마커의 이미지를 클릭 이미지로 변경합니다
+      // // 마커에 click 이벤트를 등록합니다
+      // kakao.maps.event.addListener(
+      //   marker_e,
+      //   'click',
+      //   function () {
+      //     // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
+      //     // 마커의 이미지를 클릭 이미지로 변경합니다
 
-          if (
-            !selectedMarker ||
-            selectedMarker !== marker_e
-          ) {
-            // 클릭된 마커 객체가 null이 아니면
-            // 클릭된 마커의 이미지를 기본 이미지로 변경하고
-            !!selectedMarker &&
-              selectedMarker.setImage(
-                selectedMarker.normalImage
-              );
+      //     if (
+      //       !selectedMarker ||
+      //       selectedMarker !== marker_e
+      //     ) {
+      //       // 클릭된 마커 객체가 null이 아니면
+      //       // 클릭된 마커의 이미지를 기본 이미지로 변경하고
+      //       !!selectedMarker &&
+      //         selectedMarker.setImage(
+      //           selectedMarker.normalImage
+      //         );
 
-            // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
-            marker_e.setImage(marker_e.clickImage);
+      //       // 현재 클릭된 마커의 이미지는 클릭 이미지로 변경합니다
+      //       marker_e.setImage(marker_e.clickImage);
 
-            // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
-            selectedMarker = marker_e;
-          } else if (selectedMarker === marker_e) {
-            selectedMarker.setImage(
-              selectedMarker.normalImage
-            );
-            selectedMarker = null;
-          }
-          showPopup('b');
-        }
-      );
+      //       // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
+      //       selectedMarker = marker_e;
+      //     } else if (selectedMarker === marker_e) {
+      //       selectedMarker.setImage(
+      //         selectedMarker.normalImage
+      //       );
+      //       selectedMarker = null;
+      //     }
+      //     showPopup('b');
+      //   }
+      // );
 
       // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(
@@ -372,6 +386,8 @@ function MapPage() {
           // 지도의 중심좌표를 얻어옵니다
           var latlng = map.getCenter();
 
+          circleCenter = latlng;
+
           circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
           circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
           circle.setMap(map); // 원을 지도에 표시합니다
@@ -381,10 +397,10 @@ function MapPage() {
             prevLatlng &&
             Math.abs(
               prevLatlng.getLat() - latlng.getLat()
-            ) < 0.01 &&
+            ) < 0.005 &&
             Math.abs(
               prevLatlng.getLng() - latlng.getLng()
-            ) < 0.01
+            ) < 0.005
           ) {
             return;
           }
@@ -421,7 +437,18 @@ function MapPage() {
   }
 
   function routeNavigation(locPosition) {
+
+
     // 2. 시작, 도착 심볼찍기
+    var endX = 126.9769,
+      endY = 37.57260;
+
+    if (nearToilet !== null) {
+      endX = nearToilet.coordinateX;
+      endY = nearToilet.coordinateY;
+    }
+
+
 
     // marker_s = new kakao.maps.Marker(
     // 	{
@@ -448,11 +475,9 @@ function MapPage() {
         headers: headers,
         body: JSON.stringify({
           startX: locPosition.getLng().toString(),
-          startY: locPosition.getLat().toString(), //
-          // "startX": "127.02448847037635",
-          // "startY": "37.65223738314796", //
-          endX: '126.9752',
-          endY: '37.56579',
+          startY: locPosition.getLat().toString(), //center
+          endX: endX,
+          endY: endY,
           reqCoordType: 'WGS84GEO',
           resCoordType: 'EPSG3857',
           startName: '출발지',
@@ -675,8 +700,10 @@ function MapPage() {
 
   return (
     <>
-      <div id="map_div"></div>
-      {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
+      <div
+        id="map_div">
+      </div>
+          {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
       {popupInfo && (
         <div
@@ -701,15 +728,12 @@ function MapPage() {
                   style={{ float: 'right' }}
                   disabled
                   allowHalf
-                  defaultValue={5}
+                  defaultValue={popupInfo.rate}
                 />
               </div>
             }
-            extra={array.map((review, reviewIndex) => (
-              <div key={reviewIndex}>
-                {' '}
-                {/* 이 div에 key 추가 */}
-                {review.tag.map((item, index) => (
+            extra=
+                {popupInfo.tag.map((item, index) => (
                   <Tag
                     key={index}
                     style={{
@@ -723,140 +747,84 @@ function MapPage() {
                     {item}
                   </Tag>
                 ))}
-              </div>
-            ))}
 
-            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
-          >
-            {array.length > 0 ? (
-              array.map((review, reviewIndex) => (
-                <>
-                  <Card.Meta
-                    key={reviewIndex}
-                    description={
-                      <div>
-                        <span style={{ color: 'black' }}>
-                          <span
-                            style={{ fontSize: '15px' }}
-                          >
-                            {review.title}
-                          </span>
-                          <Rate
-                            style={{
-                              float: 'right',
-                              marginTop: '0.35rem',
-                            }}
-                            disabled
-                            allowHalf
-                            defaultValue={review.rate}
-                          />
-                        </span>
-                        <div
-                          style={{
-                            marginTop: '0.7rem',
-                            marginBottom: '3rem',
-                          }}
-                        >
-                          {review.tag.map((item, index) => (
-                            <Tag
-                              key={index}
-                              style={{
-                                float: 'left',
-                                marginRight: '1rem',
-                                fontSize: '10px',
-                              }}
-                              bordered={false}
-                              color="cyan"
-                            >
-                              {item}
-                            </Tag>
-                          ))}
-                          <span
-                            style={{
-                              fontSize: '14px',
-                              float: 'right',
-                            }}
-                          >
-                            {review.date}
-                          </span>
-                        </div>
-                      </div>
-                    }
-                  />
-                  <Divider
-                    style={{
-                      marginTop: 7,
-                      marginBottom: 15,
-                    }}
-                  />
-                </>
-              ))
-            ) : (
-              <>
-                <Empty
-                  description={
-                    <span
-                      style={{
-                        fontSize: '15px',
-                        color: 'black',
-                      }}
-                    >
-                      리뷰가 존재하지 않습니다.
-                    </span>
-                  }
-                />
-                <Divider
-                  style={{ marginTop: 7, marginBottom: 15 }}
-                />
-              </>
-            )}
-            <a
-              href="#"
-              style={{
-                fontSize: '15px',
-                float: 'left',
-                color: '#3BB26F',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/review', {
-                  state: {
-                    type: false,
-                    id: 1,
-                    name: '　',
-                    tag: [],
-                  },
-                });
-              }}
-            >
-              전체 리뷰
-            </a>
-            <Button
-              type="primary"
-              defaultColor="cyan"
-              style={{
-                float: 'right',
-                backgroundColor: '#3BB26F',
-              }}
-            >
-              길찾기
-            </Button>
-          </Card>
+
+          // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+      >	
+  {
+  popupInfo.recentReview.length > 0 ?(
+  popupInfo.recentReview.map((review, reviewIndex) => (
+    <div key={reviewIndex}> {/* 이 div에 key 추가 */}
+    <Card.Meta
+    description={
+      <div>
+      <span style={{ color: "black"}}>
+        <span style={{fontSize: "15px"}}>{review.content}</span>
+        <Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
+      </span>
+      <div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
+        {review.tag.map((item, index) => (
+        <Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
+          {item}
+        </Tag>
+        ))}
+        <span style={{ fontSize: "14px", float: "right" }}>{
+            moment
+            .utc(review.writeDate)
+            .format('YYYY-MM-DD')
+        }</span>
+      </div>
+      </div>
+    }
+    />
+      <Divider style={{ marginTop: 7, marginBottom: 15}} />
+    </div>
+  ))
+
+  ):(
+    <>
+    <Empty 
+    description={
+      <span style={{fontSize: "15px", color: "black"}}>
+      리뷰가 존재하지 않습니다.
+      </span>
+    }
+    />
+    <Divider style={{ marginTop: 7, marginBottom: 15}} />
+    </>
+  )
+  }
+    <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
+     onClick={(e) => { 
+      e.preventDefault(); 
+      navigate('/review', 
+      {state: {
+        id: popupInfo.id,
+        type: isGarbage,
+        name : popupInfo.name,
+        tag: popupInfo.tag,
+     }});  }}>전체 리뷰</a>	
+  <Button type="primary"  style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+    </Card>
         </div>
       )}
+      
+  <FloatButton.Group
+      shape="circle"
+    style={{
+    right:"15",
+    }}
+    >
+      <FloatButton type="primary" 
+      onClick={reload_navigation
+      } icon={<PlayCircleOutlined />} />
+      <FloatButton 
+      onClick={
+        polyline_remove
+      }
+      icon= {<CloseOutlined />} />
 
-      <FloatButton.Group
-        shape="circle"
-        style={{
-          right: '15',
-        }}
-      >
-        <FloatButton
-          type="primary"
-          icon={<PlayCircleOutlined />}
-        />
-        <FloatButton icon={<CloseOutlined />} />
-      </FloatButton.Group>
+    </FloatButton.Group>
     </>
   );
 }
