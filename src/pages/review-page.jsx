@@ -130,6 +130,7 @@ function ReviewPage() {
                       onOk={() => deleteReview(item.id)}
                       onCancel={handleCancel}
                       style={{
+                        marginTop: '14rem',
                         backgroundColor:
                           'rgba(0, 0, 0, 0.5)',
                         padding: 0,
