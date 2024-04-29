@@ -19,32 +19,38 @@ function MapPage() {
   const navigate = useNavigate();
 
   const array = [
-    // {
-    //   title: '화장실이 깨끗해요',
-    //   tag: ['깨끗해요', '좋아요'],
-    //   date: '2024-04-29',
-    //   nickname : '보땡이',
-    //   rate : 4.5,
-    // },
-    // {
-    //   title: '휴지가 가끔 없어요',
-    //   tag: ['휴지 없음'],
-    //   date: '2024-04-27',
-    //   nickname : '보땡이',
-    //   rate : 4.5,
-    // },
+    {
+      title: '화장실이 깨끗해요',
+      tag: ['깨끗해요', '좋아요'],
+      date: '2024-04-29',
+      nickname : '보땡이',
+      rate : 4.5,
+    },
+    {
+      title: '휴지가 가끔 없어요',
+      tag: ['휴지 없음'],
+      date: '2024-04-27',
+      nickname : '보땡이',
+      rate : 4.5,
+    },
 ];
 
   var map;
+  // const [map, setMap] = useState(null);
+  
   var marker_s, marker_e, marker_p1, marker_p2;
 
   var markers = []; // 마커를 담을 배열
 //   var markerList = [], // 마커 정보를 담은 배열
   var selectedMarker = null; // 클릭한 마커를 담을 변수
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
+  var currentLocation; // 현재 위치를 저장할 변수
+
+  // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
@@ -76,9 +82,9 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
-          method: 'GET',
+          method: 'GET',  
         }
       );
       if (response.status === 200) {
@@ -87,10 +93,12 @@ function MapPage() {
 
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
+        var nearestToilet = markerList.nearestToilet;
         console.log(garbageBin);
         console.log(toilet);
+        console.log(nearestToilet);
         initMarkers(garbageBin, false);
-		initMarkers(toilet, true);
+		    initMarkers(toilet, true);
       } else if (response.status === 400) {
         message.error("화장실이 존재하지 않습니다.", 2);
       }
@@ -100,9 +108,37 @@ function MapPage() {
     }
   };
 
+
+    // fetch 통신 method
+    const popupInfoRequest = async (
+      id, type
+    ) => {
+      try {
+        const response = await fetch(
+      `http://192.168.0.96//review/tg/${id}?type=true`,
+          {
+            method: 'GET',
+          }
+        );
+        if (response.status === 200) {
+          const markerInfomation = await response.json();
+
+          console.log(markerInfomation);
+          showPopup(markerInfomation);
+
+        } else if (response.status === 400) {
+          message.error("팝업창 오류", 2);
+        }
+      } catch (error) {
+        message.error("잘못된 요청입니다.");
+        console.error('오류 발생:', error);
+      }
+    };
+
   //Popup창 켜고 끄는 method
   function showPopup(info) {
     console.log('팝업창을 띄웁니다.');
+    console.log("팝업창을 띄을때 map 확인"+ map);
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
     if (prevInfo !== null && prevInfo === info) {
       prevInfo = null;
@@ -159,6 +195,15 @@ function MapPage() {
           // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
           // 마커의 이미지를 클릭 이미지로 변경합니다
 
+          console.log("마커 클릭 시 지도 유무" + map);
+          map = map;
+
+          var isGarbage = true;
+          if(markerInfo.type){
+            isGarbage = false;
+          }
+
+
           if (
             !selectedMarker ||
             selectedMarker !== marker
@@ -179,6 +224,7 @@ function MapPage() {
             );
             selectedMarker = null;
           }
+          // popupInfoRequest(markerInfo.id, );
           showPopup(markerInfo);
         }
       );
@@ -219,17 +265,17 @@ function MapPage() {
       mapOption = {
         // center: locPosition, // 지도의 중심좌표
         center: locPosition,
-        level: 10, // 지도의 확대 레벨
+        level: 4, // 지도의 확대 레벨
       };
 
     if (!mapContainer.firstChild) {
       // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
       map = new kakao.maps.Map(mapContainer, mapOption);
-
+      
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
         center: mapOption.center,
-        radius: 10000,
+        radius: mapOption.level * 100, // 미터 단위의 원의 반지름입니다
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: '#75B8FA', // 선의 색깔입니다
         strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
@@ -256,6 +302,7 @@ function MapPage() {
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
+      console.log(map)
 
       // 도착
       marker_e = new kakao.maps.Marker({
@@ -304,7 +351,7 @@ function MapPage() {
       // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(
         map,
-        'dragend',
+        'idle',
         function () {
           // 지도의  레벨을 얻어옵니다
           var level = map.getLevel();
@@ -343,7 +390,7 @@ function MapPage() {
             maxY: neLatLng.getLat(),
           };
 
-          console.log(circleXY);
+          console.log(circleXY, latlng);
 
           for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(null);
@@ -390,8 +437,8 @@ function MapPage() {
           startY: locPosition.getLat().toString(), //
           // "startX": "127.02448847037635",
           // "startY": "37.65223738314796", //
-          endX: '128.5102',
-          endY: '35.85354',
+          endX: '126.9752',
+          endY: '37.56579',
           reqCoordType: 'WGS84GEO',
           resCoordType: 'EPSG3857',
           startName: '출발지',
@@ -419,7 +466,7 @@ function MapPage() {
           '분';
 
         console.log(tDistance + tTime);
-        message.info(tDistance + tTime, 10);
+        message.info(tDistance + tTime, 1);
 
         //기존 그려진 라인 & 마커가 있다면 초기화
         if (resultdrawArr.length > 0) {
@@ -435,7 +482,6 @@ function MapPage() {
           //for문 [S]
           var geometry = resultData[i].geometry;
           var properties = resultData[i].properties;
-          var polyline_;
 
           if (geometry.type == 'LineString') {
             for (var j in geometry.coordinates) {
@@ -502,88 +548,13 @@ function MapPage() {
         drawLine(drawInfoArr);
       })
       .catch((error) => {
+        return false;
         console.error('Error:', error);
         // 에러 처리 로직은 여기에 작성합니다.
       });
   }
 
-  function asd() {
-    // // 위치 정보를 가져오는 함수
-    // const getLocation = new Promise((resolve) => {
-    //   if (navigator.geolocation) {
-    //     navigator.geolocation.getCurrentPosition(
-    //       function (position) {
-    //         var lat = position.coords.latitude,
-    //           lon = position.coords.longitude;
-    //         var locPosition = new kakao.maps.LatLng(
-    //           lat,
-    //           lon
-    //         );
-    //         resolve(locPosition);
-    //         console.log('현재위치를 가져옵니다.');
-    //       },
-    //       function () {
-    //         var locPosition = new kakao.maps.LatLng(
-    //           35.8678658,
-    //           128.5967954
-    //         );
-    //         resolve(locPosition);
-    //         console.log('현재위치를 가져올 수 없습니다.');
-    //       }
-    //     );
-    //   } else {
-    //     var locPosition = new kakao.maps.LatLng(
-    //       35.8678658,
-    //       128.5967954
-    //     );
-    //     resolve(locPosition);
-    //     console.log('현재위치를 가져올 수 없습니다.');
-    //   }
-    // });
-    // // 위치 정보를 가져온 후에 지도를 초기화하는 함수
-    // getLocation.then((locPosition) => {
-    //   initKakaoMap(locPosition);
-    //   console.log(
-    //     '가져온 위치 정보로 지도를 초기화합니다.'
-    //   );
-    // });
-
-    // // 사용자 위치를 지속적으로 추적
-    // let watchId = navigator.geolocation.watchPosition(
-    //   (position) => {
-    //     var lat = position.coords.latitude,
-    //       lon = position.coords.longitude;
-    //     var locPosition = new kakao.maps.LatLng(lat, lon);
-
-    //     // 이전 위치 마커가 있으면 지도에서 제거
-    //     if (marker_s) {
-    //       marker_s.setMap(null);
-    //     }
-
-    //     // 사용자의 위치에 마커 표시
-    //     marker_s = new kakao.maps.Marker({
-    //       map: map,
-    //       position: locPosition,
-    //       iconSize: new kakao.maps.Size(24, 38),
-    //     });
-
-    //     console.log(
-    //       '사용자의 위치를 지속적으로 추적합니다.'
-    //     );
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   },
-    //   {
-    //     enableHighAccuracy: true,
-    //     maximumAge: 0,
-    //     timeout: Infinity,
-    //   }
-    // );
-
-    // // 컴포넌트가 unmount될 때 위치 추적을 중지
-    // return () => navigator.geolocation.clearWatch(watchId);
-  }
+ 
 
   useEffect(() => {
        // 위치 정보를 가져오는 함수
@@ -602,8 +573,8 @@ function MapPage() {
             },
             function () {
               var locPosition = new kakao.maps.LatLng(
-                35.8678658,
-                128.5967954
+                37.57636,
+                126.9768
               );
               resolve(locPosition);
               console.log('현재위치를 가져올 수 없습니다.');
@@ -611,8 +582,8 @@ function MapPage() {
           );
         } else {
           var locPosition = new kakao.maps.LatLng(
-            35.8678658,
-            128.5967954
+            37.57636,
+            126.9768
           );
           resolve(locPosition);
           console.log('현재위치를 가져올 수 없습니다.');
@@ -620,6 +591,8 @@ function MapPage() {
       });
       // 위치 정보를 가져온 후에 지도를 초기화하는 함수
       getLocation.then((locPosition) => {
+        // setCurrentLocation(locPosition);
+        currentLocation = locPosition;
         initKakaoMap(locPosition);
         console.log(
           '가져온 위치 정보로 지도를 초기화합니다.'
@@ -663,12 +636,39 @@ function MapPage() {
       return () => navigator.geolocation.clearWatch(watchId);
   }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
+
+  const polyline_remove = ()=>{
+    if (polyline_ != null) {
+      polyline_.setMap(null);
+    } else {
+      console.log("polyline_ 객체가 null입니다.");
+    }
+  }
+  const reload_navigation = () => {
+    
+      if (!map) {
+        console.log("map 객체가 아직 준비되지 않았습니다.");
+        return;
+      }
+      console.log("플러팅 버튼 클릭시 " + currentLocation);
+      console.log("하이" +map);
+      if (map){
+      console.log("" + currentLocation);
+      map.panTo(currentLocation);
+      const a = routeNavigation(currentLocation);
+
+      if (a === false) {
+        message.error('길찾기에 실패했습니다.');
+      }
+    }
+
+    }
+
   return (
     <>
-
       <div
         id="map_div">
-	  </div>
+	    </div>
 	        {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
       {popupInfo && (
@@ -688,7 +688,7 @@ function MapPage() {
                 }}
               >
                 <span style={{ fontSize: '16px ' }}>
-                  이마트 화장실
+                  {popupInfo.name}
                 </span>
                 <Rate
                   style={{ float: 'right' }}
@@ -699,7 +699,7 @@ function MapPage() {
               </div>
             }
             extra={array.map((review, reviewIndex) => (
-              <>
+              <div key={reviewIndex}> {/* 이 div에 key 추가 */}
                 {review.tag.map((item, index) => (
                   <Tag
                     key={index}
@@ -714,7 +714,7 @@ function MapPage() {
                     {item}
                   </Tag>
                 ))}
-              </>
+              </div>
             ))}
 
       		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
@@ -722,9 +722,8 @@ function MapPage() {
 	{
 	array.length > 0 ?(
 	array.map((review, reviewIndex) => (
-		<>
+		<div key={reviewIndex}> {/* 이 div에 key 추가 */}
 		<Card.Meta
-		key={reviewIndex}
 		description={
 			<div>
 			<span style={{ color: "black"}}>
@@ -743,7 +742,7 @@ function MapPage() {
 		}
 		/>
 			<Divider style={{ marginTop: 7, marginBottom: 15}} />
-		</>
+		</div>
 	))
 
 	):(
@@ -768,19 +767,25 @@ function MapPage() {
         toiletId : 1,
         garbageBinId : 1,
      }});  }}>전체 리뷰</a>	
-	<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+	<Button type="primary"  style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
     </Card>
         </div>
       )}
-
+      
 	<FloatButton.Group
       shape="circle"
 	  style={{
 		right:"15",
 	  }}
     >
-      <FloatButton type="primary" icon={<PlayCircleOutlined />} />
-      <FloatButton icon= {<CloseOutlined />} />
+      <FloatButton type="primary" 
+      onClick={reload_navigation
+      } icon={<PlayCircleOutlined />} />
+      <FloatButton 
+      onClick={
+        polyline_remove
+      }
+      icon= {<CloseOutlined />} />
 
     </FloatButton.Group>
     </>
