@@ -22,88 +22,82 @@ import Password from 'antd/es/input/Password';
 function ReviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const toiletId = useState(1);
-  //const { toiletId } = location.state || {};
+  const [toiletId] = useState(1); // useState를 사용하는 부분 수정
   const [scrollPosition, setScrollPosition] = useState(0);
   const [reviewList, setReviewList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [delPassword, setDelPassword] = useState(''); // 삭제 비밀번호
+  const [modalOpenId, setModalOpenId] = useState(null); // 수정된 상태
+  const [delPassword, setDelPassword] = useState('');
+
   const handleScroll = (event) => {
     setScrollPosition(event.currentTarget.scrollTop);
-
     if (
       event.currentTarget.scrollHeight -
         event.currentTarget.scrollTop ===
       event.currentTarget.clientHeight
     ) {
-      message.info('리뷰의 끝입니다.!');
+      message.info('리뷰의 끝입니다!');
     }
   };
-  const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
 
-  var sum = 0.0;
-  var length = reviewList.length;
-  reviewList.forEach(function (item, index) {
+  const name = '강남역';
+
+  let sum = 0.0;
+  reviewList.forEach((item) => {
     sum += item.rate;
   });
-  sum = sum / length;
+  sum = reviewList.length > 0 ? sum / reviewList.length : 0;
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const showModal = (id) => {
+    setModalOpenId(id);
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    setModalOpenId(null);
   };
-
-  const reviewData = async () => {
-    console.log('toilet 번호' + toiletId);
-    try {
-      const response = await axios.get(
-        `http://192.168.0.96/review/tg/${1}?type=false`
-      );
-      if (response.status == 200) {
-        const reviewData = response.data;
-        if (Array.isArray(reviewData)) {
-          const reviewDataList = reviewData.map(
-            (review) => ({
-              id: review.id,
-              content: review.content,
-              nickname: review.nickname,
-              writeDate: moment
-                .utc(review.writeDate)
-                .format('YYYY-MM-DD'),
-              rate: review.rate,
-              tag: review.tag || [],
-            })
-          );
-          setReviewList(reviewDataList);
-          console.log(response.data);
-          console.log('받아온 리뷰 리스트' + reviewList);
-          console.log('서버로 부터 데이터를 받았습니다');
-        }
-      }
-    } catch (error) {
-      console.log('서버연결 실패!');
-    }
-  };
-  useEffect(() => {
-    reviewData();
-  }, []);
 
   const deleteReview = async (id) => {
     try {
       const response = await axios.delete(
-        `http://192.168.0.96/review/${id}`
+        `http://192.168.0.96/review/${id}?password=${delPassword}`
       );
+      if (response.status === 200) {
+        message.success('리뷰가 삭제되었습니다.');
+        setModalOpenId(null); // 모달 닫기
+        reviewData();
+      }
     } catch (error) {
-      console.log('리뷰 삭제 실패!');
+      message.error('리뷰 삭제 실패!');
     }
   };
+
+  const reviewData = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.0.96/review/tg/${toiletId}?type=false`
+      );
+      if (response.status === 200) {
+        const reviewDataList = response.data.map(
+          (review) => ({
+            id: review.id,
+            content: review.content,
+            nickname: review.nickname,
+            writeDate: moment
+              .utc(review.writeDate)
+              .format('YYYY-MM-DD'),
+            rate: review.rate,
+            tag: review.tag || [],
+          })
+        );
+        setReviewList(reviewDataList);
+      }
+    } catch (error) {
+      message.error('서버 연결 실패!');
+    }
+  };
+
+  useEffect(() => {
+    reviewData();
+  }, []);
 
   return (
     <div
@@ -111,13 +105,10 @@ function ReviewPage() {
       id="box"
       onScroll={handleScroll}
     >
-      {console.log(sum)}
       {Header(name, sum, [])}
-
       <div className="list-box-margin">
-        {/* ReviewResult() */}
         <List
-          itemLayout="verticalrizontal"
+          itemLayout="vertical"
           dataSource={reviewList}
           renderItem={(item, index) => (
             <List.Item>
@@ -130,89 +121,59 @@ function ReviewPage() {
                 >
                   <FaXmark
                     className="delete-button"
-                    onClick={showModal}
+                    onClick={() => showModal(item.id)}
                   />
-                  <Modal
-                    title="삭제 하시겠습니까?"
-                    open={isModalOpen}
-                    onOk={() =>
-                      deleteReview(item.id, delPassword)
-                    }
-                    onCancel={handleCancel}
-                    className="custom-modal-mask" // 사용자 정의 클래스 적용
-                    style={{
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    }} // 배경색을 반투명하게 설정
-                  >
-                    <Input
-                      type="text"
-                      placeholder="비밀번호"
-                      value={delPassword}
-                      onChange={(e) =>
-                        setDelPassword(e.target.value)
-                      }
-                    ></Input>
-                  </Modal>
+                  {modalOpenId === item.id && (
+                    <Modal
+                      title="삭제 하시겠습니까?"
+                      open={modalOpenId === item.id}
+                      onOk={() => deleteReview(item.id)}
+                      onCancel={handleCancel}
+                      style={{
+                        backgroundColor:
+                          'rgba(0, 0, 0, 0.5)',
+                        padding: 0,
+                        borderRadius: '0.5rem',
+                      }}
+                    >
+                      <Input
+                        type="text"
+                        placeholder="비밀번호"
+                        value={delPassword}
+                        onChange={(e) =>
+                          setDelPassword(e.target.value)
+                        }
+                      />
+                    </Modal>
+                  )}
                 </div>
                 <Card.Meta
                   avatar={
                     <Avatar
-                      src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                      src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${item.id}`}
                     />
                   }
-                  title={
-                    <span>
-                      {' '}
-                      <span
-                        style={{
-                          fontFamily: 'SUITE-Regular',
-                          float: 'left',
-                          fontSize: '0.8rem',
-                        }}
-                      >
-                        {item.nickname}
-                      </span>
-                      {
-                        // <span style={{float:"left"}}>{item.title}</span>
-                      }
-                    </span>
-                  }
+                  title={<span>{item.nickname}</span>}
                   description={
-                    <span style={{ color: 'black' }}>
-                      <span>{item.content}</span>
-
+                    <>
+                      {item.content}
                       <Rate
                         style={{ float: 'right' }}
                         disabled
                         allowHalf
                         defaultValue={item.rate}
                       />
-                    </span>
+                    </>
                   }
                 />
-
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    marginLeft: '2.4rem',
-                  }}
-                >
-                  {item.tag.map((item, index) => (
-                    <Tag
-                      key={index}
-                      style={{
-                        fontFamily: 'SUITE-Regular',
-                        float: 'left',
-                        marginLeft: '0.2rem',
-                      }}
-                      bordered={false}
-                      color="cyan"
-                    >
-                      {item}
+                <div style={{ marginTop: '1rem' }}>
+                  {item.tag.map((tag, index) => (
+                    <Tag key={index} color="cyan">
+                      {tag}
                     </Tag>
                   ))}
                   <span style={{ float: 'right' }}>
-                    {item.writeDate}{' '}
+                    {item.writeDate}
                   </span>
                 </div>
               </Card>
@@ -220,25 +181,18 @@ function ReviewPage() {
           )}
         />
       </div>
-      {
-        <FloatButton
-          style={{
-            float: 'right',
-            position: 'fixed',
-            zIndex: '13',
-          }}
-          type="primary"
-          onClick={() => {
-            console.log('리뷰작성 버튼 클릭' + sum);
-            navigate('/review-write', {
-              state: {
-                sum: sum,
-              },
-            });
-          }}
-          icon={<PlusCircleOutlined />}
-        />
-      }
+      <FloatButton
+        style={{
+          float: 'right',
+          position: 'fixed',
+          zIndex: '13',
+        }}
+        type="primary"
+        onClick={() =>
+          navigate('/review-write', { state: { sum: sum } })
+        }
+        icon={<PlusCircleOutlined />}
+      />
     </div>
   );
 }
