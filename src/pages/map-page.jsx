@@ -3,14 +3,26 @@ import { useEffect, useState } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
 
-import imageSrc from "../markerImage/Toilet.png";
-import imageSrc2 from "../markerImage/ToiletChoice.png";
-import imageSrc3 from "../markerImage/garbege.png";
-import imageSrc4 from "../markerImage/garbageChoice.png";
+import imageSrc from '../markerImage/Toilet.png';
+import imageSrc2 from '../markerImage/ToiletChoice.png';
+import imageSrc3 from '../markerImage/garbege.png';
+import imageSrc4 from '../markerImage/garbageChoice.png';
 import '../styles/app-style.css';
 
-import { CloseOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { Card, Rate, Tag, message , Button, Divider , FloatButton, Empty } from "antd";
+import {
+  CloseOutlined,
+  PlayCircleOutlined,
+} from '@ant-design/icons';
+import {
+  Card,
+  Rate,
+  Tag,
+  message,
+  Button,
+  Divider,
+  FloatButton,
+  Empty,
+} from 'antd';
 
 const { Tmapv2 } = window;
 const { kakao } = window;
@@ -33,13 +45,13 @@ function MapPage() {
     //   nickname : '보땡이',
     //   rate : 4.5,
     // },
-];
+  ];
 
   var map;
   var marker_s, marker_e, marker_p1, marker_p2;
 
   var markers = []; // 마커를 담을 배열
-//   var markerList = [], // 마커 정보를 담은 배열
+  //   var markerList = [], // 마커 정보를 담은 배열
   var selectedMarker = null; // 클릭한 마커를 담을 변수
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
 
@@ -48,11 +60,17 @@ function MapPage() {
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
-  
-  var clickImage = createMarkerImage(imageSrc2, choiceImageSize),
-  	normalImage = createMarkerImage(imageSrc, imageSize),
-	garbegeImage = createMarkerImage(imageSrc3, imageSize),
-	garbegeClickImage = createMarkerImage(imageSrc4, choiceImageSize);
+
+  var clickImage = createMarkerImage(
+      imageSrc2,
+      choiceImageSize
+    ),
+    normalImage = createMarkerImage(imageSrc, imageSize),
+    garbegeImage = createMarkerImage(imageSrc3, imageSize),
+    garbegeClickImage = createMarkerImage(
+      imageSrc4,
+      choiceImageSize
+    );
 
   var totalMarkerArr = [];
   var drawInfoArr = [];
@@ -76,7 +94,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+        `http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
         {
           method: 'GET',
         }
@@ -90,12 +108,12 @@ function MapPage() {
         console.log(garbageBin);
         console.log(toilet);
         initMarkers(garbageBin, false);
-		initMarkers(toilet, true);
+        initMarkers(toilet, true);
       } else if (response.status === 400) {
-        message.error("화장실이 존재하지 않습니다.", 2);
+        message.error('화장실이 존재하지 않습니다.', 2);
       }
     } catch (error) {
-      message.error("잘못된 요청입니다.");
+      message.error('잘못된 요청입니다.');
       console.error('오류 발생:', error);
     }
   };
@@ -117,14 +135,13 @@ function MapPage() {
   }
 
   function initMarkers(markerList, isToilet) {
-	var markerImage;
+    var markerImage;
 
-	if(isToilet){
-		markerImage = normalImage;
-	}
-	else{
-		markerImage = garbegeImage;
-	}
+    if (isToilet) {
+      markerImage = normalImage;
+    } else {
+      markerImage = garbegeImage;
+    }
 
     if (markerList === null) {
       console.log('데이터가 없습니다.');
@@ -141,14 +158,13 @@ function MapPage() {
         image: markerImage, // 마커 이미지
       });
 
-	  if(isToilet){
-      	marker.normalImage = normalImage;
-      	marker.clickImage = clickImage;
-	  }
-	  else{
-		marker.normalImage = garbegeImage;
-		marker.clickImage = garbegeClickImage;
-	 }
+      if (isToilet) {
+        marker.normalImage = normalImage;
+        marker.clickImage = clickImage;
+      } else {
+        marker.normalImage = garbegeImage;
+        marker.clickImage = garbegeClickImage;
+      }
       markers.push(marker);
 
       // 마커에 click 이벤트를 등록합니다
@@ -547,26 +563,22 @@ function MapPage() {
     //     '가져온 위치 정보로 지도를 초기화합니다.'
     //   );
     // });
-
     // // 사용자 위치를 지속적으로 추적
     // let watchId = navigator.geolocation.watchPosition(
     //   (position) => {
     //     var lat = position.coords.latitude,
     //       lon = position.coords.longitude;
     //     var locPosition = new kakao.maps.LatLng(lat, lon);
-
     //     // 이전 위치 마커가 있으면 지도에서 제거
     //     if (marker_s) {
     //       marker_s.setMap(null);
     //     }
-
     //     // 사용자의 위치에 마커 표시
     //     marker_s = new kakao.maps.Marker({
     //       map: map,
     //       position: locPosition,
     //       iconSize: new kakao.maps.Size(24, 38),
     //     });
-
     //     console.log(
     //       '사용자의 위치를 지속적으로 추적합니다.'
     //     );
@@ -580,96 +592,92 @@ function MapPage() {
     //     timeout: Infinity,
     //   }
     // );
-
     // // 컴포넌트가 unmount될 때 위치 추적을 중지
     // return () => navigator.geolocation.clearWatch(watchId);
   }
 
   useEffect(() => {
-       // 위치 정보를 가져오는 함수
-       const getLocation = new Promise((resolve) => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            function (position) {
-              var lat = position.coords.latitude,
-                lon = position.coords.longitude;
-              var locPosition = new kakao.maps.LatLng(
-                lat,
-                lon
-              );
-              resolve(locPosition);
-              console.log('현재위치를 가져옵니다.');
-            },
-            function () {
-              var locPosition = new kakao.maps.LatLng(
-                35.8678658,
-                128.5967954
-              );
-              resolve(locPosition);
-              console.log('현재위치를 가져올 수 없습니다.');
-            }
-          );
-        } else {
-          var locPosition = new kakao.maps.LatLng(
-            35.8678658,
-            128.5967954
-          );
-          resolve(locPosition);
-          console.log('현재위치를 가져올 수 없습니다.');
-        }
-      });
-      // 위치 정보를 가져온 후에 지도를 초기화하는 함수
-      getLocation.then((locPosition) => {
-        initKakaoMap(locPosition);
-        console.log(
-          '가져온 위치 정보로 지도를 초기화합니다.'
-        );
-      });
-  
-      // 사용자 위치를 지속적으로 추적
-      let watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          var lat = position.coords.latitude,
-            lon = position.coords.longitude;
-          var locPosition = new kakao.maps.LatLng(lat, lon);
-  
-          // 이전 위치 마커가 있으면 지도에서 제거
-          if (marker_s) {
-            marker_s.setMap(null);
+    // 위치 정보를 가져오는 함수
+    const getLocation = new Promise((resolve) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            var lat = position.coords.latitude,
+              lon = position.coords.longitude;
+            var locPosition = new kakao.maps.LatLng(
+              lat,
+              lon
+            );
+            resolve(locPosition);
+            console.log('현재위치를 가져옵니다.');
+          },
+          function () {
+            var locPosition = new kakao.maps.LatLng(
+              35.8678658,
+              128.5967954
+            );
+            resolve(locPosition);
+            console.log('현재위치를 가져올 수 없습니다.');
           }
-  
-          // 사용자의 위치에 마커 표시
-          marker_s = new kakao.maps.Marker({
-            map: map,
-            position: locPosition,
-            iconSize: new kakao.maps.Size(24, 38),
-          });
-  
-          console.log(
-            '사용자의 위치를 지속적으로 추적합니다.'
-          );
-        },
-        (error) => {
-          console.log(error);
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 0,
-          timeout: Infinity,
-        }
+        );
+      } else {
+        var locPosition = new kakao.maps.LatLng(
+          35.8678658,
+          128.5967954
+        );
+        resolve(locPosition);
+        console.log('현재위치를 가져올 수 없습니다.');
+      }
+    });
+    // 위치 정보를 가져온 후에 지도를 초기화하는 함수
+    getLocation.then((locPosition) => {
+      initKakaoMap(locPosition);
+      console.log(
+        '가져온 위치 정보로 지도를 초기화합니다.'
       );
-  
-      // 컴포넌트가 unmount될 때 위치 추적을 중지
-      return () => navigator.geolocation.clearWatch(watchId);
+    });
+
+    // 사용자 위치를 지속적으로 추적
+    let watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        var lat = position.coords.latitude,
+          lon = position.coords.longitude;
+        var locPosition = new kakao.maps.LatLng(lat, lon);
+
+        // 이전 위치 마커가 있으면 지도에서 제거
+        if (marker_s) {
+          marker_s.setMap(null);
+        }
+
+        // 사용자의 위치에 마커 표시
+        marker_s = new kakao.maps.Marker({
+          map: map,
+          position: locPosition,
+          iconSize: new kakao.maps.Size(24, 38),
+        });
+
+        console.log(
+          '사용자의 위치를 지속적으로 추적합니다.'
+        );
+      },
+      (error) => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: Infinity,
+      }
+    );
+
+    // 컴포넌트가 unmount될 때 위치 추적을 중지
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
   return (
     <>
-
-      <div
-        id="map_div">
-	  </div>
-	        {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
+      <div id="map_div"></div>
+      {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
       {popupInfo && (
         <div
@@ -717,72 +725,136 @@ function MapPage() {
               </>
             ))}
 
-      		// extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
-			>	
-	{
-	array.length > 0 ?(
-	array.map((review, reviewIndex) => (
-		<>
-		<Card.Meta
-		key={reviewIndex}
-		description={
-			<div>
-			<span style={{ color: "black"}}>
-				<span style={{fontSize: "15px"}}>{review.title}</span>
-				<Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
-			</span>
-			<div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
-				{review.tag.map((item, index) => (
-				<Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
-					{item}
-				</Tag>
-				))}
-				<span style={{ fontSize: "14px", float: "right" }}>{review.date}</span>
-			</div>
-			</div>
-		}
-		/>
-			<Divider style={{ marginTop: 7, marginBottom: 15}} />
-		</>
-	))
-
-	):(
-		<>
-		<Empty 
-		description={
-			<span style={{fontSize: "15px", color: "black"}}>
-			리뷰가 존재하지 않습니다.
-			</span>
-		}
-		/>
-		<Divider style={{ marginTop: 7, marginBottom: 15}} />
-		</>
-	)
-	}
-  	<a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
-     onClick={(e) => { 
-      e.preventDefault(); 
-      navigate('/review', 
-      {state: {
-        isToilet : true,
-        toiletId : 1,
-        garbageBinId : 1,
-     }});  }}>전체 리뷰</a>	
-	<Button type="primary" defaultColor="cyan" style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
-    </Card>
+            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+          >
+            {array.length > 0 ? (
+              array.map((review, reviewIndex) => (
+                <>
+                  <Card.Meta
+                    key={reviewIndex}
+                    description={
+                      <div>
+                        <span style={{ color: 'black' }}>
+                          <span
+                            style={{ fontSize: '15px' }}
+                          >
+                            {review.title}
+                          </span>
+                          <Rate
+                            style={{
+                              float: 'right',
+                              marginTop: '0.35rem',
+                            }}
+                            disabled
+                            allowHalf
+                            defaultValue={review.rate}
+                          />
+                        </span>
+                        <div
+                          style={{
+                            marginTop: '0.7rem',
+                            marginBottom: '3rem',
+                          }}
+                        >
+                          {review.tag.map((item, index) => (
+                            <Tag
+                              key={index}
+                              style={{
+                                float: 'left',
+                                marginRight: '1rem',
+                                fontSize: '10px',
+                              }}
+                              bordered={false}
+                              color="cyan"
+                            >
+                              {item}
+                            </Tag>
+                          ))}
+                          <span
+                            style={{
+                              fontSize: '14px',
+                              float: 'right',
+                            }}
+                          >
+                            {review.date}
+                          </span>
+                        </div>
+                      </div>
+                    }
+                  />
+                  <Divider
+                    style={{
+                      marginTop: 7,
+                      marginBottom: 15,
+                    }}
+                  />
+                </>
+              ))
+            ) : (
+              <>
+                <Empty
+                  description={
+                    <span
+                      style={{
+                        fontSize: '15px',
+                        color: 'black',
+                      }}
+                    >
+                      리뷰가 존재하지 않습니다.
+                    </span>
+                  }
+                />
+                <Divider
+                  style={{ marginTop: 7, marginBottom: 15 }}
+                />
+              </>
+            )}
+            <a
+              href="#"
+              style={{
+                fontSize: '15px',
+                float: 'left',
+                color: '#3BB26F',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/review', {
+                  state: {
+                    isToilet: true,
+                    toiletId: 1,
+                    garbageBinId: 1,
+                  },
+                });
+              }}
+            >
+              전체 리뷰
+            </a>
+            <Button
+              type="primary"
+              defaultColor="cyan"
+              style={{
+                float: 'right',
+                backgroundColor: '#3BB26F',
+              }}
+            >
+              길찾기
+            </Button>
+          </Card>
         </div>
       )}
 
-	<FloatButton.Group
-      shape="circle"
-	  style={{
-		right:"15",
-	  }}
-    >
-      <FloatButton type="primary" icon={<PlayCircleOutlined />} />
-      <FloatButton icon= {<CloseOutlined />} />
-
-    </FloatButton.Group>
+      <FloatButton.Group
+        shape="circle"
+        style={{
+          right: '15',
+        }}
+      >
+        <FloatButton
+          type="primary"
+          icon={<PlayCircleOutlined />}
+        />
+        <FloatButton icon={<CloseOutlined />} />
+      </FloatButton.Group>
     </>
   );
 }

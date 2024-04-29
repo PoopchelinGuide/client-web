@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/review-style.css';
 import ReviewResult from '../components/review-result';
-import { useNavigate , useLocation} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -13,16 +13,16 @@ import {
   FloatButton,
 } from 'antd';
 import Header from '../components/header';
-import { width } from '@fortawesome/free-solid-svg-icons/fa0';
-
-
-
+import axios from 'axios';
+import moment from 'moment';
 function ReviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const toiletId = useState(1);
+  //const { toiletId } = location.state || {};
   const [scrollPosition, setScrollPosition] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [reviewList, setReviewList] = useState([]);
   const handleScroll = (event) => {
     setScrollPosition(event.currentTarget.scrollTop);
 
@@ -122,8 +122,41 @@ function ReviewPage() {
     sum += item.rate;
   });
   sum = sum / length;
+
+  const fetchData = async () => {
+    console.log('toilet 번호' + toiletId);
+    try {
+      const response = await axios.get(
+        `http://192.168.0.96/review/tg/${1}?type=false`
+      );
+      if (response.status == 200) {
+        const reviewData = response.data;
+        if (Array.isArray(reviewData)) {
+          const reviewDataList = reviewData.map(
+            (review) => ({
+              id: review.id,
+              content: review.content,
+              nickname: review.nickname,
+              writeDate: moment
+                .utc(review.writeDate)
+                .format('YYYY-MM-DD'),
+              rate: review.rate,
+              tag: review.tag || [],
+            })
+          );
+          setReviewList(reviewDataList);
+          console.log(response.data);
+          console.log('받아온 리뷰 리스트' + reviewList);
+          console.log('서버로 부터 데이터를 받았습니다');
+        }
+      }
+    } catch (error) {
+      console.log('서버연결 실패!');
+    }
+  };
   useEffect(() => {
-    setReviewContent(array);
+    //setReviewContent(array);
+    fetchData();
   }, []);
 
   const sortedReviews = reviewContent.sort((a, b) => {
@@ -141,7 +174,7 @@ function ReviewPage() {
         {/* ReviewResult() */}
         <List
           itemLayout="verticalrizontal"
-          dataSource={array}
+          dataSource={reviewList}
           renderItem={(item, index) => (
             <List.Item>
               <Card className="data-box">
@@ -170,7 +203,7 @@ function ReviewPage() {
                   }
                   description={
                     <span style={{ color: 'black' }}>
-                      <span>{item.title}</span>
+                      <span>{item.content}</span>
                       <Rate
                         style={{ float: 'right' }}
                         disabled
@@ -197,12 +230,11 @@ function ReviewPage() {
                       bordered={false}
                       color="cyan"
                     >
-                      {' '}
                       {item}
                     </Tag>
                   ))}
                   <span style={{ float: 'right' }}>
-                    {item.date}{' '}
+                    {item.writeDate}{' '}
                   </span>
                 </div>
               </Card>
@@ -214,7 +246,7 @@ function ReviewPage() {
         <FloatButton
           style={{
             float: 'right',
-            position: 'sticky',
+            position: 'fixed',
             zIndex: '13',
           }}
           type="primary"

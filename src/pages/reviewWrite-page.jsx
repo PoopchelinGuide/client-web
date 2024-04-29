@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../styles/reviewWrite-style.css';
 import Header from '../components/header';
 import { Rate, Input, message } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   FaPoo,
   FaBan,
@@ -13,7 +14,14 @@ import {
   FaDisease,
 } from 'react-icons/fa';
 import axios from 'axios';
+
 function ReviewWritePage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { toiletId, toiletName, rate } =
+    location.state || {};
+
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
@@ -127,18 +135,29 @@ function ReviewWritePage() {
       selectedTags
     );
 
-    // try {
-    //   const response = await axios.post('your-server-url', {
-    //     nickname,
-    //     password,
-    //     content,
-    //     rate: userRate,
-    //     tags: selectedTags,
-    //   });
-    //   message.success('리뷰가 등록되었습니다.');
-    // } catch (error) {
-    //   message.error('리뷰 등록에 실패했습니다.');
-    // }
+    try {
+      const response = await axios.post(
+        'http://192.168.0.96/review',
+        {
+          nickname: nickname,
+          password: password,
+          rate: userRate,
+          content: content,
+          tag: selectedTags,
+          toiletId: 1,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(response.data);
+      message.success('리뷰가 등록되었습니다.');
+      navigate('/review');
+    } catch (error) {
+      message.error('리뷰 등록에 실패했습니다.');
+    }
   };
   return (
     <div className="review-wirte-page">
