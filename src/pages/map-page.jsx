@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 import imageSrc from '../markerImage/Toilet.png';
 import imageSrc2 from '../markerImage/ToiletChoice.png';
@@ -58,10 +59,16 @@ function MapPage() {
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
   var currentLocation; // 현재 위치를 저장할 변수
 
+  var isGarbage = false; // 쓰레기통인지 화장실인지 구분하는 변수 boolean
+
   // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+  // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
+  var nearToilet;
+
+  var circleCenter ; // 원의 중심 좌표를 저장할 변수
 
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
@@ -91,6 +98,8 @@ function MapPage() {
     return markerImage;
   }
 
+
+
   // fetch 통신 method
   const fetchData = async (
     circleXY,
@@ -112,11 +121,17 @@ function MapPage() {
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
         var nearestToilet = markerList.nearestToilet;
+
         console.log(garbageBin);
         console.log(toilet);
         console.log(nearestToilet);
-        initMarkers(garbageBin, false);
+
+        initMarkers(garbageBin, false);   
 		    initMarkers(toilet, true);
+
+        nearToilet = nearestToilet;
+        console.log("가장 가까운 화장실"+ nearToilet);
+
       } else if (response.status === 400) {
         message.error('화장실이 존재하지 않습니다.', 2);
       }
@@ -127,20 +142,19 @@ function MapPage() {
   };
 
 
-    // fetch 통신 method
+    // 팝업 정보 요청 함수
     const popupInfoRequest = async (
       id, type
     ) => {
       try {
         const response = await fetch(
-      `http://192.168.0.96//review/tg/${id}?type=true`,
+      `http://192.168.0.22/review/tg/popover/${id}?type=${type}`,
           {
             method: 'GET',
           }
         );
         if (response.status === 200) {
           const markerInfomation = await response.json();
-
           console.log(markerInfomation);
           showPopup(markerInfomation);
 
@@ -214,11 +228,9 @@ function MapPage() {
           console.log("마커 클릭 시 지도 유무" + map);
           map = map;
 
-          var isGarbage = true;
           if(markerInfo.type){
-            isGarbage = false;
+            isGarbage = true;
           }
-
 
           if (
             !selectedMarker ||
@@ -240,8 +252,8 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          // popupInfoRequest(markerInfo.id, );
-          showPopup(markerInfo);
+          popupInfoRequest(markerInfo.id, isGarbage, markerInfo);
+          // showPopup(markerInfo);
         }
       );
     });
@@ -276,7 +288,7 @@ function MapPage() {
     // resultdrawArr.push(polyline_);
   }
 
-  function initKakaoMap(locPosition) {
+  async function initKakaoMap(locPosition) {
     var mapContainer = document.getElementById('map_div'), // 지도를 표시할 div
       mapOption = {
         // center: locPosition, // 지도의 중심좌표
@@ -299,6 +311,8 @@ function MapPage() {
         fillOpacity: 0, // 채우기 불투명도 입니다
       });
 
+      circleCenter = circle.center;
+
       var centerAround = circle.getBounds();
       circle.setMap(map); // 원을 지도에 표시합니다
       console.log('원 생성' + centerAround);
@@ -314,11 +328,11 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      fetchData(circleXY, mapOption.center, initMarkers);
+      await fetchData(circleXY, mapOption.center, initMarkers);
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
-      console.log(map)
+      console.log(map);
 
       // 도착
       marker_e = new kakao.maps.Marker({
@@ -360,6 +374,7 @@ function MapPage() {
             );
             selectedMarker = null;
           }
+
           showPopup('b');
         }
       );
@@ -374,6 +389,8 @@ function MapPage() {
           // 지도의 중심좌표를 얻어옵니다
           var latlng = map.getCenter();
 
+          circleCenter = latlng;
+
           circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
           circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
           circle.setMap(map); // 원을 지도에 표시합니다
@@ -383,10 +400,10 @@ function MapPage() {
             prevLatlng &&
             Math.abs(
               prevLatlng.getLat() - latlng.getLat()
-            ) < 0.01 &&
+            ) < 0.005 &&
             Math.abs(
               prevLatlng.getLng() - latlng.getLng()
-            ) < 0.01
+            ) < 0.005
           ) {
             return;
           }
@@ -424,6 +441,13 @@ function MapPage() {
 
   function routeNavigation(locPosition) {
     // 2. 시작, 도착 심볼찍기
+    var endX = 126.9769,
+      endY = 37.57260;
+
+    if (nearToilet !== null) {
+      endX = nearToilet.coordinateX;
+      endY = nearToilet.coordinateY;
+    }
 
     // marker_s = new kakao.maps.Marker(
     // 	{
@@ -450,11 +474,9 @@ function MapPage() {
         headers: headers,
         body: JSON.stringify({
           startX: locPosition.getLng().toString(),
-          startY: locPosition.getLat().toString(), //
-          // "startX": "127.02448847037635",
-          // "startY": "37.65223738314796", //
-          endX: '126.9752',
-          endY: '37.56579',
+          startY: locPosition.getLat().toString(), //center
+          endX: endX,
+          endY: endY,
           reqCoordType: 'WGS84GEO',
           resCoordType: 'EPSG3857',
           startName: '출발지',
@@ -661,17 +683,18 @@ function MapPage() {
     }
   }
   const reload_navigation = () => {
-    
       if (!map) {
         console.log("map 객체가 아직 준비되지 않았습니다.");
         return;
       }
       console.log("플러팅 버튼 클릭시 " + currentLocation);
-      console.log("하이" +map);
+      console.log("하이" + map);
+
+
       if (map){
       console.log("" + currentLocation);
-      map.panTo(currentLocation);
-      const a = routeNavigation(currentLocation);
+      map.panTo(circleCenter);
+      const a = routeNavigation(circleCenter);
 
       if (a === false) {
         message.error('길찾기에 실패했습니다.');
@@ -680,189 +703,135 @@ function MapPage() {
 
     }
 
-  return (
-    <>
-      <div id="map_div"></div>
-      {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
-
-      {popupInfo && (
+    return (
+      <>
         <div
-          className="map-store-data"
-          style={{ zIndex: 100 }}
-        >
-          <Card
-            className="antCard"
-            title={
-              <div
-                style={{
-                  marginTop: '1rem',
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <span style={{ fontSize: '16px ' }}>
-                  {popupInfo.name}
-                </span>
-                <Rate
-                  style={{ float: 'right' }}
-                  disabled
-                  allowHalf
-                  defaultValue={5}
-                />
-              </div>
-            }
-            extra={array.map((review, reviewIndex) => (
-              <div key={reviewIndex}> {/* 이 div에 key 추가 */}
-                {review.tag.map((item, index) => (
-                  <Tag
-                    key={index}
-                    style={{
-                      marginLeft: '0.2rem',
-                      fontSize: '10px',
-                      marginRight: '0.1rem',
-                    }}
-                    bordered={false}
-                    color="cyan"
-                  >
-                    {item}
-                  </Tag>
-                ))}
-              </div>
-            ))}
-
-            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
-          >
-            {array.length > 0 ? (
-              array.map((review, reviewIndex) => (
-                <>
-                  <Card.Meta
-                    key={reviewIndex}
-                    description={
-                      <div>
-                        <span style={{ color: 'black' }}>
-                          <span
-                            style={{ fontSize: '15px' }}
-                          >
-                            {review.title}
-                          </span>
-                          <Rate
-                            style={{
-                              float: 'right',
-                              marginTop: '0.35rem',
-                            }}
-                            disabled
-                            allowHalf
-                            defaultValue={review.rate}
-                          />
-                        </span>
-                        <div
-                          style={{
-                            marginTop: '0.7rem',
-                            marginBottom: '3rem',
-                          }}
-                        >
-                          {review.tag.map((item, index) => (
-                            <Tag
-                              key={index}
-                              style={{
-                                float: 'left',
-                                marginRight: '1rem',
-                                fontSize: '10px',
-                              }}
-                              bordered={false}
-                              color="cyan"
-                            >
-                              {item}
-                            </Tag>
-                          ))}
-                          <span
-                            style={{
-                              fontSize: '14px',
-                              float: 'right',
-                            }}
-                          >
-                            {review.date}
-                          </span>
-                        </div>
-                      </div>
-                    }
-                  />
-                  <Divider
-                    style={{
-                      marginTop: 7,
-                      marginBottom: 15,
-                    }}
-                  />
-                </>
-              ))
-            ) : (
-              <>
-                <Empty
-                  description={
-                    <span
-                      style={{
-                        fontSize: '15px',
-                        color: 'black',
-                      }}
-                    >
-                      리뷰가 존재하지 않습니다.
-                    </span>
-                  }
-                />
-                <Divider
-                  style={{ marginTop: 7, marginBottom: 15 }}
-                />
-              </>
-            )}
-            <a
-              href="#"
-              style={{
-                fontSize: '15px',
-                float: 'left',
-                color: '#3BB26F',
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('/review', {
-                  state: {
-                    isToilet: true,
-                    toiletId: 1,
-                    garbageBinId: 1,
-                  },
-                });
-              }}
-            >
-              전체 리뷰
-            </a>
-            <Button
-              type="primary"
-              defaultColor="cyan"
-              style={{
-                float: 'right',
-                backgroundColor: '#3BB26F',
-              }}
-            >
-              길찾기
-            </Button>
-          </Card>
+          id="map_div">
         </div>
-      )}
+            {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
+  
+        {popupInfo && (
+          <div
+            className="map-store-data"
+            style={{ zIndex: 100 }}
+          >
+            <Card
+              className="antCard"
+              title={
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <span style={{ fontSize: '16px ' }}>
+                    {popupInfo.name}
+                  </span>
+                  <Rate
+                    style={{ float: 'right' }}
+                    disabled
+                    allowHalf
+                    defaultValue={popupInfo.rate}
+                  />
+                </div>
+              }
+              extra=
+                  {popupInfo.tag.map((item, index) => (
+                    <Tag
+                      key={index}
+                      style={{
+                        marginLeft: '0.2rem',
+                        fontSize: '10px',
+                        marginRight: '0.1rem',
+                      }}
+                      bordered={false}
+                      color="cyan"
+                    >
+                      {item}
+                    </Tag>
+                  ))}
 
-      <FloatButton.Group
+  
+            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+        >	
+    {
+    popupInfo.recentReview.length > 0 ?(
+    popupInfo.recentReview.map((review, reviewIndex) => (
+      <div key={reviewIndex}> {/* 이 div에 key 추가 */}
+      <Card.Meta
+      description={
+        <div>
+        <span style={{ color: "black"}}>
+          <span style={{fontSize: "15px"}}>{review.content}</span>
+          <Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
+        </span>
+        <div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
+          {review.tag.map((item, index) => (
+          <Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
+            {item}
+          </Tag>
+          ))}
+          <span style={{ fontSize: "14px", float: "right" }}>{
+              moment
+              .utc(review.writeDate)
+              .format('YYYY-MM-DD')
+          }</span>
+        </div>
+        </div>
+      }
+      />
+        <Divider style={{ marginTop: 7, marginBottom: 15}} />
+      </div>
+    ))
+  
+    ):(
+      <>
+      <Empty 
+      description={
+        <span style={{fontSize: "15px", color: "black"}}>
+        리뷰가 존재하지 않습니다.
+        </span>
+      }
+      />
+      <Divider style={{ marginTop: 7, marginBottom: 15}} />
+      </>
+    )
+    }
+      <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
+       onClick={(e) => { 
+        e.preventDefault(); 
+        navigate('/review', 
+        {state: {
+          id: popupInfo.id,
+          type: isGarbage,
+          name : popupInfo.name,
+          tag: popupInfo.tag,
+       }});  }}>전체 리뷰</a>	
+    <Button type="primary"  style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
+      </Card>
+          </div>
+        )}
+        
+    <FloatButton.Group
         shape="circle"
-        style={{
-          right: '15',
-        }}
+      style={{
+      right:"15",
+      }}
       >
-        <FloatButton
-          type="primary"
-          icon={<PlayCircleOutlined />}
-        />
-        <FloatButton icon={<CloseOutlined />} />
+        <FloatButton type="primary" 
+        onClick={reload_navigation
+        } icon={<PlayCircleOutlined />} />
+        <FloatButton 
+        onClick={
+          polyline_remove
+        }
+        icon= {<CloseOutlined />} />
+  
       </FloatButton.Group>
-    </>
-  );
+      </>
+    );
 }
 
 export default MapPage;
