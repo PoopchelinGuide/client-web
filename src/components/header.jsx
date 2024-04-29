@@ -22,7 +22,7 @@ function Header(name, rate, tag) {
   });
 
   if (name === undefined) {
-    name = '헤더';
+    name = '　';
   }
   return (
     <div
