@@ -10,18 +10,28 @@ function Header(name, rate, tag) {
   var num = parseFloat(rate.toFixed(1)); // 소수 첫째 자리로 반올림하고 숫자로 변환
   const [starRating, setStarRating] = useState(num);
 
-  const starChange = useEffect(()=>{
+  const starChange = useEffect(() => {
     setStarRating(num);
-  })
+  });
+
   const navigate = useNavigate();
+  console.log('Received in Header: ', {
+    name,
+    rate,
+    tag,
+  });
+
+  if (name === undefined) {
+    name = '헤더';
+  }
   return (
     <div
       className="header"
       style={{ fontFamily: 'SUITE-Regular' }}
     >
-      <p className="header_text">{name} 화장실</p>
+      <p className="header_text">{name}</p>
       <div className="header_rate">
-        <Rate disabled allowHalf value={starRating}/>
+        <Rate disabled allowHalf value={starRating} />
         <span
           style={{
             marginLeft: '0.7rem',

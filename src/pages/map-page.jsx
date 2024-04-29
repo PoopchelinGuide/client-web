@@ -35,21 +35,21 @@ function MapPage() {
       title: '화장실이 깨끗해요',
       tag: ['깨끗해요', '좋아요'],
       date: '2024-04-29',
-      nickname : '보땡이',
-      rate : 4.5,
+      nickname: '보땡이',
+      rate: 4.5,
     },
     {
       title: '휴지가 가끔 없어요',
       tag: ['휴지 없음'],
       date: '2024-04-27',
-      nickname : '보땡이',
-      rate : 4.5,
+      nickname: '보땡이',
+      rate: 4.5,
     },
-];
+  ];
 
   var map;
   // const [map, setMap] = useState(null);
-  
+
   var marker_s, marker_e, marker_p1, marker_p2;
 
   var markers = []; // 마커를 담을 배열
@@ -62,7 +62,6 @@ function MapPage() {
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
-
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
@@ -100,9 +99,13 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://192.168.0.96/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
+        `http://192.168.0.96/toilet/range?x1=${
+          circleXY.minX
+        }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
+          circleXY.maxY
+        }&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
-          method: 'GET',  
+          method: 'GET',
         }
       );
       if (response.status === 200) {
@@ -116,7 +119,7 @@ function MapPage() {
         console.log(toilet);
         console.log(nearestToilet);
         initMarkers(garbageBin, false);
-		    initMarkers(toilet, true);
+        initMarkers(toilet, true);
       } else if (response.status === 400) {
         message.error('화장실이 존재하지 않습니다.', 2);
       }
@@ -126,37 +129,33 @@ function MapPage() {
     }
   };
 
-
-    // fetch 통신 method
-    const popupInfoRequest = async (
-      id, type
-    ) => {
-      try {
-        const response = await fetch(
-      `http://192.168.0.96//review/tg/${id}?type=true`,
-          {
-            method: 'GET',
-          }
-        );
-        if (response.status === 200) {
-          const markerInfomation = await response.json();
-
-          console.log(markerInfomation);
-          showPopup(markerInfomation);
-
-        } else if (response.status === 400) {
-          message.error("팝업창 오류", 2);
+  // fetch 통신 method
+  const popupInfoRequest = async (id, type) => {
+    try {
+      const response = await fetch(
+        `http://192.168.0.96//review/tg/${id}?type=true`,
+        {
+          method: 'GET',
         }
-      } catch (error) {
-        message.error("잘못된 요청입니다.");
-        console.error('오류 발생:', error);
+      );
+      if (response.status === 200) {
+        const markerInfomation = await response.json();
+
+        console.log(markerInfomation);
+        showPopup(markerInfomation);
+      } else if (response.status === 400) {
+        message.error('팝업창 오류', 2);
       }
-    };
+    } catch (error) {
+      message.error('잘못된 요청입니다.');
+      console.error('오류 발생:', error);
+    }
+  };
 
   //Popup창 켜고 끄는 method
   function showPopup(info) {
     console.log('팝업창을 띄웁니다.');
-    console.log("팝업창을 띄을때 map 확인"+ map);
+    console.log('팝업창을 띄을때 map 확인' + map);
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
     if (prevInfo !== null && prevInfo === info) {
       prevInfo = null;
@@ -211,14 +210,13 @@ function MapPage() {
           // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
           // 마커의 이미지를 클릭 이미지로 변경합니다
 
-          console.log("마커 클릭 시 지도 유무" + map);
+          console.log('마커 클릭 시 지도 유무' + map);
           map = map;
 
           var isGarbage = true;
-          if(markerInfo.type){
+          if (markerInfo.type) {
             isGarbage = false;
           }
-
 
           if (
             !selectedMarker ||
@@ -287,7 +285,7 @@ function MapPage() {
     if (!mapContainer.firstChild) {
       // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
       map = new kakao.maps.Map(mapContainer, mapOption);
-      
+
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
         center: mapOption.center,
@@ -318,7 +316,7 @@ function MapPage() {
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
-      console.log(map)
+      console.log(map);
 
       // 도착
       marker_e = new kakao.maps.Marker({
@@ -570,106 +568,102 @@ function MapPage() {
       });
   }
 
- 
-
   useEffect(() => {
     // 위치 정보를 가져오는 함수
     const getLocation = new Promise((resolve) => {
-     if (navigator.geolocation) {
-       navigator.geolocation.getCurrentPosition(
-         function (position) {
-           var lat = position.coords.latitude,
-             lon = position.coords.longitude;
-           var locPosition = new kakao.maps.LatLng(
-             lat,
-             lon
-           );
-           resolve(locPosition);
-           console.log('현재위치를 가져옵니다.');
-         },
-         function () {
-           var locPosition = new kakao.maps.LatLng(
-             37.57636,
-             126.9768
-           );
-           resolve(locPosition);
-           console.log('현재위치를 가져올 수 없습니다.');
-         }
-       );
-     } else {
-       var locPosition = new kakao.maps.LatLng(
-         37.57636,
-         126.9768
-       );
-       resolve(locPosition);
-       console.log('현재위치를 가져올 수 없습니다.');
-     }
-   });
-   // 위치 정보를 가져온 후에 지도를 초기화하는 함수
-   getLocation.then((locPosition) => {
-     // setCurrentLocation(locPosition);
-     currentLocation = locPosition;
-     initKakaoMap(locPosition);
-     console.log(
-       '가져온 위치 정보로 지도를 초기화합니다.'
-     );
-   });
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            var lat = position.coords.latitude,
+              lon = position.coords.longitude;
+            var locPosition = new kakao.maps.LatLng(
+              lat,
+              lon
+            );
+            resolve(locPosition);
+            console.log('현재위치를 가져옵니다.');
+          },
+          function () {
+            var locPosition = new kakao.maps.LatLng(
+              37.57636,
+              126.9768
+            );
+            resolve(locPosition);
+            console.log('현재위치를 가져올 수 없습니다.');
+          }
+        );
+      } else {
+        var locPosition = new kakao.maps.LatLng(
+          37.57636,
+          126.9768
+        );
+        resolve(locPosition);
+        console.log('현재위치를 가져올 수 없습니다.');
+      }
+    });
+    // 위치 정보를 가져온 후에 지도를 초기화하는 함수
+    getLocation.then((locPosition) => {
+      // setCurrentLocation(locPosition);
+      currentLocation = locPosition;
+      initKakaoMap(locPosition);
+      console.log(
+        '가져온 위치 정보로 지도를 초기화합니다.'
+      );
+    });
 
-   // 사용자 위치를 지속적으로 추적
-   let watchId = navigator.geolocation.watchPosition(
-     (position) => {
-       var lat = position.coords.latitude,
-         lon = position.coords.longitude;
-       var locPosition = new kakao.maps.LatLng(lat, lon);
+    // 사용자 위치를 지속적으로 추적
+    let watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        var lat = position.coords.latitude,
+          lon = position.coords.longitude;
+        var locPosition = new kakao.maps.LatLng(lat, lon);
 
-       // 이전 위치 마커가 있으면 지도에서 제거
-       if (marker_s) {
-         marker_s.setMap(null);
-       }
+        // 이전 위치 마커가 있으면 지도에서 제거
+        if (marker_s) {
+          marker_s.setMap(null);
+        }
 
-       // 사용자의 위치에 마커 표시
-       marker_s = new kakao.maps.Marker({
-         map: map,
-         position: locPosition,
-         iconSize: new kakao.maps.Size(24, 38),
-       });
+        // 사용자의 위치에 마커 표시
+        marker_s = new kakao.maps.Marker({
+          map: map,
+          position: locPosition,
+          iconSize: new kakao.maps.Size(24, 38),
+        });
 
-       console.log(
-         '사용자의 위치를 지속적으로 추적합니다.'
-       );
-     },
-     (error) => {
-       console.log(error);
-     },
-     {
-       enableHighAccuracy: true,
-       maximumAge: 0,
-       timeout: Infinity,
-     }
-   );
+        console.log(
+          '사용자의 위치를 지속적으로 추적합니다.'
+        );
+      },
+      (error) => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: Infinity,
+      }
+    );
 
-   // 컴포넌트가 unmount될 때 위치 추적을 중지
-   return () => navigator.geolocation.clearWatch(watchId);
-}, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
+    // 컴포넌트가 unmount될 때 위치 추적을 중지
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
-
-  const polyline_remove = ()=>{
+  const polyline_remove = () => {
     if (polyline_ != null) {
       polyline_.setMap(null);
     } else {
-      console.log("polyline_ 객체가 null입니다.");
+      console.log('polyline_ 객체가 null입니다.');
     }
-  }
+  };
   const reload_navigation = () => {
-    
-      if (!map) {
-        console.log("map 객체가 아직 준비되지 않았습니다.");
-        return;
-      }
-      console.log("플러팅 버튼 클릭시 " + currentLocation);
-      console.log("하이" +map);
-      if (map){
-      console.log("" + currentLocation);
+    if (!map) {
+      console.log('map 객체가 아직 준비되지 않았습니다.');
+      return;
+    }
+    console.log('플러팅 버튼 클릭시 ' + currentLocation);
+    console.log('하이' + map);
+    if (map) {
+      console.log('' + currentLocation);
       map.panTo(currentLocation);
       const a = routeNavigation(currentLocation);
 
@@ -677,8 +671,7 @@ function MapPage() {
         message.error('길찾기에 실패했습니다.');
       }
     }
-
-    }
+  };
 
   return (
     <>
@@ -713,7 +706,9 @@ function MapPage() {
               </div>
             }
             extra={array.map((review, reviewIndex) => (
-              <div key={reviewIndex}> {/* 이 div에 key 추가 */}
+              <div key={reviewIndex}>
+                {' '}
+                {/* 이 div에 key 추가 */}
                 {review.tag.map((item, index) => (
                   <Tag
                     key={index}

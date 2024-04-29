@@ -19,6 +19,13 @@ function ReviewWritePage() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { id, name, sum, type } = location.state || {
+    id: null,
+    name: null,
+    sum: '0.0',
+    type: null,
+  };
+  const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
@@ -42,7 +49,6 @@ function ReviewWritePage() {
   const handleRateChange = (value) => {
     setUserRate(value);
   };
-  const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
 
   const tagButtons = [
     { text: '깨끗해요', icon: <FaHandSparkles /> },
@@ -123,16 +129,24 @@ function ReviewWritePage() {
       .filter(([index, isSelected]) => isSelected)
       .map(([index]) => tagArrays[index]);
 
+    const toiletId = null;
+    const garbagebintId = null;
+    if (type == false) {
+      toiletId = id;
+    } else {
+      garbagebintId = id;
+    }
     try {
       const response = await axios.post(
-        'http://192.168.0.96/review',
+        'http://192.168.0.22/review',
         {
           nickname: nickname,
           password: password,
           rate: userRate,
           content: content,
           tag: selectedTags,
-          toiletId: 1,
+          toiletId: toiletId,
+          garbagebintId: garbagebintId,
         },
         {
           headers: {
@@ -150,7 +164,7 @@ function ReviewWritePage() {
 
   return (
     <div className="review-wirte-page">
-      {Header(name, 0.0, [])}
+      {Header(name, sum, mostTag)}
       <div className="review-box">
         <div className="tagbtn-box">
           {tagButtons &&
