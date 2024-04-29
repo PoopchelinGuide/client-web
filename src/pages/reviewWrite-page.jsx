@@ -19,9 +19,6 @@ function ReviewWritePage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { toiletId, toiletName, rate } =
-    location.state || {};
-
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
@@ -159,6 +156,7 @@ function ReviewWritePage() {
       message.error('리뷰 등록에 실패했습니다.');
     }
   };
+
   return (
     <div className="review-wirte-page">
       {Header(name, 0.0, [])}

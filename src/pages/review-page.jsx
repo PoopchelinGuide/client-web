@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/review-style.css';
-import ReviewResult from '../components/review-result';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import {
@@ -15,13 +14,14 @@ import {
 import Header from '../components/header';
 import axios from 'axios';
 import moment from 'moment';
+import { FaXmark } from 'react-icons/fa6';
+
 function ReviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const toiletId = useState(1);
   //const { toiletId } = location.state || {};
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [messageApi, contextHolder] = message.useMessage();
   const [reviewList, setReviewList] = useState([]);
   const handleScroll = (event) => {
     setScrollPosition(event.currentTarget.scrollTop);
@@ -34,96 +34,16 @@ function ReviewPage() {
       message.info('리뷰의 끝입니다.!');
     }
   };
-  const [reviewContent, setReviewContent] = useState([]);
   const name = '강남역'; // 나중에 서버에서 화장실 정보 받을거임
-  const array = [
-    {
-      title: '이 집 화장실 잘하네..',
-      tag: ['깨끗해요', '휴지'],
-      date: '2024-04-29',
-      nickname: '유저1',
-      rate: 4.5,
-    },
-    {
-      title: '깨끗해요~',
-      tag: ['깨끗해요'],
-      date: '2024-04-27',
-      nickname: '유저2',
-      rate: 4.0,
-    },
-    {
-      title: '나 왔다감~~',
-      date: '2024-04-30',
-      nickname: '유저3',
-      tag: ['좌변기'],
-      rate: 3.5,
-    },
-    {
-      title: '잘 쓰고 가요~',
-      date: '2024-04-21',
-      nickname: '유저4',
-      tag: ['깨끗해요', '온수'],
-      rate: 4.5,
-    },
-    {
-      title: '오늘은 좀 더럽네요',
-      date: '2024-04-23',
-      nickname: '유저5',
-      tag: ['휴지통 X', '온수'],
-      rate: 4.5,
-    },
-    {
-      title: '한동근동근 왔다감',
-      date: '2024-03-18',
-      nickname: '유저6',
-      tag: ['깨끗해요', '휴지통 X'],
-      rate: 4.5,
-    },
-    {
-      title: '이 앱 있어서 바로',
-      date: '2024-04-17',
-      nickname: '유저7',
-      tag: ['깨끗해요', '휴지통 X'],
-      rate: 4.5,
-    },
-    {
-      title: '~~~~~',
-      date: '2024-04-20',
-      nickname: '유저8',
-      tag: ['깨끗해요', '휴지통 X'],
-      rate: 4.5,
-    },
-    {
-      title: '휴지가휴지가..ㅠㅜ',
-      date: '2024-04-13',
-      nickname: '유저9',
-      tag: ['깨끗해요', '좌변기'],
-      rate: 4.5,
-    },
-    {
-      title: '이!!',
-      date: '2024-04-02',
-      nickname: '유저10',
-      tag: ['깨끗해요', '좌변기'],
-      rate: 4.5,
-    },
-    {
-      title: '제발 맨유 결승가자!',
-      date: '2024-04-07',
-      nickname: '유저11',
-      tag: ['깨끗해요', '휴지'],
-      rate: 4.5,
-    },
-  ];
 
   var sum = 0.0;
-  var length = array.length;
-  array.forEach(function (item, index) {
+  var length = reviewList.length;
+  reviewList.forEach(function (item, index) {
     sum += item.rate;
   });
   sum = sum / length;
 
-  const fetchData = async () => {
+  const reviewData = async () => {
     console.log('toilet 번호' + toiletId);
     try {
       const response = await axios.get(
@@ -155,12 +75,20 @@ function ReviewPage() {
     }
   };
   useEffect(() => {
-    //setReviewContent(array);
-    fetchData();
+    reviewData();
   }, []);
 
-  const sortedReviews = reviewContent.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
+  const deleteReview = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://192.168.0.96/review/${id}`
+      );
+    } catch (error) {
+      console.log('리뷰 삭제 실패!');
+    }
+  };
+  const sortedReviews = reviewList.sort((a, b) => {
+    return new Date(b.writeDate) - new Date(a.writeDate);
   });
 
   return (
@@ -174,10 +102,21 @@ function ReviewPage() {
         {/* ReviewResult() */}
         <List
           itemLayout="verticalrizontal"
-          dataSource={reviewList}
+          dataSource={sortedReviews}
           renderItem={(item, index) => (
             <List.Item>
               <Card className="data-box">
+                <div
+                  style={{
+                    position: 'inherit',
+                    float: 'right',
+                  }}
+                >
+                  <FaXmark
+                    className="delete-button"
+                    onClick={() => deleteReview(item.id)}
+                  />
+                </div>
                 <Card.Meta
                   avatar={
                     <Avatar
@@ -204,6 +143,7 @@ function ReviewPage() {
                   description={
                     <span style={{ color: 'black' }}>
                       <span>{item.content}</span>
+
                       <Rate
                         style={{ float: 'right' }}
                         disabled
@@ -222,6 +162,7 @@ function ReviewPage() {
                 >
                   {item.tag.map((item, index) => (
                     <Tag
+                      key={index}
                       style={{
                         fontFamily: 'SUITE-Regular',
                         float: 'left',
@@ -250,7 +191,14 @@ function ReviewPage() {
             zIndex: '13',
           }}
           type="primary"
-          onClick={() => navigate('/review-write')}
+          onClick={() => {
+            console.log('리뷰작성 버튼 클릭' + sum);
+            navigate('/review-write', {
+              state: {
+                sum: sum,
+              },
+            });
+          }}
           icon={<PlusCircleOutlined />}
         />
       }
