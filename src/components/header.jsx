@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/header-style.css';
 import '../styles/font-style.css';
 import { Rate, Tag } from 'antd';
@@ -7,8 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 
 function Header(name, rate, tag) {
-  const num = parseFloat(rate.toFixed(1)); // 소수 첫째 자리로 반올림하고 숫자로 변환
+  var num = parseFloat(rate.toFixed(1)); // 소수 첫째 자리로 반올림하고 숫자로 변환
+  const [starRating, setStarRating] = useState(num);
 
+  const starChange = useEffect(()=>{
+    setStarRating(num);
+  })
   const navigate = useNavigate();
   return (
     <div
@@ -17,7 +21,7 @@ function Header(name, rate, tag) {
     >
       <p className="header_text">{name} 화장실</p>
       <div className="header_rate">
-        <Rate disabled allowHalf defaultValue={num} />
+        <Rate disabled allowHalf value={starRating}/>
         <span
           style={{
             marginLeft: '0.7rem',

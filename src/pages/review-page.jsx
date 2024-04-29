@@ -87,9 +87,6 @@ function ReviewPage() {
       console.log('리뷰 삭제 실패!');
     }
   };
-  const sortedReviews = reviewList.sort((a, b) => {
-    return new Date(b.writeDate) - new Date(a.writeDate);
-  });
 
   return (
     <div
@@ -97,12 +94,13 @@ function ReviewPage() {
       id="box"
       onScroll={handleScroll}
     >
+      {console.log(sum)}
       {Header(name, sum, [])}
       <div className="list-box-margin">
         {/* ReviewResult() */}
         <List
           itemLayout="verticalrizontal"
-          dataSource={sortedReviews}
+          dataSource={reviewList}
           renderItem={(item, index) => (
             <List.Item>
               <Card className="data-box">
