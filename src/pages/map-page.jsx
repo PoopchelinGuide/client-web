@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import '../styles/map-style.css';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
@@ -30,7 +30,8 @@ const { kakao } = window;
 
 function MapPage() {
   const navigate = useNavigate();
-  var map;
+
+  var map = useRef(null);
 
   var marker_s, marker_e, marker_p1, marker_p2;
 
@@ -38,8 +39,12 @@ function MapPage() {
   //   var markerList = [], // 마커 정보를 담은 배열
   var selectedMarker = null; // 클릭한 마커를 담을 변수
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
-  // let prevInfoId = null; // 이전에 열린 팝업 정보의 id를 저장하는 변수
-  let [prevInfoId, setPrevInfoId] = useState(null);
+
+  const prevInfoId = useRef(null);
+  const [nextId, setNextId] = useState(null); // 다음 팝업 정보를 저장하는 변수
+  const setPrevInfoId = (id) => {
+    prevInfoId.current = id;
+  }
   
 
   var currentLocation; // 현재 위치를 저장할 변수
@@ -49,6 +54,11 @@ function MapPage() {
   // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
+  // const polyline_ = useRef(null);
+
+  
+
+
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
 
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
@@ -88,10 +98,10 @@ function MapPage() {
     console.log("popupInfo"+popupInfo);
   }, [popupInfo]);
 
-  useEffect(() => {
-    console.log('팝업 정보가 변경될때마다 아래에 출력');
-    console.log("prevInfoId"+prevInfoId);
-  }, [prevInfoId]);
+  // useEffect(() => {
+  //   console.log('팝업 정보가 변경될때마다 아래에 출력');
+  //   console.log("prevInfoId"+prevInfoId);
+  // }, [prevInfoId]);
   
 
 
@@ -103,7 +113,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://poopchelin.kro.kr/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        `http://poopchelin.kro.kr/toilet/range?x1=${
+        `https://poopchelin.kro.kr/toilet/range?x1=${
           circleXY.minX
         }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
           circleXY.maxY
@@ -124,8 +134,8 @@ function MapPage() {
         console.log(toilet);
         console.log(nearestToilet);
 
-        initMarkers(garbageBin, false);
-        initMarkers(toilet, true);
+        initMarkers(garbageBin, true);
+        initMarkers(toilet, false);
 
         nearToilet = nearestToilet;
         console.log('가장 가까운 화장실' + nearToilet);
@@ -142,7 +152,7 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://poopchelin.kro.kr/review/tg/popover/${id}?type=${type}`,
+        `https://poopchelin.kro.kr/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }
@@ -151,7 +161,7 @@ function MapPage() {
         const markerInfomation = await response.json();
         console.log("선택한 팝업창 요청받은 정보");
         console.log(markerInfomation);
-
+        setNextId(id);
         showPopup(markerInfomation, id);
       } else if (response.status === 400) {
         message.error('팝업창 오류', 2);
@@ -167,15 +177,16 @@ function MapPage() {
       console.log("현재 팝업창 정보를 아래에 출력");
       console.log(info);
 
+
       // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
-      if (prevInfo !== null || prevInfoId === id) {
+      if (prevInfo !== null && prevInfoId.current === id) {
         prevInfo = null;
         setPrevInfoId(null);
         setPopupInfo(prevInfo);
 
         console.log("팝업 끌 때 ID를 아래에 출력");
         console.log("id"+id);
-        console.log("prevInfoId"+prevInfoId);
+        console.log(prevInfoId.current);
 
         return;
       }
@@ -188,13 +199,13 @@ function MapPage() {
 
       console.log("팝업 킬 때 ID를 아래에 출력");
       console.log("id"+id);
-        console.log("prevInfoId"+prevInfoId);
+      console.log(prevInfoId.current);
     }
 
-  function initMarkers(markerList, isToilet) {
+  function initMarkers(markerList, isGarbage_) {
     var markerImage;
 
-    if (isToilet) {
+    if (!isGarbage_) {
       markerImage = normalImage;
     } else {
       markerImage = garbegeImage;
@@ -211,11 +222,11 @@ function MapPage() {
           markerInfo.coordinateY,
           markerInfo.coordinateX
         ),
-        map: map,
+        map: map.current,
         image: markerImage, // 마커 이미지
       });
 
-      if (isToilet) {
+      if (!isGarbage_) {
         marker.normalImage = normalImage;
         marker.clickImage = clickImage;
       } else {
@@ -232,9 +243,9 @@ function MapPage() {
           // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
           // 마커의 이미지를 클릭 이미지로 변경합니다
 
-          console.log('마커 클릭 시 지도 유무' + map);
-          map = map;
+          console.log('마커 클릭 시 지도 유무' + map.current);
 
+          console.log("마커 아이디 확인 --"+ markerInfo.type);
           if (markerInfo.type) {
             isGarbage = true;
           }
@@ -291,7 +302,7 @@ function MapPage() {
     });
 
     // 지도에 선을 표시합니다
-    polyline_.setMap(map);
+    polyline_.setMap(map.current);
     // resultdrawArr.push(polyline_);
   }
 
@@ -305,7 +316,7 @@ function MapPage() {
 
     if (!mapContainer.firstChild) {
       // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-      map = new kakao.maps.Map(mapContainer, mapOption);
+      map.current = new kakao.maps.Map(mapContainer, mapOption);
 
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
@@ -321,7 +332,7 @@ function MapPage() {
       circleCenter = circle.center;
 
       var centerAround = circle.getBounds();
-      circle.setMap(map); // 원을 지도에 표시합니다
+      circle.setMap(map.current); // 원을 지도에 표시합니다
       console.log('원 생성' + centerAround);
 
       // centerAround의 남서쪽과 북동쪽 좌표를 가져옵니다
@@ -341,7 +352,7 @@ function MapPage() {
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
-      console.log(map);
+      console.log(map.current);
 
       // // 도착
       // marker_e = new kakao.maps.Marker({
@@ -389,19 +400,19 @@ function MapPage() {
 
       // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(
-        map,
+        map.current,
         'idle',
         function () {
           // 지도의  레벨을 얻어옵니다
-          var level = map.getLevel();
+          var level = map.current.getLevel();
           // 지도의 중심좌표를 얻어옵니다
-          var latlng = map.getCenter();
+          var latlng = map.current.getCenter();
 
           circleCenter = latlng;
 
           circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
           circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
-          circle.setMap(map); // 원을 지도에 표시합니다
+          circle.setMap(map.current); // 원을 지도에 표시합니다
 
           // 이전 중심 좌표가 있고, 새로운 중심 좌표와의 차이가 0.1 미만이면 AJAX 요청을 보내지 않습니다
           if (
@@ -661,7 +672,7 @@ function MapPage() {
 
         // 사용자의 위치에 마커 표시
         marker_s = new kakao.maps.Marker({
-          map: map,
+          map: map.current,
           position: locPosition,
           iconSize: new kakao.maps.Size(24, 38),
         });
@@ -693,15 +704,15 @@ function MapPage() {
   };
 
   const reload_navigation = () => {
-    if (!map) {
+    if (!map.current) {
       console.log('map 객체가 아직 준비되지 않았습니다.');
       return;
     }
     console.log('플러팅 버튼 클릭시 ' + currentLocation);
     console.log('하이' + map);
-    if (map) {
+    if (map.current) {
       console.log('' + currentLocation);
-      map.panTo(currentLocation);
+      map.current.panTo(currentLocation);
       const a = routeNavigation(currentLocation);
 
       if (a === false) {
@@ -857,10 +868,11 @@ function MapPage() {
               }}
               onClick={(e) => {
                 e.preventDefault();
+                console.log('팝업 정보');
                 console.log(popupInfo);
                 navigate('/review', {
                   state: {
-                    id: popupInfo.id,
+                    id: nextId,
                     type: isGarbage,
                   },
                 });
