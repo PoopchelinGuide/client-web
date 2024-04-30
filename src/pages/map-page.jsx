@@ -37,7 +37,7 @@ function MapPage() {
 
   var markers = []; // 마커를 담을 배열
   //   var markerList = [], // 마커 정보를 담은 배열
-  var selectedMarker = null; // 클릭한 마커를 담을 변수
+  var selectedMarker = null; // 클릭한 마커를 담을 변수 
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
 
   const prevInfoId = useRef(null);
@@ -50,13 +50,15 @@ function MapPage() {
 
   var isGarbage = useRef(false); // 쓰레기통인지 화장실인지 구분하는 변수 boolean
 
-  // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
+  var nearDirect = useRef(false); // 가까운 화장실로 길찾기를 실행하기 위한 변수
+
 
   const polylineRef = useRef(null);
   //var polyline_ = null; // 현재 폴리라인을 저장할 변수
   // const polyline_ = useRef(null);
 
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+  let [markerData, setMarkerData] = useState(null); // 서버로 받은 장소 중 클릭한 장소의 정보를 저장하는 변수
 
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
   var nearToilet = null;
@@ -276,6 +278,7 @@ function MapPage() {
             );
             selectedMarker = null;
           }
+          setMarkerData(markerInfo);
           popupInfoRequest(
             markerInfo.id,
             isGarbage.current.toString()
@@ -411,7 +414,7 @@ function MapPage() {
       kakao.maps.event.addListener(
         map.current,
         'idle',
-        function () {
+        async function () {
           // 지도의  레벨을 얻어옵니다
           var level = map.current.getLevel();
           // 지도의 중심좌표를 얻어옵니다
@@ -460,23 +463,32 @@ function MapPage() {
           // markers 배열 초기화
           markers = [];
 
+          
           var BodyJson = JSON.stringify(circleXY);
-          fetchData(circleXY, latlng);
+          await fetchData(circleXY, latlng);
+          console.log('하이하이하이하이하이하이하이');
 
-          console.log('원 이동 할때 마다');
-          console.log(popupInfo);
-          console.log(prevInfo);
+          console.log(nearDirect);
+
+          if(nearDirect.current){
+            routeNavigation(currentLocation.current);
+            nearDirect.current = false;
+          }
+
         }
       );
     }
   }
 
-  function routeNavigation(locPosition) {
+  function routeNavigation(locPosition, isDirections) {
     // 2. 시작, 도착 심볼찍기
     var endX = 126.9769,
       endY = 37.5726;
 
-    if (nearToilet !== null) {
+    if(isDirections){  
+      endX = markerData.coordinateX;
+      endY = markerData.coordinateY;
+    }else if (nearToilet !== null) {
       endX = nearToilet.coordinateX;
       endY = nearToilet.coordinateY;
     }
@@ -710,7 +722,7 @@ function MapPage() {
     }
   };
 
-  const reload_navigation = () => {
+  const reload_navigation = async () => {
     if (!map.current) {
       console.log('map 객체가 아직 준비되지 않았습니다.');
       return;
@@ -719,16 +731,12 @@ function MapPage() {
       console.log('현재 위치 정보가 없습니다.');
       return;
     }
-    console.log(
-      '플러팅 버튼 클릭시',
-      currentLocation.current
-    );
+    nearDirect.current = true; // 길찾기 버튼을 눌렀을 때 길찾기를 실행하기 위한 변수
+
     try {
-      map.current.panTo(currentLocation.current);
-      const a = routeNavigation(currentLocation.current);
-      if (a === false) {
-        message.error('길찾기에 실패했습니다.');
-      }
+      await map.current.panTo(currentLocation.current);
+      // const a = routeNavigation(currentLocation.current);
+      console.log('기다리는 중');
     } catch (error) {
       console.error(
         'reload_navigation 함수에서 오류 발생:',
@@ -902,6 +910,10 @@ function MapPage() {
                 float: 'right',
                 backgroundColor: '#3BB26F',
               }}
+              onClick={() => {
+                routeNavigation(currentLocation.current, true);
+
+              }}
             >
               길찾기
             </Button>
@@ -912,7 +924,7 @@ function MapPage() {
       <FloatButton.Group
         shape="circle"
         style={{
-          right: '15',
+          top: '3rem',
         }}
       >
         <FloatButton
