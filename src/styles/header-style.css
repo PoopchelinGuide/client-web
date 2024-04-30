@@ -38,8 +38,11 @@
   display: flex;
   justify-content: left; /* 가로 중앙 정렬 */
   margin-left: 1rem;
+  flex-direction: row;
 }
-
+.header_star {
+  margin-right: 0.5rem;
+}
 .header-rate-font {
   font-family: 'SeoulNamsanM';
 }
@@ -67,4 +70,9 @@
   right: inherit;
   width: 2.5rem;
   height: 2.5rem;
+}
+
+.button-box {
+  position: fixed;
+  right: 1.5rem;
 }

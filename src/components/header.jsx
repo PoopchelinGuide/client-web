@@ -29,15 +29,16 @@ function Header({ name = '　', rate, tag = [] }) {
     >
       <p className="header_text">{name}</p>
       <div className="header_rate">
-        <Rate disabled allowHalf value={starRating} />
-        <span
-          style={{
-            marginLeft: '0.7rem',
-            marginRight: '9rem',
-          }}
-        >
+        <div className="header_star">
+          <Rate
+            disabled
+            allowHalf
+            value={starRating}
+            style={{ marginRight: '1rem' }}
+          />
           {safeRate.toFixed(2)}
-        </span>
+        </div>
+
         {tag.map((item, index) => (
           <span className="header-tag" key={index}>
             <Tag bordered={false} size="large" color="cyan">
@@ -45,7 +46,7 @@ function Header({ name = '　', rate, tag = [] }) {
             </Tag>
           </span>
         ))}
-        <div>
+        <div className="button-box">
           <button
             className="header-btn"
             onClick={() => navigate('/')}
