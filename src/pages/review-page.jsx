@@ -22,10 +22,7 @@ import ReviewResult from '../components/review-result';
 function ReviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id, type } = location.state || {
-    id: 1,
-    type: false,
-  };
+  const { id, type } = location.state ;
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const [reviewList, setReviewList] = useState([]);

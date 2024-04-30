@@ -49,7 +49,7 @@ function MapPage() {
 
   var currentLocation; // 현재 위치를 저장할 변수
 
-  var isGarbage = false; // 쓰레기통인지 화장실인지 구분하는 변수 boolean
+  var isGarbage = useRef(false); // 쓰레기통인지 화장실인지 구분하는 변수 boolean
 
   // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
@@ -57,9 +57,8 @@ function MapPage() {
   // const polyline_ = useRef(null);
 
   
-
-
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+
 
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
   var nearToilet = null;
@@ -94,16 +93,9 @@ function MapPage() {
   }
 
   useEffect(() => {
-    console.log('팝업 정보가 변경될때마다 아래에 출력');
-    console.log("popupInfo"+popupInfo);
+    console.log('popupInfo가 변경될때마다 아래에 출력');
+    console.log(popupInfo);
   }, [popupInfo]);
-
-  // useEffect(() => {
-  //   console.log('팝업 정보가 변경될때마다 아래에 출력');
-  //   console.log("prevInfoId"+prevInfoId);
-  // }, [prevInfoId]);
-  
-
 
   // fetch 통신 method
   const fetchData = async (
@@ -159,10 +151,37 @@ function MapPage() {
       );
       if (response.status === 200) {
         const markerInfomation = await response.json();
-        console.log("선택한 팝업창 요청받은 정보");
-        console.log(markerInfomation);
         setNextId(id);
-        showPopup(markerInfomation, id);
+
+
+
+      // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
+      if (prevInfo !== null && prevInfoId.current === id) {
+        prevInfo = null;
+        setPrevInfoId(null);
+        setPopupInfo(prevInfo);
+
+        console.log("팝업 끌 때 ID를 아래에 출력");
+        console.log("id"+id);
+        console.log(prevInfoId.current);
+
+        return;
+      }
+
+      // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
+      // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
+      prevInfo = markerInfomation;
+      setPrevInfoId(id);
+      setPopupInfo(markerInfomation);
+
+
+        // showPopup(markerInfomation, id);
+
+
+
+
+
+
       } else if (response.status === 400) {
         message.error('팝업창 오류', 2);
       }
@@ -243,11 +262,8 @@ function MapPage() {
           // 클릭된 마커가 없거나, click 마커가 클릭된 마커가 아니면
           // 마커의 이미지를 클릭 이미지로 변경합니다
 
-          console.log('마커 클릭 시 지도 유무' + map.current);
-
-          console.log("마커 아이디 확인 --"+ markerInfo.type);
           if (markerInfo.type) {
-            isGarbage = true;
+            isGarbage.current = true;
           }
 
           if (
@@ -270,7 +286,9 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          popupInfoRequest(markerInfo.id, isGarbage);
+          popupInfoRequest(markerInfo.id, isGarbage.current.toString());
+
+
           // showPopup(markerInfo);
         }
       );
@@ -868,12 +886,12 @@ function MapPage() {
               }}
               onClick={(e) => {
                 e.preventDefault();
-                console.log('팝업 정보');
-                console.log(popupInfo);
+                console.log('상세보기 클릭');
+                console.log(isGarbage);
                 navigate('/review', {
                   state: {
                     id: nextId,
-                    type: isGarbage,
+                    type: isGarbage.current.toString(),
                   },
                 });
               }}
