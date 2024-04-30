@@ -57,7 +57,7 @@ function ReviewPage() {
   const deleteReview = async (id) => {
     try {
       const response = await axios.delete(
-        `http://poopchelin.kro.kr/review/${id}?password=${delPassword}`
+        `https://poopchelin.kro.kr/review/${id}?password=${delPassword}`
       );
       if (response.status === 200) {
         message.success('리뷰가 삭제되었습니다.');
@@ -72,7 +72,7 @@ function ReviewPage() {
   const reviewData = async () => {
     try {
       const response = await axios.get(
-        `http://poopchelin.kro.kr/review/tg/total/${id}?type=${type}`
+        `https://poopchelin.kro.kr/review/tg/total/${id}?type=${type}`
       );
       if (response.status === 200) {
         const data = response.data;

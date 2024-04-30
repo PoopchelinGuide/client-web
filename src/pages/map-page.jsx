@@ -37,10 +37,9 @@ function MapPage() {
   var markers = []; // 마커를 담을 배열
   //   var markerList = [], // 마커 정보를 담은 배열
   var selectedMarker = null; // 클릭한 마커를 담을 변수
-  let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
+  let [prevInfo, setPrevInfo] = useState(null); // 이전에 열린 팝업 정보를 저장하는 변수
   // let prevInfoId = null; // 이전에 열린 팝업 정보의 id를 저장하는 변수
   let [prevInfoId, setPrevInfoId] = useState(null);
-  
 
   var currentLocation; // 현재 위치를 저장할 변수
 
@@ -84,26 +83,25 @@ function MapPage() {
   }
 
   useEffect(() => {
-    console.log('팝업 정보가 변경될때마다 아래에 출력');
-    console.log("popupInfo"+popupInfo);
+    console.log(
+      '팝업 info 변경시 이전 info값 변경 useEffect 아래에 출력 2'
+    );
+    console.log('popupInfo' + popupInfo);
+    setPrevInfo(popupInfo);
+    console.log('prevInfo ' + prevInfo);
   }, [popupInfo]);
 
   useEffect(() => {
-    console.log('팝업 정보가 변경될때마다 아래에 출력');
-    console.log("prevInfoId"+prevInfoId);
+    console.log('팝업 id useEffect 아래에 출력 2');
+    console.log('prevInfoId' + prevInfoId);
   }, [prevInfoId]);
-  
-
 
   // fetch 통신 method
-  const fetchData = async (
-    circleXY,
-    latlng,
-  ) => {
+  const fetchData = async (circleXY, latlng) => {
     try {
       const response = await fetch(
-        // `http://poopchelin.kro.kr/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        `http://poopchelin.kro.kr/toilet/range?x1=${
+        // `https://poopchelin.kro.kr/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+        `https://poopchelin.kro.kr/toilet/range?x1=${
           circleXY.minX
         }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
           circleXY.maxY
@@ -142,16 +140,15 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://poopchelin.kro.kr/review/tg/popover/${id}?type=${type}`,
+        `https://poopchelin.kro.kr/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }
       );
       if (response.status === 200) {
         const markerInfomation = await response.json();
-        console.log("선택한 팝업창 요청받은 정보");
+        console.log('선택한 팝업창 요청받은 정보');
         console.log(markerInfomation);
-
         showPopup(markerInfomation, id);
       } else if (response.status === 400) {
         message.error('팝업창 오류', 2);
@@ -162,34 +159,39 @@ function MapPage() {
     }
   };
 
-    //Popup창 켜고 끄는 method
-    function showPopup(info, id) {    
-      console.log("현재 팝업창 정보를 아래에 출력");
-      console.log(info);
+  //Popup창 켜고 끄는 method
+  function showPopup(info, id) {
+    console.log('현재 팝업창 정보를 아래에 출력');
+    console.log(info);
+    console.log('showPopop 들어와서 변경 전');
+    console.log('popupInfo  ' + popupInfo);
+    console.log('prevInfoId ' + prevInfoId);
+    setPopupInfo(info);
+    setPrevInfoId(id);
 
-      // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
-      if (prevInfo !== null || prevInfoId === id) {
-        prevInfo = null;
-        setPrevInfoId(null);
-        setPopupInfo(prevInfo);
+    console.log('showPopop 들어와서 변경 후');
+    console.log('popupInfo  ' + popupInfo);
+    console.log('prevInfoId ' + prevInfoId);
+    // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
+    if (prevInfo !== null || prevInfoId === id) {
+      setPrevInfoId(null);
+      setPopupInfo(null);
 
-        console.log("팝업 끌 때 ID를 아래에 출력");
-        console.log("id"+id);
-        console.log("prevInfoId"+prevInfoId);
+      console.log('팝업 끌 때 ID를 아래에 출력 1');
+      console.log('id ' + id);
+      console.log('prevInfoId ' + prevInfoId);
 
-        return;
-      }
-
-      // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
-      // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
-      prevInfo = info;
-      setPrevInfoId(id);
-      setPopupInfo(info);
-
-      console.log("팝업 킬 때 ID를 아래에 출력");
-      console.log("id"+id);
-        console.log("prevInfoId"+prevInfoId);
+      return;
     }
+
+    // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
+    // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
+    setPopupInfo(info);
+    setPrevInfoId(id);
+    console.log('팝업 킬 때 ID를 아래에 출력 1');
+    console.log('id ' + id);
+    console.log('popupInfoId ' + popupInfo);
+  }
 
   function initMarkers(markerList, isToilet) {
     var markerImage;
@@ -335,9 +337,9 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      console.log("fetch보내기전");
+      console.log('fetch보내기전');
       await fetchData(circleXY, mapOption.center);
-      console.log("fetch보낸 후");
+      console.log('fetch보낸 후');
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
@@ -443,7 +445,7 @@ function MapPage() {
           var BodyJson = JSON.stringify(circleXY);
           fetchData(circleXY, latlng);
 
-          console.log("원 이동 할때 마다");
+          console.log('원 이동 할때 마다');
           console.log(popupInfo);
           console.log(prevInfo);
         }
