@@ -44,21 +44,19 @@ function MapPage() {
   const [nextId, setNextId] = useState(null); // 다음 팝업 정보를 저장하는 변수
   const setPrevInfoId = (id) => {
     prevInfoId.current = id;
-  }
-  
+  };
 
-  var currentLocation; // 현재 위치를 저장할 변수
+  var currentLocation = useRef(null); // 현재 위치를 저장할 변수
 
   var isGarbage = useRef(false); // 쓰레기통인지 화장실인지 구분하는 변수 boolean
 
   // let [currentLocation, setCurrentLocation] = useState(); // 현재 위치를 저장할 변수
 
-  var polyline_ = null; // 현재 폴리라인을 저장할 변수
+  const polylineRef = useRef(null);
+  //var polyline_ = null; // 현재 폴리라인을 저장할 변수
   // const polyline_ = useRef(null);
 
-  
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
-
 
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
   var nearToilet = null;
@@ -98,10 +96,7 @@ function MapPage() {
   }, [popupInfo]);
 
   // fetch 통신 method
-  const fetchData = async (
-    circleXY,
-    latlng,
-  ) => {
+  const fetchData = async (circleXY, latlng) => {
     try {
       const response = await fetch(
         // `http://poopchelin.kro.kr/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
@@ -153,35 +148,29 @@ function MapPage() {
         const markerInfomation = await response.json();
         setNextId(id);
 
+        // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
+        if (
+          prevInfo !== null &&
+          prevInfoId.current === id
+        ) {
+          prevInfo = null;
+          setPrevInfoId(null);
+          setPopupInfo(prevInfo);
 
+          console.log('팝업 끌 때 ID를 아래에 출력');
+          console.log('id' + id);
+          console.log(prevInfoId.current);
 
-      // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
-      if (prevInfo !== null && prevInfoId.current === id) {
-        prevInfo = null;
-        setPrevInfoId(null);
-        setPopupInfo(prevInfo);
+          return;
+        }
 
-        console.log("팝업 끌 때 ID를 아래에 출력");
-        console.log("id"+id);
-        console.log(prevInfoId.current);
-
-        return;
-      }
-
-      // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
-      // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
-      prevInfo = markerInfomation;
-      setPrevInfoId(id);
-      setPopupInfo(markerInfomation);
-
+        // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
+        // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
+        prevInfo = markerInfomation;
+        setPrevInfoId(id);
+        setPopupInfo(markerInfomation);
 
         // showPopup(markerInfomation, id);
-
-
-
-
-
-
       } else if (response.status === 400) {
         message.error('팝업창 오류', 2);
       }
@@ -191,35 +180,34 @@ function MapPage() {
     }
   };
 
-    //Popup창 켜고 끄는 method
-    function showPopup(info, id) {    
-      console.log("현재 팝업창 정보를 아래에 출력");
-      console.log(info);
+  //Popup창 켜고 끄는 method
+  function showPopup(info, id) {
+    console.log('현재 팝업창 정보를 아래에 출력');
+    console.log(info);
 
+    // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
+    if (prevInfo !== null && prevInfoId.current === id) {
+      prevInfo = null;
+      setPrevInfoId(null);
+      setPopupInfo(prevInfo);
 
-      // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
-      if (prevInfo !== null && prevInfoId.current === id) {
-        prevInfo = null;
-        setPrevInfoId(null);
-        setPopupInfo(prevInfo);
-
-        console.log("팝업 끌 때 ID를 아래에 출력");
-        console.log("id"+id);
-        console.log(prevInfoId.current);
-
-        return;
-      }
-
-      // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
-      // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
-      prevInfo = info;
-      setPrevInfoId(id);
-      setPopupInfo(info);
-
-      console.log("팝업 킬 때 ID를 아래에 출력");
-      console.log("id"+id);
+      console.log('팝업 끌 때 ID를 아래에 출력');
+      console.log('id' + id);
       console.log(prevInfoId.current);
+
+      return;
     }
+
+    // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
+    // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
+    prevInfo = info;
+    setPrevInfoId(id);
+    setPopupInfo(info);
+
+    console.log('팝업 킬 때 ID를 아래에 출력');
+    console.log('id' + id);
+    console.log(prevInfoId.current);
+  }
 
   function initMarkers(markerList, isGarbage_) {
     var markerImage;
@@ -286,8 +274,10 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          popupInfoRequest(markerInfo.id, isGarbage.current.toString());
-
+          popupInfoRequest(
+            markerInfo.id,
+            isGarbage.current.toString()
+          );
 
           // showPopup(markerInfo);
         }
@@ -305,23 +295,19 @@ function MapPage() {
     });
 
     // 기존 폴리라인이 있으면 지도에서 제거
-    if (polyline_ !== null) {
-      polyline_.setMap(null);
+    if (polylineRef.current !== null) {
+      polylineRef.current.setMap(null);
     }
 
     // 지도에 표시할 선을 생성합니다
-    polyline_ = new kakao.maps.Polyline({
-      path: points, // 선을 구성하는 좌표배열 입니다
-      strokeWeight: 10, // 선의 두께 입니다
-      //   strokeColor: '#FFAE00', // 선의 색깔입니다
-      strokeColor: '#3BB26F', // 선의 색깔입니다
-      strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-      strokeStyle: 'solid', // 선의 스타일입니다
+    polylineRef.current = new kakao.maps.Polyline({
+      path: points,
+      strokeWeight: 10,
+      strokeColor: '#3BB26F',
+      strokeOpacity: 0.7,
+      strokeStyle: 'solid',
     });
-
-    // 지도에 선을 표시합니다
-    polyline_.setMap(map.current);
-    // resultdrawArr.push(polyline_);
+    polylineRef.current.setMap(map.current);
   }
 
   async function initKakaoMap(locPosition) {
@@ -334,7 +320,10 @@ function MapPage() {
 
     if (!mapContainer.firstChild) {
       // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-      map.current = new kakao.maps.Map(mapContainer, mapOption);
+      map.current = new kakao.maps.Map(
+        mapContainer,
+        mapOption
+      );
 
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
@@ -364,9 +353,9 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      console.log("fetch보내기전");
+      console.log('fetch보내기전');
       await fetchData(circleXY, mapOption.center);
-      console.log("fetch보낸 후");
+      console.log('fetch보낸 후');
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
@@ -472,7 +461,7 @@ function MapPage() {
           var BodyJson = JSON.stringify(circleXY);
           fetchData(circleXY, latlng);
 
-          console.log("원 이동 할때 마다");
+          console.log('원 이동 할때 마다');
           console.log(popupInfo);
           console.log(prevInfo);
         }
@@ -669,7 +658,7 @@ function MapPage() {
     // 위치 정보를 가져온 후에 지도를 초기화하는 함수
     getLocation.then((locPosition) => {
       // setCurrentLocation(locPosition);
-      currentLocation = locPosition;
+      currentLocation.current = locPosition;
       initKakaoMap(locPosition);
       console.log(
         '가져온 위치 정보로 지도를 초기화합니다.'
@@ -714,10 +703,8 @@ function MapPage() {
   }, []); // pageId가 변경될 때마다 이 효과가 실행되도록 합니다.
 
   const polyline_remove = () => {
-    if (polyline_ != null) {
-      polyline_.setMap(null);
-    } else {
-      console.log('polyline_ 객체가 null입니다.');
+    if (polylineRef.current != null) {
+      polylineRef.current.setMap(null);
     }
   };
 
@@ -726,16 +713,25 @@ function MapPage() {
       console.log('map 객체가 아직 준비되지 않았습니다.');
       return;
     }
-    console.log('플러팅 버튼 클릭시 ' + currentLocation);
-    console.log('하이' + map);
-    if (map.current) {
-      console.log('' + currentLocation);
-      map.current.panTo(currentLocation);
-      const a = routeNavigation(currentLocation);
-
+    if (!currentLocation.current) {
+      console.log('현재 위치 정보가 없습니다.');
+      return;
+    }
+    console.log(
+      '플러팅 버튼 클릭시',
+      currentLocation.current
+    );
+    try {
+      map.current.panTo(currentLocation.current);
+      const a = routeNavigation(currentLocation.current);
       if (a === false) {
         message.error('길찾기에 실패했습니다.');
       }
+    } catch (error) {
+      console.error(
+        'reload_navigation 함수에서 오류 발생:',
+        error
+      );
     }
   };
 
