@@ -149,7 +149,7 @@ function ReviewWritePage() {
 
     try {
       const response = await axios.post(
-        'http://192.168.0.22/review',
+        'http://poopchelin.kro.kr/review',
         {
           nickname: nickname,
           password: password,

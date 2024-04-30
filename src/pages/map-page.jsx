@@ -86,8 +86,8 @@ function MapPage() {
   ) => {
     try {
       const response = await fetch(
-        // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        `http://192.168.0.22/toilet/range?x1=${
+        // `http://poopchelin.kro.kr/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
+        `http://poopchelin.kro.kr/toilet/range?x1=${
           circleXY.minX
         }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
           circleXY.maxY
@@ -126,7 +126,7 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://192.168.0.22/review/tg/popover/${id}?type=${type}`,
+        `http://poopchelin.kro.kr/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }
