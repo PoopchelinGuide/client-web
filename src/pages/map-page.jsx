@@ -129,7 +129,7 @@ function MapPage() {
         nearToilet = nearestToilet;
         console.log('가장 가까운 화장실' + nearToilet);
       } else if (response.status === 400) {
-        message.error('화장실이 존재하지 않습니다.', 2);
+        message.error('위치정보가 존재하지 않습니다.', 2);
       }
     } catch (error) {
       message.error('잘못된 요청입니다.');
@@ -330,6 +330,8 @@ function MapPage() {
         mapOption
       );
 
+      map.current.setMaxLevel(5);
+
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
         center: mapOption.center,
@@ -468,9 +470,6 @@ function MapPage() {
           
           var BodyJson = JSON.stringify(circleXY);
           await fetchData(circleXY, latlng);
-          console.log('하이하이하이하이하이하이하이');
-
-          console.log(nearDirect);
 
           if(nearDirect.current){
             routeNavigation(currentLocation.current);
@@ -533,9 +532,17 @@ function MapPage() {
       .then((response) => {
         var resultData = response.features;
 
+        let isGarbageString; 
+        if(isGarbage.current){
+          isGarbageString = '쓰레기통';
+        }
+        else{
+          isGarbageString = '화장실';
+        }
+
         //결과 출력
         var tDistance =
-          '가장 가까운 화장실까지의 거리 : ' +
+          `가장 가까운 ${isGarbageString}까지의 거리 : ` +
           (
             resultData[0].properties.totalDistance / 1000
           ).toFixed(1) +
@@ -658,7 +665,8 @@ function MapPage() {
               126.9768
             );
             resolve(locPosition);
-            console.log('현재위치를 가져올 수 없습니다11.');
+            message.error("현재위치를 가져올 수 없습니다. 위치정보를 허용해주세요.");
+            console.log('현재위치를 가져올 수 없습니다');
           }
         );
       } else {
@@ -667,6 +675,7 @@ function MapPage() {
           126.9768
         );
         resolve(locPosition);
+        message.error("현재위치를 가져올 수 없습니다.");
         console.log('현재위치를 가져올 수 없습니다.22 ');
       }
     });
