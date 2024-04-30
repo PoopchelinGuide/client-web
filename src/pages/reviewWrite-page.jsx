@@ -166,7 +166,12 @@ function ReviewWritePage() {
       );
       console.log(response.data);
       message.success('리뷰가 등록되었습니다.');
-      navigate('/review');
+      navigate('/review',{state:{
+        id:id,
+        name:name,
+        type:type,
+        tag:tag
+      }});
     } catch (error) {
       message.error('리뷰 등록에 실패했습니다.');
     }
