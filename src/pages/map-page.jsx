@@ -595,7 +595,7 @@ function MapPage() {
               126.9768
             );
             resolve(locPosition);
-            console.log('현재위치를 가져올 수 없습니다.');
+            console.log('현재위치를 가져올 수 없습니다11.');
           }
         );
       } else {
@@ -604,7 +604,7 @@ function MapPage() {
           126.9768
         );
         resolve(locPosition);
-        console.log('현재위치를 가져올 수 없습니다.');
+        console.log('현재위치를 가져올 수 없습니다.22 ');
       }
     });
     // 위치 정보를 가져온 후에 지도를 초기화하는 함수
@@ -661,6 +661,7 @@ function MapPage() {
       console.log('polyline_ 객체가 null입니다.');
     }
   };
+  
   const reload_navigation = () => {
     if (!map) {
       console.log('map 객체가 아직 준비되지 않았습니다.');
