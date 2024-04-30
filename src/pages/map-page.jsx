@@ -49,7 +49,7 @@ function MapPage() {
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
   var nearToilet = null;
 
-  var circleCenter ; // 원의 중심 좌표를 저장할 변수
+  var circleCenter; // 원의 중심 좌표를 저장할 변수
 
   var imageSize = new kakao.maps.Size(70, 70); // 마커의 크기 기존 42, 56
   var choiceImageSize = new kakao.maps.Size(90, 90); // 선택한 마커의 크기 기존 44, 58
@@ -78,8 +78,6 @@ function MapPage() {
     return markerImage;
   }
 
-
-
   // fetch 통신 method
   const fetchData = async (
     circleXY,
@@ -89,7 +87,11 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://172.16.0.85/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
+        `http://172.16.0.85/toilet/range?x1=${
+          circleXY.minX
+        }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
+          circleXY.maxY
+        }&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
           method: 'GET',
         }
@@ -106,12 +108,11 @@ function MapPage() {
         console.log(toilet);
         console.log(nearestToilet);
 
-        initMarkers(garbageBin, false);   
-		    initMarkers(toilet, true);
+        initMarkers(garbageBin, false);
+        initMarkers(toilet, true);
 
         nearToilet = nearestToilet;
-        console.log("가장 가까운 화장실"+ nearToilet);
-
+        console.log('가장 가까운 화장실' + nearToilet);
       } else if (response.status === 400) {
         message.error('화장실이 존재하지 않습니다.', 2);
       }
@@ -146,7 +147,7 @@ function MapPage() {
   };
 
   //Popup창 켜고 끄는 method
-  function showPopup(info) {    
+  function showPopup(info) {
     console.log('팝업창을 띄웁니다.');
     console.log('팝업창을 띄을때 map 확인' + map);
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
@@ -206,7 +207,7 @@ function MapPage() {
           console.log('마커 클릭 시 지도 유무' + map);
           map = map;
 
-          if(markerInfo.type){
+          if (markerInfo.type) {
             isGarbage = true;
           }
 
@@ -230,7 +231,11 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          popupInfoRequest(markerInfo.id, isGarbage, markerInfo);
+          popupInfoRequest(
+            markerInfo.id,
+            isGarbage,
+            markerInfo
+          );
           // showPopup(markerInfo);
         }
       );
@@ -306,9 +311,13 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      console.log("fetch보내기전");
-      await fetchData(circleXY, mapOption.center, initMarkers);
-      console.log("fetch보낸 후");
+      console.log('fetch보내기전');
+      await fetchData(
+        circleXY,
+        mapOption.center,
+        initMarkers
+      );
+      console.log('fetch보낸 후');
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
@@ -419,18 +428,14 @@ function MapPage() {
   }
 
   function routeNavigation(locPosition) {
-
-
     // 2. 시작, 도착 심볼찍기
     var endX = 126.9769,
-      endY = 37.57260;
+      endY = 37.5726;
 
     if (nearToilet !== null) {
       endX = nearToilet.coordinateX;
       endY = nearToilet.coordinateY;
     }
-
-
 
     // marker_s = new kakao.maps.Marker(
     // 	{
@@ -683,10 +688,8 @@ function MapPage() {
 
   return (
     <>
-      <div
-        id="map_div">
-      </div>
-          {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
+      <div id="map_div"></div>
+      {/* 팝업 정보가 있을 때만 Card 컴포넌트 렌더링 */}
 
       {popupInfo && (
         <div
@@ -715,100 +718,161 @@ function MapPage() {
                 />
               </div>
             }
-            extra=
-                {popupInfo.tag.map((item, index) => (
-                  <Tag
-                    key={index}
-                    style={{
-                      marginLeft: '0.2rem',
-                      fontSize: '10px',
-                      marginRight: '0.1rem',
-                    }}
-                    bordered={false}
-                    color="cyan"
-                  >
-                    {item}
-                  </Tag>
-                ))}
+            extra={popupInfo.tag.map((item, index) => (
+              <Tag
+                key={index}
+                style={{
+                  marginLeft: '0.2rem',
+                  fontSize: '10px',
+                  marginRight: '0.1rem',
+                }}
+                bordered={false}
+                color="cyan"
+              >
+                {item}
+              </Tag>
+            ))}
 
-
-          // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
-      >	
-  {
-  popupInfo.recentReview.length > 0 ?(
-  popupInfo.recentReview.map((review, reviewIndex) => (
-    <div key={reviewIndex}> {/* 이 div에 key 추가 */}
-    <Card.Meta
-    description={
-      <div>
-      <span style={{ color: "black"}}>
-        <span style={{fontSize: "15px"}}>{review.content}</span>
-        <Rate style={{ float: "right", marginTop: "0.35rem" }} disabled allowHalf defaultValue={review.rate} />
-      </span>
-      <div style={{ marginTop: "0.7rem" , marginBottom : "3rem"}}>
-        {review.tag.map((item, index) => (
-        <Tag key={index} style={{ float: "left", marginRight: "1rem", fontSize:"10px" }} bordered={false} color="cyan">
-          {item}
-        </Tag>
-        ))}
-        <span style={{ fontSize: "14px", float: "right" }}>{
-            moment
-            .utc(review.writeDate)
-            .format('YYYY-MM-DD')
-        }</span>
-      </div>
-      </div>
-    }
-    />
-      <Divider style={{ marginTop: 7, marginBottom: 15}} />
-    </div>
-  ))
-
-  ):(
-    <>
-    <Empty 
-    description={
-      <span style={{fontSize: "15px", color: "black"}}>
-      리뷰가 존재하지 않습니다.
-      </span>
-    }
-    />
-    <Divider style={{ marginTop: 7, marginBottom: 15}} />
-    </>
-  )
-  }
-    <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
-     onClick={(e) => { 
-      e.preventDefault(); 
-      console.log(popupInfo);
-      navigate('/review', 
-      {state: {
-        id: popupInfo.id,
-        type: isGarbage,
-        name : popupInfo.name,
-        tag: popupInfo.tag,
-     }});  }}>전체 리뷰</a>	
-  <Button type="primary"  style={{float: "right" , backgroundColor : "#3BB26F"}}>길찾기</Button>
-    </Card>
+            // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
+          >
+            {popupInfo.recentReview.length > 0 ? (
+              popupInfo.recentReview.map(
+                (review, reviewIndex) => (
+                  <div key={reviewIndex}>
+                    {' '}
+                    {/* 이 div에 key 추가 */}
+                    <Card.Meta
+                      description={
+                        <div>
+                          <span style={{ color: 'black' }}>
+                            <span
+                              style={{ fontSize: '15px' }}
+                            >
+                              {review.content}
+                            </span>
+                            <Rate
+                              style={{
+                                float: 'right',
+                                marginTop: '0.35rem',
+                              }}
+                              disabled
+                              allowHalf
+                              defaultValue={review.rate}
+                            />
+                          </span>
+                          <div
+                            style={{
+                              marginTop: '0.7rem',
+                              marginBottom: '3rem',
+                            }}
+                          >
+                            {review.tag.map(
+                              (item, index) => (
+                                <Tag
+                                  key={index}
+                                  style={{
+                                    float: 'left',
+                                    marginRight: '1rem',
+                                    fontSize: '10px',
+                                  }}
+                                  bordered={false}
+                                  color="cyan"
+                                >
+                                  {item}
+                                </Tag>
+                              )
+                            )}
+                            <span
+                              style={{
+                                fontSize: '14px',
+                                float: 'right',
+                              }}
+                            >
+                              {moment
+                                .utc(review.writeDate)
+                                .format('YYYY-MM-DD')}
+                            </span>
+                          </div>
+                        </div>
+                      }
+                    />
+                    <Divider
+                      style={{
+                        marginTop: 7,
+                        marginBottom: 15,
+                      }}
+                    />
+                  </div>
+                )
+              )
+            ) : (
+              <>
+                <Empty
+                  description={
+                    <span
+                      style={{
+                        fontSize: '15px',
+                        color: 'black',
+                      }}
+                    >
+                      리뷰가 존재하지 않습니다.
+                    </span>
+                  }
+                />
+                <Divider
+                  style={{ marginTop: 7, marginBottom: 15 }}
+                />
+              </>
+            )}
+            <a
+              href="#"
+              style={{
+                fontSize: '15px',
+                float: 'left',
+                color: '#3BB26F',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                console.log(popupInfo);
+                navigate('/review', {
+                  state: {
+                    id: popupInfo.id,
+                    type: isGarbage,
+                  },
+                });
+              }}
+            >
+              전체 리뷰
+            </a>
+            <Button
+              type="primary"
+              style={{
+                float: 'right',
+                backgroundColor: '#3BB26F',
+              }}
+            >
+              길찾기
+            </Button>
+          </Card>
         </div>
       )}
-      
-  <FloatButton.Group
-      shape="circle"
-    style={{
-    right:"15",
-    }}
-    >
-      <FloatButton type="primary" 
-      onClick={reload_navigation
-      } icon={<PlayCircleOutlined />} />
-      <FloatButton 
-      onClick={
-        polyline_remove
-      }
-      icon= {<CloseOutlined />} />
 
-    </FloatButton.Group>
+      <FloatButton.Group
+        shape="circle"
+        style={{
+          right: '15',
+        }}
+      >
+        <FloatButton
+          type="primary"
+          onClick={reload_navigation}
+          icon={<PlayCircleOutlined />}
+        />
+        <FloatButton
+          onClick={polyline_remove}
+          icon={<CloseOutlined />}
+        />
+      </FloatButton.Group>
     </>
   );
 }

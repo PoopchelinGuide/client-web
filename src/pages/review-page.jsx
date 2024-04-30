@@ -22,24 +22,16 @@ import ReviewResult from '../components/review-result';
 function ReviewPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const {
-    id,
-    name,
-    type,
-    tag
-  } = location.state || {
+  const { id, type } = location.state || {
     id: 1,
-    name: '',
     type: false,
-    tag: [],
   };
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const [reviewList, setReviewList] = useState([]);
   const [modalOpenId, setModalOpenId] = useState(null); // 수정된 상태
   const [delPassword, setDelPassword] = useState('');
-  const [idx, setIdx] = useState(0);
-  const [typex, setTypex] = useState(false); // false: 화장실, true: 휴게소
+  const [rate, setRate] = useState(0.0);
   const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
   const [headerName, setHeaderName] = useState(''); // 헤더로 보낼
 
@@ -53,22 +45,6 @@ function ReviewPage() {
       message.info('리뷰의 끝입니다!');
     }
   };
-
-  // let sum = 0.0;
-  // reviewList.forEach((item) => {
-  //   sum += item.rate;
-  // });
-  // sum = reviewList.length > 0 ? sum / reviewList.length : 0;
-
-  let sum = 0.0;
-  if (reviewList.length > 0) {
-    reviewList.forEach((item) => {
-      sum += item.rate; // Ensure item.rate is a number
-    });
-    sum = sum / reviewList.length;
-  } else {
-    sum = 0; // Ensure sum is zero if no reviews are available
-  }
 
   const showModal = (id) => {
     setModalOpenId(id);
@@ -96,10 +72,23 @@ function ReviewPage() {
   const reviewData = async () => {
     try {
       const response = await axios.get(
-        `http://172.16.0.85/review/tg/${id}?type=${type}`
+        `http://172.16.0.85/review/tg/total/${id}?type=${type}`
       );
       if (response.status === 200) {
-        const reviewDataList = response.data.map(
+        const data = response.data;
+
+        // Set the overall rate
+        const rate = data.rate;
+        setRate(rate);
+
+        // Set the most frequent tags
+        const tags = data.tag;
+        setMostTag(tags);
+
+        const name = data.name;
+        setHeaderName(name);
+        // Set the review list considering `recentReview` is an array
+        const reviewDataList = data.recentReview.map(
           (review) => ({
             id: review.id,
             content: review.content,
@@ -119,10 +108,7 @@ function ReviewPage() {
   };
 
   useEffect(() => {
-    setHeaderName(name);
-    setMostTag(tag);
-    setTypex(type);
-    setIdx(id);
+    setMostTag(mostTag);
     reviewData();
   }, []);
 
@@ -132,7 +118,7 @@ function ReviewPage() {
       id="box"
       onScroll={handleScroll}
     >
-      <Header name={headerName} rate={sum} tag={mostTag} />
+      <Header name={headerName} rate={rate} tag={mostTag} />
       <div className="list-box-margin">
         {reviewList && reviewList.length > 0 ? (
           <List
@@ -224,9 +210,10 @@ function ReviewPage() {
           navigate('/review-write', {
             state: {
               id: id,
-              name: name,
-              sum: sum,
+              name: headerName,
+              rate: rate,
               type: type,
+              tag: mostTag,
             },
           })
         }

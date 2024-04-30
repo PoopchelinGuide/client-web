@@ -22,19 +22,20 @@ function ReviewWritePage() {
   const {
     id,
     name,
-    sum,
+    rate,
     type,
     tag = [],
   } = location.state || {
     id: null,
     name: null,
-    sum: '0.0',
+    rate: '0.0',
     type: false,
     tag: [],
   };
 
   const [headerName, setHeaderName] = useState(''); // 헤더로 보낼
   const [mostTag, setMostTag] = useState([]); // 가장 많이 사용된 태그
+
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [content, setContent] = useState('');
@@ -166,12 +167,14 @@ function ReviewWritePage() {
       );
       console.log(response.data);
       message.success('리뷰가 등록되었습니다.');
-      navigate('/review',{state:{
-        id:id,
-        name:name,
-        type:type,
-        tag:tag
-      }});
+      navigate('/review', {
+        state: {
+          id: id,
+          name: name,
+          type: type,
+          tag: tag,
+        },
+      });
     } catch (error) {
       message.error('리뷰 등록에 실패했습니다.');
     }
@@ -183,7 +186,7 @@ function ReviewWritePage() {
   }, []);
   return (
     <div className="review-wirte-page">
-      <Header name={name} rate={sum} tag={mostTag} />
+      <Header name={headerName} rate={rate} tag={mostTag} />
       <div className="review-box">
         <div className="tagbtn-box">
           {tagButtons &&
