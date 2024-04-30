@@ -46,7 +46,7 @@ function Header({ name = '　', rate, tag = [] }) {
             </Tag>
           </span>
         ))}
-        <div className="button-box">
+        <div className="header-button-box">
           <button
             className="header-btn"
             onClick={() => navigate('/')}
