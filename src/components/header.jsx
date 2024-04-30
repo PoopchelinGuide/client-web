@@ -22,12 +22,16 @@ function Header({ name = '　', rate, tag = [] }) {
     setStarRating(updatedRate);
   }, [safeRate]);
 
+  // Function to shorten name if longer than 10 characters
+  const displayName =
+    name.length > 9 ? name.substring(0, 9) + '...' : name;
+
   return (
     <div
       className="header"
       style={{ fontFamily: 'SUITE-Regular' }}
     >
-      <p className="header_text">{name}</p>
+      <p className="header_text">{displayName}</p>
       <div className="header_rate">
         <div className="header_star">
           <Rate
