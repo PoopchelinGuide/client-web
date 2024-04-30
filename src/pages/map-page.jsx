@@ -426,8 +426,10 @@ function MapPage() {
           circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
           circle.setMap(map.current); // 원을 지도에 표시합니다
 
-          // 이전 중심 좌표가 있고, 새로운 중심 좌표와의 차이가 0.1 미만이면 AJAX 요청을 보내지 않습니다
-          if (
+          // nearDirect가 true 일 때는 fetch 요청을 보낸 후 길찾기를 실행합니다
+          // 이전 중심 좌표가 있고, 새로운 중심 좌표와의 차이가 0.05 미만이면 fetch 요청을 보내지 않습니다
+          if(nearDirect.current){}
+          else if (
             prevLatlng &&
             Math.abs(
               prevLatlng.getLat() - latlng.getLat()
@@ -474,7 +476,6 @@ function MapPage() {
             routeNavigation(currentLocation.current);
             nearDirect.current = false;
           }
-
         }
       );
     }
