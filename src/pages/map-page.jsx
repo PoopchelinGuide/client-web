@@ -38,6 +38,10 @@ function MapPage() {
   //   var markerList = [], // 마커 정보를 담은 배열
   var selectedMarker = null; // 클릭한 마커를 담을 변수
   let prevInfo = null; // 이전에 열린 팝업 정보를 저장하는 변수
+  // let prevInfoId = null; // 이전에 열린 팝업 정보의 id를 저장하는 변수
+  let [prevInfoId, setPrevInfoId] = useState(null);
+  
+
   var currentLocation; // 현재 위치를 저장할 변수
 
   var isGarbage = false; // 쓰레기통인지 화장실인지 구분하는 변수 boolean
@@ -46,6 +50,7 @@ function MapPage() {
 
   var polyline_ = null; // 현재 폴리라인을 저장할 변수
   let [popupInfo, setPopupInfo] = useState(null); // 현재 열려있는 팝업 정보를 저장하는 변수, boolean
+
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
   var nearToilet = null;
 
@@ -78,11 +83,22 @@ function MapPage() {
     return markerImage;
   }
 
+  useEffect(() => {
+    console.log('팝업 정보가 변경될때마다 아래에 출력');
+    console.log("popupInfo"+popupInfo);
+  }, [popupInfo]);
+
+  useEffect(() => {
+    console.log('팝업 정보가 변경될때마다 아래에 출력');
+    console.log("prevInfoId"+prevInfoId);
+  }, [prevInfoId]);
+  
+
+
   // fetch 통신 method
   const fetchData = async (
     circleXY,
     latlng,
-    initMarkers
   ) => {
     try {
       const response = await fetch(
@@ -133,10 +149,10 @@ function MapPage() {
       );
       if (response.status === 200) {
         const markerInfomation = await response.json();
-        markerInfomation.id = id;
-
+        console.log("선택한 팝업창 요청받은 정보");
         console.log(markerInfomation);
-        showPopup(markerInfomation);
+
+        showPopup(markerInfomation, id);
       } else if (response.status === 400) {
         message.error('팝업창 오류', 2);
       }
@@ -146,22 +162,34 @@ function MapPage() {
     }
   };
 
-  //Popup창 켜고 끄는 method
-  function showPopup(info) {
-    console.log('팝업창을 띄웁니다.');
-    console.log('팝업창을 띄을때 map 확인' + map);
-    // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
-    if (prevInfo !== null && prevInfo === info) {
-      prevInfo = null;
-      setPopupInfo(prevInfo);
-      return;
-    }
+    //Popup창 켜고 끄는 method
+    function showPopup(info, id) {    
+      console.log("현재 팝업창 정보를 아래에 출력");
+      console.log(info);
 
-    // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
-    // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
-    prevInfo = info;
-    setPopupInfo(prevInfo);
-  }
+      // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
+      if (prevInfo !== null || prevInfoId === id) {
+        prevInfo = null;
+        setPrevInfoId(null);
+        setPopupInfo(prevInfo);
+
+        console.log("팝업 끌 때 ID를 아래에 출력");
+        console.log("id"+id);
+        console.log("prevInfoId"+prevInfoId);
+
+        return;
+      }
+
+      // 그렇지 않은 경우, 즉 현재 열린 팝업이 없거나 새로운 팝업이 이전 팝업과 다르다면
+      // 현재 열린 팝업 정보를 새로운 팝업 정보로 업데이트합니다
+      prevInfo = info;
+      setPrevInfoId(id);
+      setPopupInfo(info);
+
+      console.log("팝업 킬 때 ID를 아래에 출력");
+      console.log("id"+id);
+        console.log("prevInfoId"+prevInfoId);
+    }
 
   function initMarkers(markerList, isToilet) {
     var markerImage;
@@ -231,11 +259,7 @@ function MapPage() {
             );
             selectedMarker = null;
           }
-          popupInfoRequest(
-            markerInfo.id,
-            isGarbage,
-            markerInfo
-          );
+          popupInfoRequest(markerInfo.id, isGarbage);
           // showPopup(markerInfo);
         }
       );
@@ -311,13 +335,9 @@ function MapPage() {
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
 
-      console.log('fetch보내기전');
-      await fetchData(
-        circleXY,
-        mapOption.center,
-        initMarkers
-      );
-      console.log('fetch보낸 후');
+      console.log("fetch보내기전");
+      await fetchData(circleXY, mapOption.center);
+      console.log("fetch보낸 후");
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
@@ -421,7 +441,11 @@ function MapPage() {
           markers = [];
 
           var BodyJson = JSON.stringify(circleXY);
-          fetchData(circleXY, latlng, initMarkers);
+          fetchData(circleXY, latlng);
+
+          console.log("원 이동 할때 마다");
+          console.log(popupInfo);
+          console.log(prevInfo);
         }
       );
     }
