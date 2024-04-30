@@ -1,6 +1,7 @@
 body,
 html {
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   display: flex;
   align-items: center;
@@ -17,14 +18,14 @@ html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 58rem;
+  height: 100vh;
 }
 
 /* 중앙 컨텐츠 영역 */
 .main_box {
   min-width: 26rem;
   max-width: 380px;
-  height: 58rem; /* 높이 비율 */
+  height: 100vh; /* 높이 비율 */
   background-color: #ececec; /* 중앙 영역의 배경색 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   display: flex;
