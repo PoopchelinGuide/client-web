@@ -253,7 +253,9 @@ function MapPage() {
           if (markerInfo.type) {
             isGarbage.current = true;
           }
-
+          else{
+            isGarbage.current = false;
+          }
           if (
             !selectedMarker ||
             selectedMarker !== marker
