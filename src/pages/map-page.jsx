@@ -89,7 +89,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-		`http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
+		`http://172.16.0.85/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}&x3=${latlng.getLng()}&y3=${latlng.getLat()}`,
         {
           method: 'GET',
         }
@@ -125,13 +125,14 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://192.168.0.22/review/tg/popover/${id}?type=${type}`,
+        `http://172.16.0.85/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }
       );
       if (response.status === 200) {
         const markerInfomation = await response.json();
+        markerInfomation.id = id;
 
         console.log(markerInfomation);
         showPopup(markerInfomation);
@@ -661,7 +662,7 @@ function MapPage() {
       console.log('polyline_ 객체가 null입니다.');
     }
   };
-  
+
   const reload_navigation = () => {
     if (!map) {
       console.log('map 객체가 아직 준비되지 않았습니다.');
@@ -779,6 +780,7 @@ function MapPage() {
     <a href="#" style={{fontSize:"15px", float:"left", color:"#3BB26F"}}
      onClick={(e) => { 
       e.preventDefault(); 
+      console.log(popupInfo);
       navigate('/review', 
       {state: {
         id: popupInfo.id,
