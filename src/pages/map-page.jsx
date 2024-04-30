@@ -87,7 +87,7 @@ function MapPage() {
     try {
       const response = await fetch(
         // `http://192.168.0.22/toilet/range?x1=${circleXY.minX}&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${circleXY.maxY}`,
-        `http://172.16.0.85/toilet/range?x1=${
+        `http://192.168.0.22/toilet/range?x1=${
           circleXY.minX
         }&x2=${circleXY.maxX}&y1=${circleXY.minY}&y2=${
           circleXY.maxY
@@ -126,7 +126,7 @@ function MapPage() {
   const popupInfoRequest = async (id, type) => {
     try {
       const response = await fetch(
-        `http://172.16.0.85/review/tg/popover/${id}?type=${type}`,
+        `http://192.168.0.22/review/tg/popover/${id}?type=${type}`,
         {
           method: 'GET',
         }

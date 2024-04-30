@@ -15,15 +15,10 @@
 }
 
 .list-box-margin {
-  margin-top: 12vh;
+  margin-top: 7.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.review-page {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  margin-top: 8vh;
 }
 
 #box {
@@ -43,73 +38,14 @@
 
 .list-box {
   font-family: 'SUITE-Regular';
-
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 13vh;
+  height: 20rem;
   border-bottom: 2px solid #ccc; /* 하단에 회색 밑줄 추가 */
   min-width: 25rem;
   max-width: 320px;
   flex: 1;
   flex-direction: column;
-}
-
-.list-box-title {
-  margin-top: 0.5vh;
-  margin-left: 0.5vh;
-  min-width: 25rem;
-  max-width: 320px;
-  height: 8vh;
-}
-
-.list-box-title-text {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.list-box-tag-date {
-  min-width: 25rem;
-  max-width: 320px;
-  height: 5vh;
-  display: flex;
-  flex-direction: row;
-}
-
-.list-box-tag {
-  margin: 0;
-  flex: 3;
-  display: flex; /* Flexbox 레이아웃을 활성화 */
-  flex-direction: row; /* 가로 방향으로 아이템 배치 */
-  justify-content: start;
-  align-items: center; /* 모든 아이템을 세로선 상에서 중앙으로 정렬 */
-  gap: 0.4rem;
-}
-.list-box-tag-button {
-  flex: 3; /* 왼쪽 요소가 차지하는 비율 */
-  border-radius: 1rem;
-  background-color: rgb(17, 81, 219);
-  min-width: 2.5rem;
-  max-width: 5.5rem;
-  height: 4vh;
-  text-align: center;
-  display: flex; /* Flexbox를 사용 */
-  align-items: center; /* 세로 방향 가운데 정렬 */
-  justify-content: center; /* 가로 방향 가운데 정렬 */
-}
-
-.list-box-tag-button-text {
-  font-size: 1rem;
-  color: white;
-  font-weight: bold;
-  margin: 0;
-}
-.list-box-date {
-  flex: 1; /* 오른쪽 요소가 차지하는 비율 */
-  margin: 0;
-}
-
-.list-box-date-text {
-  font-size: 1.1rem;
 }
 
 .delete-button {

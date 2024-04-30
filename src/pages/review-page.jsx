@@ -57,7 +57,7 @@ function ReviewPage() {
   const deleteReview = async (id) => {
     try {
       const response = await axios.delete(
-        `http://172.16.0.85/review/${id}?password=${delPassword}`
+        `http://192.168.0.22/review/${id}?password=${delPassword}`
       );
       if (response.status === 200) {
         message.success('리뷰가 삭제되었습니다.');
@@ -72,7 +72,7 @@ function ReviewPage() {
   const reviewData = async () => {
     try {
       const response = await axios.get(
-        `http://172.16.0.85/review/tg/total/${id}?type=${type}`
+        `http://192.168.0.22/review/tg/total/${id}?type=${type}`
       );
       if (response.status === 200) {
         const data = response.data;

@@ -16,7 +16,7 @@
   min-width: 26rem;
   max-width: 340px;
   z-index: 10;
-  height: 12vh;
+  height: 7rem;
   background-color: aliceblue;
   padding: 1px 0px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
@@ -56,7 +56,7 @@
   margin-left: 1rem;
   margin-top: 1rem;
   margin-bottom: 0.7rem;
-  font-size: 35px;
+  font-size: 2.3rem;
 }
 
 .header-btn {
