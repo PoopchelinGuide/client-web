@@ -45,7 +45,7 @@ function Header({ name = '　', rate, tag = [] }) {
 
         {tag.map((item, index) => (
           <span className="header-tag" key={index}>
-            <Tag bordered={false} size="large" color="cyan">
+            <Tag bordered={true} size="large" color="cyan">
               {item}
             </Tag>
           </span>
