@@ -9,6 +9,7 @@ import imageSrc2 from '../markerImage/ToiletChoice.png';
 import imageSrc3 from '../markerImage/garbege.png';
 import imageSrc4 from '../markerImage/garbageChoice.png';
 import '../styles/app-style.css';
+import '../styles/font-style.css';
 
 import {
   CloseOutlined,
@@ -330,15 +331,15 @@ function MapPage() {
         mapOption
       );
 
-      map.current.setMaxLevel(5);
+      map.current.setMaxLevel(6);
 
       // 원을 생성합니다
       var circle = new kakao.maps.Circle({
         center: mapOption.center,
-        radius: mapOption.level * 100, // 미터 단위의 원의 반지름입니다
+        radius: mapOption.level * 500, // 미터 단위의 원의 반지름입니다
         strokeWeight: 5, // 선의 두께입니다
         strokeColor: '#75B8FA', // 선의 색깔입니다
-        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeOpacity: 0, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: 'dashed', // 선의 스타일 입니다
         fillOpacity: 0, // 채우기 불투명도 입니다
       });
@@ -425,7 +426,7 @@ function MapPage() {
           circleCenter = latlng;
 
           circle.setPosition(latlng); // 지도의 중심좌표를 원의 중심으로 설정합니다
-          circle.setRadius(level * 100); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
+          circle.setRadius(level * 250); // 원의 반지름을 지도의 레벨 * 1000으로 설정합니다
           circle.setMap(map.current); // 원을 지도에 표시합니다
 
           // nearDirect가 true 일 때는 fetch 요청을 보낸 후 길찾기를 실행합니다
@@ -766,6 +767,8 @@ function MapPage() {
           style={{ zIndex: 100 }}
         >
           <Card
+            // id='suite-regular-font'
+            id='suite-regular-font'
             className="antCard"
             title={
               <div
@@ -776,7 +779,7 @@ function MapPage() {
                   flexDirection: 'column',
                 }}
               >
-                <span style={{ fontSize: '16px ' }}>
+                <span style={{ fontSize: '16px ' , FontFamily:'SUITE-Regular'}}>
                   {popupInfo.name}
                 </span>
                 <Rate
@@ -789,6 +792,7 @@ function MapPage() {
             }
             extra={popupInfo.tag.map((item, index) => (
               <Tag
+                id='suite-regular-font'
                 key={index}
                 style={{
                   marginLeft: '0.2rem',
@@ -814,8 +818,8 @@ function MapPage() {
                       description={
                         <div>
                           <span style={{ color: 'black' }}>
-                            <span
-                              style={{ fontSize: '15px' }}
+                            <span 
+                              style={{ fontSize: '15px'}}
                             >
                               {review.content}
                             </span>
@@ -838,6 +842,7 @@ function MapPage() {
                             {review.tag.map(
                               (item, index) => (
                                 <Tag
+                                  id='suite-regular-font'
                                   key={index}
                                   style={{
                                     float: 'left',
@@ -915,6 +920,7 @@ function MapPage() {
               전체 리뷰
             </a>
             <Button
+              id='suite-regular-font'
               type="primary"
               style={{
                 float: 'right',
