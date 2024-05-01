@@ -141,10 +141,13 @@ function ReviewWritePage() {
 
     let toiletId = null;
     let garbagebintId = null;
-    if (type == false) {
+    console.log('type : ' + type + typeof type)
+    if (type === 'false') {
       toiletId = id;
+      console.log('toilet id : ' + toiletId)
     } else {
       garbagebintId = id;
+      console.log('garbage bin id  : ' + toiletId)
     }
 
     try {
