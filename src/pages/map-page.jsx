@@ -834,7 +834,20 @@ function MapPage() {
                 />
               </div>
             }
-            extra={popupInfo.tag.map((item, index) => (
+            extra={
+            <div style={{display: "flex" , flexDirection: 'column' , alignItems: 'flex-start', }}>
+            <div style={{alignSelf: "flex-end", marginBottom : "0.2rem"}}>
+            <FaXmark
+            className="delete-button"
+            onClick={() => {
+              prevInfo = null;
+              setPrevInfoId(null);
+              setPopupInfo(prevInfo);
+            }}
+            />
+            </div>  
+            <div>
+            {popupInfo.tag.map((item, index) => (
               <Tag
                 id='suite-regular-font'
                 key={index}
@@ -849,7 +862,9 @@ function MapPage() {
                 {item}
               </Tag>
             ))}
-
+            </div>
+          </div>
+          }
             // extra={<a href="#" style={{fontSize:"18px"}} onClick={(e) => { e.preventDefault(); navigate('/review') }}>전체 리뷰</a>}
           >
             {popupInfo.recentReview.length > 0 ? (
