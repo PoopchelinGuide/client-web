@@ -26,6 +26,8 @@ import {
   Empty,
 } from 'antd';
 
+import { FaXmark } from 'react-icons/fa6';
+
 const { Tmapv2 } = window;
 const { kakao } = window;
 
@@ -62,7 +64,7 @@ function MapPage() {
   let [markerData, setMarkerData] = useState(null); // 서버로 받은 장소 중 클릭한 장소의 정보를 저장하는 변수
 
   // var [nearToilet, setNearToilet] = useState(); // 가까운 화장실 정보를 저장하는 변수
-  var nearToilet = null;
+  var nearToilet = useRef(null);
 
   var circleCenter; // 원의 중심 좌표를 저장할 변수
 
@@ -94,6 +96,8 @@ function MapPage() {
   }
 
   useEffect(() => {
+    console.log('popupInfo가 변경될때마다 아래에 출력');
+    console.log(popupInfo);
   }, [popupInfo]);
 
   // fetch 통신 method
@@ -112,20 +116,27 @@ function MapPage() {
       );
       if (response.status === 200) {
         const markerList = await response.json();
+        console.log('데이터 전송 완료');
 
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
         var nearestToilet = markerList.nearestToilet;
 
+        console.log(garbageBin);
+        console.log(toilet);
+        console.log(nearestToilet);
+
         initMarkers(garbageBin, true);
         initMarkers(toilet, false);
 
-        nearToilet = nearestToilet;
+        nearToilet.current = nearestToilet;
+        console.log('가장 가까운 화장실' + nearToilet);
       } else if (response.status === 400) {
         message.error('위치정보가 존재하지 않습니다.', 2);
       }
     } catch (error) {
       message.error('잘못된 요청입니다.');
+      console.error('오류 발생:', error);
     }
   };
 
@@ -150,6 +161,11 @@ function MapPage() {
           prevInfo = null;
           setPrevInfoId(null);
           setPopupInfo(prevInfo);
+
+          console.log('팝업 끌 때 ID를 아래에 출력');
+          console.log('id' + id);
+          console.log(prevInfoId.current);
+
           return;
         }
 
@@ -165,16 +181,25 @@ function MapPage() {
       }
     } catch (error) {
       message.error('잘못된 요청입니다.');
+      console.error('오류 발생:', error);
     }
   };
 
   //Popup창 켜고 끄는 method
   function showPopup(info, id) {
+    console.log('현재 팝업창 정보를 아래에 출력');
+    console.log(info);
+
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
     if (prevInfo !== null && prevInfoId.current === id) {
       prevInfo = null;
       setPrevInfoId(null);
       setPopupInfo(prevInfo);
+
+      console.log('팝업 끌 때 ID를 아래에 출력');
+      console.log('id' + id);
+      console.log(prevInfoId.current);
+
       return;
     }
 
@@ -183,6 +208,10 @@ function MapPage() {
     prevInfo = info;
     setPrevInfoId(id);
     setPopupInfo(info);
+
+    console.log('팝업 킬 때 ID를 아래에 출력');
+    console.log('id' + id);
+    console.log(prevInfoId.current);
   }
 
   function initMarkers(markerList, isGarbage_) {
@@ -195,6 +224,7 @@ function MapPage() {
     }
 
     if (markerList === null) {
+      console.log('데이터가 없습니다.');
       return;
     }
     markerList.forEach(function (markerInfo) {
@@ -286,6 +316,9 @@ function MapPage() {
       strokeStyle: 'solid',
     });
     polylineRef.current.setMap(map.current);
+
+    // 해당 키를 사용하여 로딩 메시지만 종료합니다.
+    message.destroy('routeNavigationLoading');
   }
 
   async function initKakaoMap(locPosition) {
@@ -320,6 +353,7 @@ function MapPage() {
 
       var centerAround = circle.getBounds();
       circle.setMap(map.current); // 원을 지도에 표시합니다
+      console.log('원 생성' + centerAround);
 
       // centerAround의 남서쪽과 북동쪽 좌표를 가져옵니다
       var swLatLng = centerAround.getSouthWest();
@@ -331,10 +365,14 @@ function MapPage() {
         maxX: neLatLng.getLng(), // 북동쪽 경도
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
+
+      console.log('fetch보내기전');
       await fetchData(circleXY, mapOption.center);
+      console.log('fetch보낸 후');
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
+      console.log(map.current);
 
       // // 도착
       // marker_e = new kakao.maps.Marker({
@@ -414,6 +452,7 @@ function MapPage() {
           prevLatlng = latlng;
 
           var centerAround = circle.getBounds();
+          console.log(centerAround);
 
           swLatLng = centerAround.getSouthWest();
           neLatLng = centerAround.getNorthEast();
@@ -424,6 +463,8 @@ function MapPage() {
             maxX: neLatLng.getLng(),
             maxY: neLatLng.getLat(),
           };
+
+          console.log(circleXY, latlng);
 
           for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(null);
@@ -446,16 +487,23 @@ function MapPage() {
   }
 
   function routeNavigation(locPosition, isDirections) {
+
+    message.loading({
+      content: '길찾기 중..',
+      duration: 0, // 0으로 설정하여 수동으로 메시지를 종료할 수 있습니다.
+      key: 'routeNavigationLoading'  // 이 key를 사용하여 특정 메시지를 제어합니다.
+    });
+
     // 2. 시작, 도착 심볼찍기
     var endX = 126.9769,
       endY = 37.5726;
-
     if(isDirections){  
       endX = markerData.coordinateX;
       endY = markerData.coordinateY;
-    }else if (nearToilet !== null) {
-      endX = nearToilet.coordinateX;
-      endY = nearToilet.coordinateY;
+    }else if (nearToilet.current !== null) {
+      console.log('가장 가까운 화장실로 길찾기 실행!!!!!!!!!!!!!!!!!');
+      endX = nearToilet.current.coordinateX;
+      endY = nearToilet.current.coordinateY;
     }
 
     // marker_s = new kakao.maps.Marker(
@@ -465,6 +513,12 @@ function MapPage() {
     // 	  iconSize : new kakao.maps.Size(24, 38),
     // 	  map : map
     // 	});
+    console.log(
+      '현재 위치 ' +
+        locPosition.getLat() +
+        ' ' +
+        locPosition.getLng()
+    );
 
     var headers = {};
     headers['appKey'] =
@@ -513,7 +567,9 @@ function MapPage() {
             0
           ) +
           '분';
-        message.info(tDistance + tTime, 3);
+
+        console.log(tDistance + tTime);
+        message.info(tDistance + tTime, 1);
 
         //기존 그려진 라인 & 마커가 있다면 초기화
         if (resultdrawArr.length > 0) {
@@ -530,7 +586,7 @@ function MapPage() {
           var geometry = resultData[i].geometry;
           var properties = resultData[i].properties;
 
-          if (geometry.type == 'LineString') {
+          if (geometry.type == 'LineString') {  
             for (var j in geometry.coordinates) {
               // 경로들의 결과값(구간)들을 포인트 객체로 변환
               var latlng = new Tmapv2.Point(
@@ -596,6 +652,7 @@ function MapPage() {
       })
       .catch((error) => {
         return false;
+        console.error('Error:', error);
         // 에러 처리 로직은 여기에 작성합니다.
       });
   }
@@ -613,6 +670,7 @@ function MapPage() {
               lon
             );
             resolve(locPosition);
+            console.log('현재위치를 가져옵니다.');
           },
           function () {
             var locPosition = new kakao.maps.LatLng(
@@ -621,6 +679,7 @@ function MapPage() {
             );
             resolve(locPosition);
             message.error("현재위치를 가져올 수 없습니다. 위치정보를 허용해주세요.");
+            console.log('현재위치를 가져올 수 없습니다');
           }
         );
       } else {
@@ -630,6 +689,7 @@ function MapPage() {
         );
         resolve(locPosition);
         message.error("현재위치를 가져올 수 없습니다.");
+        console.log('현재위치를 가져올 수 없습니다.22 ');
       }
     });
     // 위치 정보를 가져온 후에 지도를 초기화하는 함수
@@ -637,6 +697,9 @@ function MapPage() {
       // setCurrentLocation(locPosition);
       currentLocation.current = locPosition;
       initKakaoMap(locPosition);
+      console.log(
+        '가져온 위치 정보로 지도를 초기화합니다.'
+      );
     });
 
     // 사용자 위치를 지속적으로 추적
@@ -657,8 +720,13 @@ function MapPage() {
           position: locPosition,
           iconSize: new kakao.maps.Size(24, 38),
         });
+
+        console.log(
+          '사용자의 위치를 지속적으로 추적합니다.'
+        );
       },
       (error) => {
+        console.log(error);
       },
       {
         enableHighAccuracy: true,
@@ -677,20 +745,59 @@ function MapPage() {
     }
   };
 
+  // 현재 위치와 목표 위치가 같은지 확인하는 함수
+  function isLocationEqual(loc1, loc2, tolerance = 0.0001) { 
+    return (
+      Math.abs(loc1.getLat() - loc2.getLat()) < tolerance &&
+      Math.abs(loc1.getLng() - loc2.getLng()) < tolerance
+    );
+  }
+
   const reload_navigation = async () => {
+    console.log('버튼 클릭 전 가까운 화장실');
+    console.log(nearToilet.current);
+
     if (!map.current) {
+      console.log('map 객체가 아직 준비되지 않았습니다.');
       return;
     }
     if (!currentLocation.current) {
+      console.log('현재 위치 정보가 없습니다.');
       return;
     }
     nearDirect.current = true; // 길찾기 버튼을 눌렀을 때 길찾기를 실행하기 위한 변수
 
+    const currentMapCenter = map.current.getCenter();
+    const targetLocation = currentLocation.current;
+
+  // 현재 지도 중심과 목표 위치가 같은지 확인
+  if (isLocationEqual(currentMapCenter, targetLocation)) {
+    console.log("현재 위치가 같으므로 panTo를 실행하지 않습니다.");
+    // 위치가 같으면 바로 routeNavigation을 호출
+    console.log('길찾기 위치는?');
+    console.log(currentLocation.current);
+    routeNavigation(currentLocation.current);
+    nearDirect.current = false;
+  } else {
+    // 위치가 다르면 새 위치로 이동을 시도
     try {
-      await map.current.panTo(currentLocation.current);
-      // const a = routeNavigation(currentLocation.current);
+      console.log("현재 위치와 목표 위치가 다르므로 panTo를 실행합니다.")
+      console.log(currentMapCenter);
+      console.log(targetLocation);
+      await map.current.panTo(targetLocation);
+      console.log('길찾기 위치는?');
+      console.log(currentLocation.current);
     } catch (error) {
+      console.error('reload_navigation 함수에서 오류 발생:', error);
     }
+  }
+  console.log('버튼 클릭 이후 가까운 화장실');
+  console.log(nearToilet.current);
+
+
+  prevInfo = null;
+  setPrevInfoId(null);
+  setPopupInfo(prevInfo);
   };
 
   return (
@@ -844,6 +951,8 @@ function MapPage() {
               }}
               onClick={(e) => {
                 e.preventDefault();
+                console.log('상세보기 클릭');
+                console.log(isGarbage);
                 navigate('/review', {
                   state: {
                     id: nextId,
@@ -863,7 +972,6 @@ function MapPage() {
               }}
               onClick={() => {
                 routeNavigation(currentLocation.current, true);
-
               }}
             >
               길찾기
