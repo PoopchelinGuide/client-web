@@ -481,6 +481,10 @@ function MapPage() {
             routeNavigation(currentLocation.current);
             nearDirect.current = false;
           }
+          prevInfo = null;
+          setPrevInfoId(null);
+          setPopupInfo(prevInfo);
+
         }
       );
     }
