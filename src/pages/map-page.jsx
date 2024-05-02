@@ -557,7 +557,7 @@ function MapPage() {
           '분';
 
         console.log(tDistance + tTime);
-        message.info(tDistance + tTime, 1);
+        message.info(tDistance + tTime, 3);
 
         //기존 그려진 라인 & 마커가 있다면 초기화
         if (resultdrawArr.length > 0) {
