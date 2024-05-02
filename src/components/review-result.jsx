@@ -8,7 +8,7 @@ function ReviewResult() {
   return (
     <Result
     status="404"
-    title="404"
+    title=""
     subTitle="아직 리뷰가 존재하지 않습니다."
     extra={""}
   />

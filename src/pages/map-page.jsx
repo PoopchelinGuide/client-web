@@ -94,8 +94,6 @@ function MapPage() {
   }
 
   useEffect(() => {
-    console.log('popupInfo가 변경될때마다 아래에 출력');
-    console.log(popupInfo);
   }, [popupInfo]);
 
   // fetch 통신 method
@@ -114,27 +112,20 @@ function MapPage() {
       );
       if (response.status === 200) {
         const markerList = await response.json();
-        console.log('데이터 전송 완료');
 
         var garbageBin = markerList.garbageBin;
         var toilet = markerList.toilet;
         var nearestToilet = markerList.nearestToilet;
 
-        console.log(garbageBin);
-        console.log(toilet);
-        console.log(nearestToilet);
-
         initMarkers(garbageBin, true);
         initMarkers(toilet, false);
 
         nearToilet = nearestToilet;
-        console.log('가장 가까운 화장실' + nearToilet);
       } else if (response.status === 400) {
         message.error('위치정보가 존재하지 않습니다.', 2);
       }
     } catch (error) {
       message.error('잘못된 요청입니다.');
-      console.error('오류 발생:', error);
     }
   };
 
@@ -159,11 +150,6 @@ function MapPage() {
           prevInfo = null;
           setPrevInfoId(null);
           setPopupInfo(prevInfo);
-
-          console.log('팝업 끌 때 ID를 아래에 출력');
-          console.log('id' + id);
-          console.log(prevInfoId.current);
-
           return;
         }
 
@@ -179,25 +165,16 @@ function MapPage() {
       }
     } catch (error) {
       message.error('잘못된 요청입니다.');
-      console.error('오류 발생:', error);
     }
   };
 
   //Popup창 켜고 끄는 method
   function showPopup(info, id) {
-    console.log('현재 팝업창 정보를 아래에 출력');
-    console.log(info);
-
     // 현재 열린 팝업 정보가 null이 아니고, 새로운 팝업이 이전 팝업과 같다면 팝업을 닫고 함수를 종료합니다.
     if (prevInfo !== null && prevInfoId.current === id) {
       prevInfo = null;
       setPrevInfoId(null);
       setPopupInfo(prevInfo);
-
-      console.log('팝업 끌 때 ID를 아래에 출력');
-      console.log('id' + id);
-      console.log(prevInfoId.current);
-
       return;
     }
 
@@ -206,10 +183,6 @@ function MapPage() {
     prevInfo = info;
     setPrevInfoId(id);
     setPopupInfo(info);
-
-    console.log('팝업 킬 때 ID를 아래에 출력');
-    console.log('id' + id);
-    console.log(prevInfoId.current);
   }
 
   function initMarkers(markerList, isGarbage_) {
@@ -222,7 +195,6 @@ function MapPage() {
     }
 
     if (markerList === null) {
-      console.log('데이터가 없습니다.');
       return;
     }
     markerList.forEach(function (markerInfo) {
@@ -348,7 +320,6 @@ function MapPage() {
 
       var centerAround = circle.getBounds();
       circle.setMap(map.current); // 원을 지도에 표시합니다
-      console.log('원 생성' + centerAround);
 
       // centerAround의 남서쪽과 북동쪽 좌표를 가져옵니다
       var swLatLng = centerAround.getSouthWest();
@@ -360,14 +331,10 @@ function MapPage() {
         maxX: neLatLng.getLng(), // 북동쪽 경도
         maxY: neLatLng.getLat(), // 북동쪽 위도
       };
-
-      console.log('fetch보내기전');
       await fetchData(circleXY, mapOption.center);
-      console.log('fetch보낸 후');
       var prevLatlng; // 이전 중심 좌표를 저장할 변수
 
       routeNavigation(locPosition);
-      console.log(map.current);
 
       // // 도착
       // marker_e = new kakao.maps.Marker({
@@ -447,7 +414,6 @@ function MapPage() {
           prevLatlng = latlng;
 
           var centerAround = circle.getBounds();
-          console.log(centerAround);
 
           swLatLng = centerAround.getSouthWest();
           neLatLng = centerAround.getNorthEast();
@@ -458,8 +424,6 @@ function MapPage() {
             maxX: neLatLng.getLng(),
             maxY: neLatLng.getLat(),
           };
-
-          console.log(circleXY, latlng);
 
           for (var i = 0; i < markers.length; i++) {
             markers[i].setMap(null);
@@ -501,12 +465,6 @@ function MapPage() {
     // 	  iconSize : new kakao.maps.Size(24, 38),
     // 	  map : map
     // 	});
-    console.log(
-      '현재 위치 ' +
-        locPosition.getLat() +
-        ' ' +
-        locPosition.getLng()
-    );
 
     var headers = {};
     headers['appKey'] =
@@ -555,8 +513,6 @@ function MapPage() {
             0
           ) +
           '분';
-
-        console.log(tDistance + tTime);
         message.info(tDistance + tTime, 3);
 
         //기존 그려진 라인 & 마커가 있다면 초기화
@@ -640,7 +596,6 @@ function MapPage() {
       })
       .catch((error) => {
         return false;
-        console.error('Error:', error);
         // 에러 처리 로직은 여기에 작성합니다.
       });
   }
@@ -658,7 +613,6 @@ function MapPage() {
               lon
             );
             resolve(locPosition);
-            console.log('현재위치를 가져옵니다.');
           },
           function () {
             var locPosition = new kakao.maps.LatLng(
@@ -667,7 +621,6 @@ function MapPage() {
             );
             resolve(locPosition);
             message.error("현재위치를 가져올 수 없습니다. 위치정보를 허용해주세요.");
-            console.log('현재위치를 가져올 수 없습니다');
           }
         );
       } else {
@@ -677,7 +630,6 @@ function MapPage() {
         );
         resolve(locPosition);
         message.error("현재위치를 가져올 수 없습니다.");
-        console.log('현재위치를 가져올 수 없습니다.22 ');
       }
     });
     // 위치 정보를 가져온 후에 지도를 초기화하는 함수
@@ -685,9 +637,6 @@ function MapPage() {
       // setCurrentLocation(locPosition);
       currentLocation.current = locPosition;
       initKakaoMap(locPosition);
-      console.log(
-        '가져온 위치 정보로 지도를 초기화합니다.'
-      );
     });
 
     // 사용자 위치를 지속적으로 추적
@@ -708,13 +657,8 @@ function MapPage() {
           position: locPosition,
           iconSize: new kakao.maps.Size(24, 38),
         });
-
-        console.log(
-          '사용자의 위치를 지속적으로 추적합니다.'
-        );
       },
       (error) => {
-        console.log(error);
       },
       {
         enableHighAccuracy: true,
@@ -735,11 +679,9 @@ function MapPage() {
 
   const reload_navigation = async () => {
     if (!map.current) {
-      console.log('map 객체가 아직 준비되지 않았습니다.');
       return;
     }
     if (!currentLocation.current) {
-      console.log('현재 위치 정보가 없습니다.');
       return;
     }
     nearDirect.current = true; // 길찾기 버튼을 눌렀을 때 길찾기를 실행하기 위한 변수
@@ -747,12 +689,7 @@ function MapPage() {
     try {
       await map.current.panTo(currentLocation.current);
       // const a = routeNavigation(currentLocation.current);
-      console.log('기다리는 중');
     } catch (error) {
-      console.error(
-        'reload_navigation 함수에서 오류 발생:',
-        error
-      );
     }
   };
 
@@ -907,8 +844,6 @@ function MapPage() {
               }}
               onClick={(e) => {
                 e.preventDefault();
-                console.log('상세보기 클릭');
-                console.log(isGarbage);
                 navigate('/review', {
                   state: {
                     id: nextId,

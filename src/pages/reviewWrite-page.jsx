@@ -141,13 +141,10 @@ function ReviewWritePage() {
 
     let toiletId = null;
     let garbagebintId = null;
-    console.log('type : ' + type + typeof type)
     if (type === 'false') {
       toiletId = id;
-      console.log('toilet id : ' + toiletId)
     } else {
       garbagebintId = id;
-      console.log('garbage bin id  : ' + toiletId)
     }
 
     try {
@@ -168,7 +165,6 @@ function ReviewWritePage() {
           },
         }
       );
-      console.log(response.data);
       message.success('리뷰가 등록되었습니다.');
       navigate('/review', {
         state: {
