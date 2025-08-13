@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+<div align=center >
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# PoopchelinGuide
 
-## Available Scripts
+## 😎 팀 구성
+|[김보성](https://github.com/NangManBo)|[이창의](https://github.com/changuii) |[류세민](https://github.com/ryusemin) | [한동근](https://github.com/l0o0lv)|
+| :--:| :--:| :--:| :--:|
+| ![](https://avatars.githubusercontent.com/u/124684536?v=4)| ![](https://avatars.githubusercontent.com/u/122252160?v=4) | ![](https://avatars.githubusercontent.com/u/113248843?v=4) | ![](https://avatars.githubusercontent.com/u/128709695?v=4)
+| [![My Skills](https://skillicons.dev/icons?i=react)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=spring,react)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=react)](https://skillicons.dev) | [![My Skills](https://skillicons.dev/icons?i=spring)](https://skillicons.dev)| 
 
-In the project directory, you can run:
+## 👨‍🏫 문서 
 
-### `npm start`
+[개발 문서](https://wool-magpie-f47.notion.site/Poopcheline-Guide-56b40099b67e4ee986b6d36a98d7109c?pvs=4)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  
+## 📚 기술 스택
+### 문서관련
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+[![My Skills](https://skillicons.dev/icons?i=notion)](https://skillicons.dev)  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 백엔드
+[![My Skills](https://skillicons.dev/icons?i=spring,mysql,hibernate)](https://skillicons.dev)  
+[![My Skills](https://skillicons.dev/icons?i=aws,docker,ubuntu)](https://skillicons.dev)    
 
-### `npm run eject`
+### 프론트엔드
+[![My Skills](https://skillicons.dev/icons?i=react,netlify)](https://skillicons.dev)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🤓 공공 API
+[서울시 공중화장실 위치정보](https://data.seoul.go.kr/dataList/OA-162/S/1/datasetView.do)  
+[서울시 가로휴지통 설치정보](https://data.seoul.go.kr/dataList/OA-15069/F/1/datasetView.do)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📌 아이디어
+화장실이 급한 사람에게 지도앱을 열어서 화장실을 찾을 여유따윈 없다.  
+가장 빠르게 서울특별시의 화장실을 찾을 수 있는 간편한 앱!
 
-## Learn More
+## 😇 앱 화면
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| 메인 지도 페이지 | 화장실 팝업 | 길찾기 | 리뷰 등록 성공 | 리뷰 없는 화장실/쓰레기통 |
+|:--:| :--:| :--: | :--: | :--: |
+| ![](/profile/asset/main-page.png) |![](/profile/asset/popover-page.png) | ![](/profile/asset/search-road.png)  | ![](/profile/asset/review-register.png) |![](/profile/asset/review-not-found.png) |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| 리뷰 페이지 | 리뷰 삭제 | 리뷰 등록 |
+|:--:| :--: | :--:|
+|![](/profile/asset/review-list.jpg) | ![](/profile/asset/review-delete.jpg) | ![](/profile/asset/review-write.jpg) |
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 데이터베이스 스키마
 
-### Analyzing the Bundle Size
+![](/profile/asset/database.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+</div>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
